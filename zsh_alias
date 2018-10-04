@@ -1,0 +1,281 @@
+###########################################################
+############  things to make my system work  ##############
+###########################################################
+
+alias maj='sudo apt-get update  && sudo apt-get upgrade -y && sudo apt-get autoclean && sudo apt-get autoremove -y'
+
+alias fullmaj='sudo apt-get update  && sudo apt-get upgrade -y && sudo apt-get dist-upgrade -y && sudo apt-get autoclean && sudo apt-get autoremove -y'
+
+alias reload_zshrc='source ~/.zshrc'
+
+alias cya='systemctl suspend -i'
+
+alias clear_ram='sudo echo "This is going to take a while ..." && echo "Droppping cache" && sudo su -c "echo 3 > /proc/sys/vm/drop_caches" root && echo "Cache dropped" && echo "turning swap off" && sudo swapoff -a && echo "turning swap back on" && sudo swapon -a && echo "Aaaaaand... done!" '
+
+#add odoo to python path
+export PYTHONPATH="${PYTHONPATH}:/home/odoo/src/odoo"
+
+DEFAULT_USER='odoo'
+
+###########################################################
+##########  things to make zsh aliases work  ##############
+###########################################################
+
+alias e="vim"
+
+alias eza="e ~/.zsh_alias; source ~/.zshrc"
+
+###########################################################
+######################  Odoo stuffs #######################
+###########################################################
+
+alias clear_pyc="find ~/src -name '*.pyc' -delete"
+alias clear_all_pyc="clear_pyc"
+
+#git
+go(){ #switch branch for all odoo repos
+	echo "cleaning the junk"
+	clear_pyc
+	echo "checking out odoo"
+	git -C ~/src/odoo checkout $1 &&
+	if [ $1 != "8.0" ]
+	then
+		echo "checking out enterprise"
+		git -C ~/src/enterprise checkout $1 &&
+	fi
+	echo "checking out design-themes"
+	git -C ~/src/design-themes checkout $1 
+}
+
+gopull(){ #pull all odoo repos
+	git -C ~/src/odoo pull --rebase &&
+        git -C ~/src/enterprise pull --rebase &&
+	git -C ~/src/design-themes pull --rebase 
+}
+
+git_update_and_clean(){ # fetch pull and clean a bit a given repo
+	git -C $1 fetch --all &&
+	git -C $1 pull --rebase &&
+	git -C $1 prune
+}
+
+go_update_and_clean(){
+	git_update_and_clean ~/src/odoo &&
+	git_update_and_clean ~/src/enterprise &&
+	git_update_and_clean ~/src/design-themes &&
+}
+
+golist(){
+	echo "current community branch"
+	git -C ~/src/odoo symbolic-ref --short HEAD
+	echo "current enterprise branch"
+	git -C ~/src/enterprise symbolic-ref --short HEAD
+	echo "current design branch"
+	git -C ~/src/design-themes symbolic-ref --short HEAD
+	echo "current internal branch"
+	git -C ~/src/internal symbolic-ref --short HEAD
+	echo "current support-tools branch"
+	git -C ~/src/support-tools symbolic-ref --short HEAD
+}
+
+
+
+
+#start odoo
+so(){ 
+    #params  -->   dbname [port] [other_parameters]
+    if psql -lqt | cut -d \| -f 1 | grep -qw $1; then
+    	if [ $(so-version $1) != $(git -C ~/src/odoo symbolic-ref --short HEAD) ]
+    	then
+		echo "version mismatch"
+		echo "db version is :"
+		so-version $1
+		echo "repo version is :"
+		git -C ~/src/odoo symbolic-ref --short HEAD
+		return
+	fi
+    fi
+
+    if [ $# -lt 1 ]
+    then
+	echo "At least give me a name :( "
+	echo "so dbname [port] [other_parameters]"
+	return
+    fi
+    if [ $# -lt 2 ]
+    then
+	so $1 8069
+	return
+    fi
+
+    odoo_bin="~/src/odoo/odoo-bin"
+    odoo_py="~/src/odoo/odoo.py"
+    path_community="--addons-path=~/src/odoo/addons"
+    path_enterprise="--addons-path=~/src/odoo/addons,~/src/enterprise"
+    params_normal="--db-filter=^$1$ -d $1 --xmlrpc-port=$2"
+    params_silent="--db-filter=^$1$ -d $1 --xmlrpc-port=$2 --log-level=warn --log-handler=werkzeug:CRITICAL"
+    if [ -f ~/src/odoo/odoo-bin ]
+    then
+	#version 10 or above
+	if [ "$3" != "silent" ]
+	then
+		eval $odoo_bin $path_enterprise $params_normal $a[3,-1]
+	else
+		eval $odoo_bin $path_enterprise $params_silent $a[4,-1]
+	fi
+    else
+	#version 9 or below
+	if [ $(git -C ~/src/odoo symbolic-ref --short HEAD) = "8.0" ]
+	then
+	    # V8
+	    if [ "$3" != "silent" ]
+	    then
+		eval $odoo_py $path_community $params_normal $a[3,-1]
+	    else
+		eval $odoo_py $path_community $params_silent $a[4,-1]
+	    fi
+	else
+	    # V9 (probably)
+	    if [ "$3" != "silent" ]
+	    then
+		eval $odoo_py $path_enterprise $params_normal $a[3,-1]
+	    else
+		eval $odoo_py $path_enterprise $params_silent $a[4,-1]
+	    fi
+	fi
+    fi
+}
+
+dropodoo(){
+	# drop the db, also removes it from meta if it was a local saas db
+	drop_local_saas_db $1
+}
+
+so-version(){
+	psql -tAqX -d $1 -c "select replace((regexp_matches(latest_version, '^\d+\.0|^saas~\d+\.\d+|saas~\d+'))[1], '~', '-') from ir_module_module where name='base';"
+}
+
+
+
+
+
+#local-saas
+
+build_local_saas_db(){
+        if [ -f ~/src/odoo/odoo-bin ]
+        then
+            ~/src/odoo/odoo-bin --addons-path=~/src/internal/default,~/src/internal/trial,~/src/enterprise,~/src/odoo/addons --load=saas_worker,web -d $1 -i saas_trial,project --stop-after-init
+	else
+            ~/src/odoo/odoo.py --addons-path=~/src/internal/default,~/src/internal/trial,~/src/enterprise,~/src/odoo/addons --load=saas_worker,web -d $1 -i saas_trial,project --stop-after-init
+	fi
+	local db_uuid=$(echo "select value from ir_config_parameter where key = 'database.uuid';" | psql $1 | sed -n '4p' | tr -d '[:space:]')
+	echo $db_uuid
+	echo "INSERT INTO databases (name, uuid, port, mode, extra_apps, create_date, expire_date, last_cnx_date, cron_round, cron_time, email_daily_limit, email_daily_count, email_total_count, print_waiting_counter, print_counter, print_counter_limit) VALUES ('$1', '$db_uuid', 8069, 'trial', true, '2018-05-23 09:33:08.811069', '2040-02-22 23:59:59', '2018-06-28 13:44:03.980693', 0, '2018-09-21 00:40:28', 30, 10, 0, 0, 0, 10)" | psql meta
+}
+
+drop_local_saas_db(){
+	echo "DELETE FROM databases where name = '$1'" | psql meta > /dev/null
+	dropdb $1 && echo "database $1 has been dropped"
+	
+}
+
+start_local_saas_db(){
+	sed -i "s|OAUTH_BASE_URL = 'http://accounts.127.0.0.1.xip.io:8369'|OAUTH_BASE_URL = 'https://accounts.odoo.com' #tempcomment|" ~/src/internal/default/saas_worker/const.py
+	if [ -f ~/src/odoo/odoo-bin ]
+        then
+	    ~/src/odoo/odoo-bin --addons-path=~/src/internal/default,~/src/internal/trial,~/src/enterprise,~/src/odoo/addons --load=saas_worker,web -d $1;
+	else
+	    ~/src/odoo/odoo.py --addons-path=~/src/internal/default,~/src/internal/trial,~/src/enterprise,~/src/odoo/addons --load=saas_worker,web -d $1;
+	fi
+	sed -i "s|OAUTH_BASE_URL = 'https://accounts.odoo.com' #tempcomment|OAUTH_BASE_URL = 'http://accounts.127.0.0.1.xip.io:8369'|" ~/src/internal/default/saas_worker/const.py
+}
+
+list_local_saas(){
+	echo "Below, the list of local saas DBs"
+	echo "select name, id from databases order by id;" | psql meta
+	echo "to start --> start_local_saas_db db-name"
+	echo "to create a new one --> build_local_saas_db db-name"
+	echo "to drop --> drop_local_saas_db db-name"
+}
+
+alias lls='list_local_saas'
+
+alias SaaS_Inj_git10_and_start='clear && clear_all_pyc && cd ~/src/odoo && git checkout 10.0 && cd ~/src/enterprise && git checkout 10.0 && cd ~/src/odoo && python2 odoo-bin --addons-path=../internal/default,../internal/trial,../enterprise,addons --load=saas_worker,web --db-filter=SAAS_TEST_Sess_Inject_V10'
+
+alias SaaS_Inj_git11_and_start='clear && clear_all_pyc && cd ~/src/odoo && git checkout 11.0 && cd ~/src/enterprise && git checkout 11.0 && cd ~/src/odoo && python3 odoo-bin --addons-path=../internal/default,../internal/trial,../enterprise,addons --load=saas_worker,web -d SAAS_TEST_Sess_Inject'
+
+alias SaaS_Inj_git9tbe_and_start='clear && clear_all_pyc && cd ~/src/odoo && git checkout 9.0-session-token-tbe && cd ~/src/enterprise && git checkout 9.0 && cd ~/src/odoo && python2 odoo.py --addons-path=../internal/default,../internal/trial,../enterprise,addons --load=saas_worker,web --db-filter=SAAS_TEST_Sess_Inject_V9tbe'
+
+alias SaaS_Inj_git8patched_and_start='clear && clear_all_pyc && cd ~/src/odoo && git checkout 8.0-local_patch_for_local_saas && python2 odoo.py -d SAAS_V8 --db-filter=^SAAS_V8$ --addons-path=addons,../internal/default/,../internal/trial/ --load=saas_worker,web'
+
+#helpdesk-mig
+alias helpdesk113_drop_build_start_db='dropdb helpdesk113 && createdb helpdesk113 && psql helpdesk113 < /home/odoo/Documents/mig/helpdesk113.dump.sql && cd ~/src/odoo && git checkout saas-11.3 && cd ~/src/enterprise && git checkout saas-11.3 && cd && /home/odoo/src/odoo/odoo-bin --addons-path=/home/odoo/src/internal/default,/home/odoo/src/internal/private,/home/odoo/src/internal/test,/home/odoo/src/enterprise,/home/odoo/src/odoo/addons --load=saas_worker,web -d helpdesk113'
+
+alias helpdesk113_migrate='date +%s.%N && psql helpdesk113 < /home/odoo/Documents/mig/whe-migration_script_more_readable.sql && date +%s.%N'
+
+alias helpdesk114_drop_build_start_db='dropdb helpdesk114 && createdb helpdesk114 && psql helpdesk114 < /home/odoo/Documents/mig/helpdesk114.dump.sql && cd ~/src/odoo && git checkout saas-11.4 && cd ~/src/enterprise && git checkout saas-11.4 && cd && /home/odoo/src/odoo/odoo-bin --addons-path=/home/odoo/src/internal/default,/home/odoo/src/internal/private,/home/odoo/src/internal/test,/home/odoo/src/enterprise,/home/odoo/src/odoo/addons --load=saas_worker,web -d helpdesk114'
+
+alias helpdesk114_migrate='date +%s.%N && psql helpdesk114 < /home/odoo/Documents/mig/whe-migration_script_more_readable.sql && date +%s.%N'
+
+alias helpdesk115_drop_build_start_db='dropdb helpdesk115 && createdb helpdesk115 && psql helpdesk115 < /home/odoo/Documents/mig/helpdesk115.dump.sql && cd ~/src/odoo && git checkout saas-11.5 && cd ~/src/enterprise && git checkout saas-11.5 && cd &&/home/odoo/src/odoo/odoo-bin --addons-path=/home/odoo/src/internal/default,/home/odoo/src/internal/private,/home/odoo/src/internal/test,/home/odoo/src/enterprise,/home/odoo/src/odoo/addons --load=saas_worker,web -d helpdesk115'
+
+alias helpdesk115_migrate='date +%s.%N && psql helpdesk115 < /home/odoo/Documents/mig/whe-migration_script_more_readable.sql && date +%s.%N'
+
+
+
+
+
+#start mailcatcher
+smailcatcher(){
+	echo 'rvm use 2.3 && mailcatcher' | /bin/bash --login
+}
+
+
+
+
+
+#psql aliases
+poe(){ psql oe_support_$1 }
+
+pl(){
+	#echo "select t1.datname as db_name, pg_size_pretty(pg_database_size(t1.datname)) as db_size from pg_database t1 order by t1.datname;" | psql postgres
+	local db_name
+	for db_name in $(psql -tAqX -d postgres -c "select t1.datname as db_name from pg_database t1 order by lower(t1.datname);")
+	do
+		local db_size=$(psql -tAqX -d $db_name -c "select pg_size_pretty(pg_database_size('$db_name'));" 2> /dev/null)
+		local db_version=$(so-version $db_name 2> /dev/null)
+
+		if ! [ -z $db_version ]
+		then
+			echo "$db_version:    \t $db_name \t($db_size)"
+		fi
+	done
+}
+
+alias ploe="pl | grep oe_support_"
+
+lu(){
+	echo "SELECT id, login from res_users order by id;" | psql $1
+}
+
+lsu(){
+	echo "SELECT id, login from res_users where id = 1;" | psql $1
+}
+
+luoe(){	lu oe_support_$1 }
+
+lsuoe(){ lsu oe_support_$1 }
+
+
+
+
+
+#port killer
+listport () {
+    lsof -i tcp:$1 
+}
+killport () {
+    listport $1 | sed -n '2p' | awk '{print $2}' |  xargs kill -9 
+}
+alias kp="killport"
+
