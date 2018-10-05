@@ -12,9 +12,20 @@ export INTERNAL="$SRC/internal"
 ############  things to make my system work  ##############
 ###########################################################
 
-alias maj='sudo apt-get update  && sudo apt-get upgrade -y && sudo apt-get autoclean && sudo apt-get autoremove -y'
+maj(){
+	sudo apt-get update && 
+	sudo apt-get upgrade -y && 
+	sudo apt-get autoclean && 
+	sudo apt-get autoremove -y
+}
 
-alias fullmaj='sudo apt-get update  && sudo apt-get upgrade -y && sudo apt-get dist-upgrade -y && sudo apt-get autoclean && sudo apt-get autoremove -y'
+fullmaj(){
+	sudo apt-get update &&
+	sudo apt-get upgrade -y &&
+	sudo apt-get dist-upgrade -y &&
+	sudo apt-get autoclean &&
+	sudo apt-get autoremove -y
+}
 
 alias reload_zshrc='source ~/.zshrc'
 
@@ -43,13 +54,18 @@ DEFAULT_USER='odoo'
 
 alias e="vim"
 
-alias eza="e $AP/zsh_alias; source ~/.zshrc"
+eza(){
+	e $AP/zsh_alias; 
+	reload_zshrc
+}
 
 ###########################################################
 ######################  Odoo stuffs #######################
 ###########################################################
 
-alias clear_pyc="find $SRC -name '*.pyc' -delete"
+clear_pyc(){
+	find $SRC -name '*.pyc' -delete
+}
 alias clear_all_pyc="clear_pyc"
 
 #git
@@ -228,26 +244,101 @@ list_local_saas(){
 
 alias lls='list_local_saas'
 
-alias SaaS_Inj_git10_and_start='clear && clear_all_pyc && cd ~/src/odoo && git checkout 10.0 && cd ~/src/enterprise && git checkout 10.0 && cd ~/src/odoo && python2 odoo-bin --addons-path=../internal/default,../internal/trial,../enterprise,addons --load=saas_worker,web --db-filter=SAAS_TEST_Sess_Inject_V10'
+SaaS_Inj_git10_and_start(){
+	clear && 
+	clear_all_pyc && 
+	cd ~/src/odoo && 
+	git checkout 10.0 && 
+	cd ~/src/enterprise && 
+	git checkout 10.0 && 
+	cd ~/src/odoo && 
+	python2 odoo-bin --addons-path=../internal/default,../internal/trial,../enterprise,addons --load=saas_worker,web --db-filter=SAAS_TEST_Sess_Inject_V10
+}
 
-alias SaaS_Inj_git11_and_start='clear && clear_all_pyc && cd ~/src/odoo && git checkout 11.0 && cd ~/src/enterprise && git checkout 11.0 && cd ~/src/odoo && python3 odoo-bin --addons-path=../internal/default,../internal/trial,../enterprise,addons --load=saas_worker,web -d SAAS_TEST_Sess_Inject'
+SaaS_Inj_git11_and_start(){
+	clear && 
+	clear_all_pyc && 
+	cd ~/src/odoo && 
+	git checkout 11.0 && 
+	cd ~/src/enterprise && 
+	git checkout 11.0 && 
+	cd ~/src/odoo && 
+	python3 odoo-bin --addons-path=../internal/default,../internal/trial,../enterprise,addons --load=saas_worker,web -d SAAS_TEST_Sess_Inject
+}
 
-alias SaaS_Inj_git9tbe_and_start='clear && clear_all_pyc && cd ~/src/odoo && git checkout 9.0-session-token-tbe && cd ~/src/enterprise && git checkout 9.0 && cd ~/src/odoo && python2 odoo.py --addons-path=../internal/default,../internal/trial,../enterprise,addons --load=saas_worker,web --db-filter=SAAS_TEST_Sess_Inject_V9tbe'
+SaaS_Inj_git9tbe_and_start(){
+	clear && 
+	clear_all_pyc && 
+	cd ~/src/odoo && 
+	git checkout 9.0-session-token-tbe && 
+	cd ~/src/enterprise && 
+	git checkout 9.0 && 
+	cd ~/src/odoo && 
+	python2 odoo.py --addons-path=../internal/default,../internal/trial,../enterprise,addons --load=saas_worker,web --db-filter=SAAS_TEST_Sess_Inject_V9tbe
+}
 
-alias SaaS_Inj_git8patched_and_start='clear && clear_all_pyc && cd ~/src/odoo && git checkout 8.0-local_patch_for_local_saas && python2 odoo.py -d SAAS_V8 --db-filter=^SAAS_V8$ --addons-path=addons,../internal/default/,../internal/trial/ --load=saas_worker,web'
+SaaS_Inj_git8patched_and_start(){
+	clear && 
+	clear_all_pyc && 
+	cd ~/src/odoo && 
+	git checkout 8.0-local_patch_for_local_saas && 
+	python2 odoo.py -d SAAS_V8 --db-filter=^SAAS_V8$ --addons-path=addons,../internal/default/,../internal/trial/ --load=saas_worker,web
+}
 
 #helpdesk-mig
-alias helpdesk113_drop_build_start_db='dropdb helpdesk113 && createdb helpdesk113 && psql helpdesk113 < /home/odoo/Documents/mig/helpdesk113.dump.sql && cd ~/src/odoo && git checkout saas-11.3 && cd ~/src/enterprise && git checkout saas-11.3 && cd && /home/odoo/src/odoo/odoo-bin --addons-path=/home/odoo/src/internal/default,/home/odoo/src/internal/private,/home/odoo/src/internal/test,/home/odoo/src/enterprise,/home/odoo/src/odoo/addons --load=saas_worker,web -d helpdesk113'
+helpdesk113_drop_build_start_db(){
+	dropdb helpdesk113 && 
+	createdb helpdesk113 && 
+	psql helpdesk113 < /home/odoo/Documents/mig/helpdesk113.dump.sql && 
+	cd ~/src/odoo && 
+	git checkout saas-11.3 && 
+	cd ~/src/enterprise && 
+	git checkout saas-11.3 && 
+	cd && 
+	/home/odoo/src/odoo/odoo-bin --addons-path=/home/odoo/src/internal/default,/home/odoo/src/internal/private,/home/odoo/src/internal/test,/home/odoo/src/enterprise,/home/odoo/src/odoo/addons --load=saas_worker,web -d helpdesk113
+}
 
-alias helpdesk113_migrate='date +%s.%N && psql helpdesk113 < /home/odoo/Documents/mig/whe-migration_script_more_readable.sql && date +%s.%N'
+helpdesk113_migrate(){
+	date +%s.%N
+	psql helpdesk113 < /home/odoo/Documents/mig/whe-migration_script_more_readable.sql
+	date +%s.%N
+}
 
-alias helpdesk114_drop_build_start_db='dropdb helpdesk114 && createdb helpdesk114 && psql helpdesk114 < /home/odoo/Documents/mig/helpdesk114.dump.sql && cd ~/src/odoo && git checkout saas-11.4 && cd ~/src/enterprise && git checkout saas-11.4 && cd && /home/odoo/src/odoo/odoo-bin --addons-path=/home/odoo/src/internal/default,/home/odoo/src/internal/private,/home/odoo/src/internal/test,/home/odoo/src/enterprise,/home/odoo/src/odoo/addons --load=saas_worker,web -d helpdesk114'
+helpdesk114_drop_build_start_db(){
+	dropdb helpdesk114 && 
+	createdb helpdesk114 && 
+	psql helpdesk114 < /home/odoo/Documents/mig/helpdesk114.dump.sql && 
+	cd ~/src/odoo && 
+	git checkout saas-11.4 && 
+	cd ~/src/enterprise && 
+	git checkout saas-11.4 && 
+	cd && 
+	/home/odoo/src/odoo/odoo-bin --addons-path=/home/odoo/src/internal/default,/home/odoo/src/internal/private,/home/odoo/src/internal/test,/home/odoo/src/enterprise,/home/odoo/src/odoo/addons --load=saas_worker,web -d helpdesk114
+}
 
-alias helpdesk114_migrate='date +%s.%N && psql helpdesk114 < /home/odoo/Documents/mig/whe-migration_script_more_readable.sql && date +%s.%N'
+helpdesk114_migrate(){
+	date +%s.%N
+	psql helpdesk114 < /home/odoo/Documents/mig/whe-migration_script_more_readable.sql
+	date +%s.%N
+}
 
-alias helpdesk115_drop_build_start_db='dropdb helpdesk115 && createdb helpdesk115 && psql helpdesk115 < /home/odoo/Documents/mig/helpdesk115.dump.sql && cd ~/src/odoo && git checkout saas-11.5 && cd ~/src/enterprise && git checkout saas-11.5 && cd &&/home/odoo/src/odoo/odoo-bin --addons-path=/home/odoo/src/internal/default,/home/odoo/src/internal/private,/home/odoo/src/internal/test,/home/odoo/src/enterprise,/home/odoo/src/odoo/addons --load=saas_worker,web -d helpdesk115'
+helpdesk115_drop_build_start_db(){
+	dropdb helpdesk115 && 
+	createdb helpdesk115 && 
+	psql helpdesk115 < /home/odoo/Documents/mig/helpdesk115.dump.sql && 
+	cd ~/src/odoo && 
+	git checkout saas-11.5 && 
+	cd ~/src/enterprise && 
+	git checkout saas-11.5 && 
+	cd &&
+	/home/odoo/src/odoo/odoo-bin --addons-path=/home/odoo/src/internal/default,/home/odoo/src/internal/private,/home/odoo/src/internal/test,/home/odoo/src/enterprise,/home/odoo/src/odoo/addons --load=saas_worker,web -d helpdesk115
+}
 
-alias helpdesk115_migrate='date +%s.%N && psql helpdesk115 < /home/odoo/Documents/mig/whe-migration_script_more_readable.sql && date +%s.%N'
+helpdesk115_migrate(){
+	date +%s.%N
+	psql helpdesk115 < /home/odoo/Documents/mig/whe-migration_script_more_readable.sql
+	date +%s.%N
+}
 
 
 
