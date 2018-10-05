@@ -113,16 +113,16 @@ godb(){
 #start odoo
 so(){ 
     #params  -->   dbname [port] [other_parameters]
-    if psql -lqt | cut -d \| -f 1 | grep -qw $1; then
+    if psql -lqt | cut -d \| -f 1 | grep -qw $1; then #check if the database already exists
     	if [ $(so-version $1) != $(git_branch_version $ODOO) ]
     	then
-		echo "version mismatch"
-		echo "db version is :"
-		so-version $1
-		echo "repo version is :"
-		git_branch_version $ODOO
-		return
-	fi
+			echo "version mismatch"
+			echo "db version is :"
+			so-version $1
+			echo "repo version is :"
+			git_branch_version $ODOO
+			return
+		fi
     fi
 
     if [ $# -lt 1 ]
@@ -159,24 +159,24 @@ so(){
 		    # V8
 		    if [ "$3" != "silent" ]
 		    then
-			eval $odoo_py $path_community $params_normal $a[3,-1]
+				eval $odoo_py $path_community $params_normal $a[3,-1]
 		    else
-			eval $odoo_py $path_community $params_silent $a[4,-1]
+				eval $odoo_py $path_community $params_silent $a[4,-1]
 		    fi
 		else
 		    # V9 (probably)
 		    if [ "$3" != "silent" ]
 		    then
-			eval $odoo_py $path_enterprise $params_normal $a[3,-1]
+				eval $odoo_py $path_enterprise $params_normal $a[3,-1]
 		    else
-			eval $odoo_py $path_enterprise $params_silent $a[4,-1]
+				eval $odoo_py $path_enterprise $params_silent $a[4,-1]
 		    fi
 		fi
     fi
 }
 
 so-version(){
-	psql -tAqX -d $1 -c "select replace((regexp_matches(latest_version, '^\d+\.0|^saas~\d+\.\d+|saas~\d+'))[1], '~', '-') from ir_module_module where name='base';"
+	psql -tAqX -d $1 -c "SELECT replace((regexp_matches(latest_version, '^\d+\.0|^saas~\d+\.\d+|saas~\d+'))[1], '~', '-') FROM ir_module_module WHERE name='base';"
 }
 
 dropodoo(){
@@ -197,13 +197,13 @@ build_local_saas_db(){
 	else
 		eval $ODOO/odoo.py --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons --load=saas_worker,web -d $1 -i saas_trial,project --stop-after-init
 	fi
-	local db_uuid=$(echo "select value from ir_config_parameter where key = 'database.uuid';" | psql $1 | sed -n '4p' | tr -d '[:space:]')
+	local db_uuid=$(echo "SELECT value FROM ir_config_parameter WHERE key = 'database.uuid';" | psql $1 | sed -n '4p' | tr -d '[:space:]')
 	echo $db_uuid
 	echo "INSERT INTO databases (name, uuid, port, mode, extra_apps, create_date, expire_date, last_cnx_date, cron_round, cron_time, email_daily_limit, email_daily_count, email_total_count, print_waiting_counter, print_counter, print_counter_limit) VALUES ('$1', '$db_uuid', 8069, 'trial', true, '2018-05-23 09:33:08.811069', '2040-02-22 23:59:59', '2018-06-28 13:44:03.980693', 0, '2018-09-21 00:40:28', 30, 10, 0, 0, 0, 10)" | psql meta
 }
 
 drop_local_saas_db(){
-	echo "DELETE FROM databases where name = '$1'" | psql meta > /dev/null
+	echo "DELETE FROM databases WHERE name = '$1'" | psql meta > /dev/null
 	dropdb $1 && echo "database $1 has been dropped"
 }
 
@@ -220,7 +220,7 @@ start_local_saas_db(){
 
 list_local_saas(){
 	echo "Below, the list of local saas DBs"
-	echo "select name, id from databases order by id;" | psql meta
+	psql -d meta -c "SELECT name, id FROM databases ORDER BY id;"
 	echo "to start --> start_local_saas_db db-name"
 	echo "to create a new one --> build_local_saas_db db-name"
 	echo "to drop --> drop_local_saas_db db-name"
@@ -263,16 +263,17 @@ smailcatcher(){
 
 
 #psql aliases
-poe(){ psql oe_support_$1 }
+poe(){
+	psql oe_support_$1 
+}
 
 pl(){
 	#echo "select t1.datname as db_name, pg_size_pretty(pg_database_size(t1.datname)) as db_size from pg_database t1 order by t1.datname;" | psql postgres
 	local db_name
-	for db_name in $(psql -tAqX -d postgres -c "select t1.datname as db_name from pg_database t1 order by lower(t1.datname);")
+	for db_name in $(psql -tAqX -d postgres -c "SELECT t1.datname AS db_name FROM pg_database t1 ORDER BY LOWER(t1.datname);")
 	do
-		local db_size=$(psql -tAqX -d $db_name -c "select pg_size_pretty(pg_database_size('$db_name'));" 2> /dev/null)
+		local db_size=$(psql -tAqX -d $db_name -c "SELECT pg_size_pretty(pg_database_size('$db_name'));" 2> /dev/null)
 		local db_version=$(so-version $db_name 2> /dev/null)
-
 		if ! [ -z $db_version ]
 		then
 			echo "$db_version:    \t $db_name \t($db_size)"
@@ -285,11 +286,11 @@ ploe(){
 }
 
 lu(){
-	echo "SELECT id, login from res_users order by id;" | psql $1
+	psql -d $1 -c "SELECT id, login FROM res_users ORDER BY id;"
 }
 
 lsu(){
-	echo "SELECT id, login from res_users where id = 1;" | psql $1
+	psql -d $1 -c "SELECT id, login FROM res_users WHERE id = 1;"
 }
 
 luoe(){	
