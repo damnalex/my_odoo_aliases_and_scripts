@@ -1,4 +1,14 @@
 ###########################################################
+########################  PATHS  ##########################
+###########################################################
+
+export SRC="/home/odoo/src"
+export AP="/home/odoo/Documents/my_scripts/aliases_and_script_repo" #alias path
+export ODOO="$SRC/odoo"
+export ENTERPRISE="$SRC/enterprise"
+export INTERNAL="$SRC/internal"
+
+###########################################################
 ############  things to make my system work  ##############
 ###########################################################
 
@@ -10,10 +20,20 @@ alias reload_zshrc='source ~/.zshrc'
 
 alias cya='systemctl suspend -i'
 
-alias clear_ram='sudo echo "This is going to take a while ..." && echo "Droppping cache" && sudo su -c "echo 3 > /proc/sys/vm/drop_caches" root && echo "Cache dropped" && echo "turning swap off" && sudo swapoff -a && echo "turning swap back on" && sudo swapon -a && echo "Aaaaaand... done!" '
+clear_ram(){
+	echo "This is going to take a while ..." && 
+	echo "Droppping cache" && 
+	sudo su -c "echo 3 > /proc/sys/vm/drop_caches" root && 
+	echo "Cache dropped" && 
+	echo "turning swap off" && 
+	sudo swapoff -a && 
+	echo "turning swap back on" && 
+	sudo swapon -a && 
+	echo "Aaaaaand... done!" 
+}
 
 #add odoo to python path
-export PYTHONPATH="${PYTHONPATH}:/home/odoo/src/odoo"
+export PYTHONPATH="${PYTHONPATH}:$SRC/odoo"
 
 DEFAULT_USER='odoo'
 
@@ -23,13 +43,13 @@ DEFAULT_USER='odoo'
 
 alias e="vim"
 
-alias eza="e ~/.zsh_alias; source ~/.zshrc"
+alias eza="e $AP/zsh_alias; source ~/.zshrc"
 
 ###########################################################
 ######################  Odoo stuffs #######################
 ###########################################################
 
-alias clear_pyc="find ~/src -name '*.pyc' -delete"
+alias clear_pyc="find $SRC -name '*.pyc' -delete"
 alias clear_all_pyc="clear_pyc"
 
 #git
@@ -37,20 +57,20 @@ go(){ #switch branch for all odoo repos
 	echo "cleaning the junk"
 	clear_pyc
 	echo "checking out odoo"
-	git -C ~/src/odoo checkout $1 &&
+	git -C $ODOO checkout $1 &&
 	if [ $1 != "8.0" ]
 	then
 		echo "checking out enterprise"
-		git -C ~/src/enterprise checkout $1 &&
+		git -C $ENTERPRISE checkout $1 &&
 	fi
 	echo "checking out design-themes"
-	git -C ~/src/design-themes checkout $1 
+	git -C $SRC/design-themes checkout $1 
 }
 
 gopull(){ #pull all odoo repos
-	git -C ~/src/odoo pull --rebase &&
-        git -C ~/src/enterprise pull --rebase &&
-	git -C ~/src/design-themes pull --rebase 
+	git -C $ODOO pull --rebase &&
+    git -C $ENTERPRISE pull --rebase &&
+	git -C $SRC/design-themes pull --rebase 
 }
 
 git_update_and_clean(){ # fetch pull and clean a bit a given repo
@@ -60,22 +80,31 @@ git_update_and_clean(){ # fetch pull and clean a bit a given repo
 }
 
 go_update_and_clean(){
-	git_update_and_clean ~/src/odoo &&
-	git_update_and_clean ~/src/enterprise &&
-	git_update_and_clean ~/src/design-themes &&
+	git_update_and_clean $ODOO &&
+	git_update_and_clean $ENTERPRISE &&
+	git_update_and_clean $SRC/design-themes
+}
+
+git_branch_version(){
+	git -C $1 symbolic-ref --short HEAD
 }
 
 golist(){
 	echo "current community branch"
-	git -C ~/src/odoo symbolic-ref --short HEAD
+	git_branch_version $ODOO
 	echo "current enterprise branch"
-	git -C ~/src/enterprise symbolic-ref --short HEAD
+	git_branch_version $ENTERPRISE
 	echo "current design branch"
-	git -C ~/src/design-themes symbolic-ref --short HEAD
+	git_branch_version $SRC/design-themes
 	echo "current internal branch"
-	git -C ~/src/internal symbolic-ref --short HEAD
+	git_branch_version $INTERNAL
 	echo "current support-tools branch"
-	git -C ~/src/support-tools symbolic-ref --short HEAD
+	git_branch_version $SRC/support-tools
+}
+
+godb(){
+	#switch repos branch to the version of the given DB
+	go $(so-version $1)
 }
 
 
@@ -85,74 +114,74 @@ golist(){
 so(){ 
     #params  -->   dbname [port] [other_parameters]
     if psql -lqt | cut -d \| -f 1 | grep -qw $1; then
-    	if [ $(so-version $1) != $(git -C ~/src/odoo symbolic-ref --short HEAD) ]
+    	if [ $(so-version $1) != $(git_branch_version $ODOO) ]
     	then
 		echo "version mismatch"
 		echo "db version is :"
 		so-version $1
 		echo "repo version is :"
-		git -C ~/src/odoo symbolic-ref --short HEAD
+		git_branch_version $ODOO
 		return
 	fi
     fi
 
     if [ $# -lt 1 ]
     then
-	echo "At least give me a name :( "
-	echo "so dbname [port] [other_parameters]"
-	return
+		echo "At least give me a name :( "
+		echo "so dbname [port] [other_parameters]"
+		return
     fi
     if [ $# -lt 2 ]
     then
-	so $1 8069
-	return
+		so $1 8069
+		return
     fi
 
-    odoo_bin="~/src/odoo/odoo-bin"
-    odoo_py="~/src/odoo/odoo.py"
-    path_community="--addons-path=~/src/odoo/addons"
-    path_enterprise="--addons-path=~/src/odoo/addons,~/src/enterprise"
+    odoo_bin="$ODOO/odoo-bin"
+    odoo_py="$ODOO/odoo.py"
+    path_community="--addons-path=$ODOO/addons"
+    path_enterprise="--addons-path=$ODOO/addons,$ENTERPRISE"
     params_normal="--db-filter=^$1$ -d $1 --xmlrpc-port=$2"
     params_silent="--db-filter=^$1$ -d $1 --xmlrpc-port=$2 --log-level=warn --log-handler=werkzeug:CRITICAL"
-    if [ -f ~/src/odoo/odoo-bin ]
+    if [ -f $ODOO/odoo-bin ]
     then
-	#version 10 or above
-	if [ "$3" != "silent" ]
-	then
-		eval $odoo_bin $path_enterprise $params_normal $a[3,-1]
-	else
-		eval $odoo_bin $path_enterprise $params_silent $a[4,-1]
-	fi
+		#version 10 or above
+		if [ "$3" != "silent" ]
+		then
+			eval $odoo_bin $path_enterprise $params_normal $a[3,-1]
+		else
+			eval $odoo_bin $path_enterprise $params_silent $a[4,-1]
+		fi
     else
-	#version 9 or below
-	if [ $(git -C ~/src/odoo symbolic-ref --short HEAD) = "8.0" ]
-	then
-	    # V8
-	    if [ "$3" != "silent" ]
-	    then
-		eval $odoo_py $path_community $params_normal $a[3,-1]
-	    else
-		eval $odoo_py $path_community $params_silent $a[4,-1]
-	    fi
-	else
-	    # V9 (probably)
-	    if [ "$3" != "silent" ]
-	    then
-		eval $odoo_py $path_enterprise $params_normal $a[3,-1]
-	    else
-		eval $odoo_py $path_enterprise $params_silent $a[4,-1]
-	    fi
-	fi
+		#version 9 or below
+		if [ $(git_branch_version $ODOO ) = "8.0" ]
+		then
+		    # V8
+		    if [ "$3" != "silent" ]
+		    then
+			eval $odoo_py $path_community $params_normal $a[3,-1]
+		    else
+			eval $odoo_py $path_community $params_silent $a[4,-1]
+		    fi
+		else
+		    # V9 (probably)
+		    if [ "$3" != "silent" ]
+		    then
+			eval $odoo_py $path_enterprise $params_normal $a[3,-1]
+		    else
+			eval $odoo_py $path_enterprise $params_silent $a[4,-1]
+		    fi
+		fi
     fi
+}
+
+so-version(){
+	psql -tAqX -d $1 -c "select replace((regexp_matches(latest_version, '^\d+\.0|^saas~\d+\.\d+|saas~\d+'))[1], '~', '-') from ir_module_module where name='base';"
 }
 
 dropodoo(){
 	# drop the db, also removes it from meta if it was a local saas db
 	drop_local_saas_db $1
-}
-
-so-version(){
-	psql -tAqX -d $1 -c "select replace((regexp_matches(latest_version, '^\d+\.0|^saas~\d+\.\d+|saas~\d+'))[1], '~', '-') from ir_module_module where name='base';"
 }
 
 
@@ -162,11 +191,11 @@ so-version(){
 #local-saas
 
 build_local_saas_db(){
-        if [ -f ~/src/odoo/odoo-bin ]
-        then
-            ~/src/odoo/odoo-bin --addons-path=~/src/internal/default,~/src/internal/trial,~/src/enterprise,~/src/odoo/addons --load=saas_worker,web -d $1 -i saas_trial,project --stop-after-init
+	if [ -f $ODOO/odoo-bin ]
+	then
+		eval $ODOO/odoo-bin --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons --load=saas_worker,web -d $1 -i saas_trial,project --stop-after-init
 	else
-            ~/src/odoo/odoo.py --addons-path=~/src/internal/default,~/src/internal/trial,~/src/enterprise,~/src/odoo/addons --load=saas_worker,web -d $1 -i saas_trial,project --stop-after-init
+		eval $ODOO/odoo.py --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons --load=saas_worker,web -d $1 -i saas_trial,project --stop-after-init
 	fi
 	local db_uuid=$(echo "select value from ir_config_parameter where key = 'database.uuid';" | psql $1 | sed -n '4p' | tr -d '[:space:]')
 	echo $db_uuid
@@ -176,18 +205,17 @@ build_local_saas_db(){
 drop_local_saas_db(){
 	echo "DELETE FROM databases where name = '$1'" | psql meta > /dev/null
 	dropdb $1 && echo "database $1 has been dropped"
-	
 }
 
 start_local_saas_db(){
-	sed -i "s|OAUTH_BASE_URL = 'http://accounts.127.0.0.1.xip.io:8369'|OAUTH_BASE_URL = 'https://accounts.odoo.com' #tempcomment|" ~/src/internal/default/saas_worker/const.py
-	if [ -f ~/src/odoo/odoo-bin ]
-        then
-	    ~/src/odoo/odoo-bin --addons-path=~/src/internal/default,~/src/internal/trial,~/src/enterprise,~/src/odoo/addons --load=saas_worker,web -d $1;
+	sed -i "s|OAUTH_BASE_URL = 'http://accounts.127.0.0.1.xip.io:8369'|OAUTH_BASE_URL = 'https://accounts.odoo.com' #tempcomment|" $INTERNAL/default/saas_worker/const.py
+	if [ -f $ODOO/odoo-bin ]
+	then
+		eval $ODOO/odoo-bin --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons --load=saas_worker,web -d $1;
 	else
-	    ~/src/odoo/odoo.py --addons-path=~/src/internal/default,~/src/internal/trial,~/src/enterprise,~/src/odoo/addons --load=saas_worker,web -d $1;
+	    eval $ODOO/odoo.py --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons --load=saas_worker,web -d $1;
 	fi
-	sed -i "s|OAUTH_BASE_URL = 'https://accounts.odoo.com' #tempcomment|OAUTH_BASE_URL = 'http://accounts.127.0.0.1.xip.io:8369'|" ~/src/internal/default/saas_worker/const.py
+	sed -i "s|OAUTH_BASE_URL = 'https://accounts.odoo.com' #tempcomment|OAUTH_BASE_URL = 'http://accounts.127.0.0.1.xip.io:8369'|" $INTERNAL/default/saas_worker/const.py
 }
 
 list_local_saas(){
@@ -252,7 +280,9 @@ pl(){
 	done
 }
 
-alias ploe="pl | grep oe_support_"
+ploe(){ 
+	pl | grep oe_support_ 
+}
 
 lu(){
 	echo "SELECT id, login from res_users order by id;" | psql $1
@@ -262,9 +292,13 @@ lsu(){
 	echo "SELECT id, login from res_users where id = 1;" | psql $1
 }
 
-luoe(){	lu oe_support_$1 }
+luoe(){	
+	lu oe_support_$1 
+}
 
-lsuoe(){ lsu oe_support_$1 }
+lsuoe(){ 
+	lsu oe_support_$1 
+}
 
 
 
