@@ -224,14 +224,22 @@ drop_local_saas_db(){
 }
 
 start_local_saas_db(){
-	sed -i "s|OAUTH_BASE_URL = 'http://accounts.127.0.0.1.xip.io:8369'|OAUTH_BASE_URL = 'https://accounts.odoo.com' #tempcomment|" $INTERNAL/default/saas_worker/const.py
+	local_saas_config_files_set &&
 	if [ -f $ODOO/odoo-bin ]
 	then
 		eval $ODOO/odoo-bin --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons --load=saas_worker,web -d $1;
 	else
 	    eval $ODOO/odoo.py --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons --load=saas_worker,web -d $1;
 	fi
-	sed -i "s|OAUTH_BASE_URL = 'https://accounts.odoo.com' #tempcomment|OAUTH_BASE_URL = 'http://accounts.127.0.0.1.xip.io:8369'|" $INTERNAL/default/saas_worker/const.py
+	local_saas_config_files_unset
+}
+
+local_saas_config_files_set(){
+	sed -i "s|OAUTH_BASE_URL = 'http://accounts.127.0.0.1.xip.io:8369'|OAUTH_BASE_URL = 'https://accounts.odoo.com' #tempcomment|" $INTERNAL/default/saas_worker/const.py
+}
+
+local_saas_config_files_unset(){
+	sed -i "s|OAUTH_BASE_URL = 'https://accounts.odoo.com' #tempcomment|OAUTH_BASE_URL = 'http://accounts.127.0.0.1.xip.io:8369'|" $INTERNAL/default/saas_worker/const.py	
 }
 
 list_local_saas(){
@@ -245,44 +253,38 @@ list_local_saas(){
 alias lls='list_local_saas'
 
 SaaS_Inj_git10_and_start(){
-	clear && 
-	clear_all_pyc && 
-	cd ~/src/odoo && 
-	git checkout 10.0 && 
-	cd ~/src/enterprise && 
-	git checkout 10.0 && 
-	cd ~/src/odoo && 
-	python2 odoo-bin --addons-path=../internal/default,../internal/trial,../enterprise,addons --load=saas_worker,web --db-filter=SAAS_TEST_Sess_Inject_V10
+	clear
+	go 10.0 &&
+	local_saas_config_files_set &&
+	eval $ODOO/odoo-bin --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons --load=saas_worker,web --db-filter=SAAS_TEST_Sess_Inject_V10 ;
+	local_saas_config_files_unset
 }
 
 SaaS_Inj_git11_and_start(){
-	clear && 
-	clear_all_pyc && 
-	cd ~/src/odoo && 
-	git checkout 11.0 && 
-	cd ~/src/enterprise && 
-	git checkout 11.0 && 
-	cd ~/src/odoo && 
-	python3 odoo-bin --addons-path=../internal/default,../internal/trial,../enterprise,addons --load=saas_worker,web -d SAAS_TEST_Sess_Inject
+	clear 
+	go 11.0 &&
+	local_saas_config_files_set &&
+	eval $ODOO/odoo-bin --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons --load=saas_worker,web -d SAAS_TEST_Sess_Inject ;
+	local_saas_config_files_unset
 }
 
 SaaS_Inj_git9tbe_and_start(){
-	clear && 
-	clear_all_pyc && 
-	cd ~/src/odoo && 
-	git checkout 9.0-session-token-tbe && 
-	cd ~/src/enterprise && 
-	git checkout 9.0 && 
-	cd ~/src/odoo && 
-	python2 odoo.py --addons-path=../internal/default,../internal/trial,../enterprise,addons --load=saas_worker,web --db-filter=SAAS_TEST_Sess_Inject_V9tbe
+	clear
+	clear_pyc &&
+	git -C $ODOO checkout 9.0-session-token-tbe && 
+	git -C $ENTERPRISE checkout 9.0 && 
+	local_saas_config_files_set &&
+	eval $ODOO/odoo.py --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons --load=saas_worker,web --db-filter=SAAS_TEST_Sess_Inject_V9tbe ;
+	local_saas_config_files_unset
 }
 
 SaaS_Inj_git8patched_and_start(){
-	clear && 
+	clear 
 	clear_all_pyc && 
-	cd ~/src/odoo && 
-	git checkout 8.0-local_patch_for_local_saas && 
-	python2 odoo.py -d SAAS_V8 --db-filter=^SAAS_V8$ --addons-path=addons,../internal/default/,../internal/trial/ --load=saas_worker,web
+	git -C $ODOO checkout 8.0-local_patch_for_local_saas && 
+	local_saas_config_files_set &&
+	eval $ODOO/odoo.py -d SAAS_V8 --db-filter=^SAAS_V8$ --addons-path=$ODOO/addons,$INTERNAL/default/,$INTERNAL/trial/ --load=saas_worker,web ;
+	local_saas_config_files_unset
 }
 
 #helpdesk-mig
