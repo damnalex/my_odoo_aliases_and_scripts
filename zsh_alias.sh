@@ -131,39 +131,39 @@ godb(){
 
 #start odoo
 so(){ 
-    #params  -->   dbname [port] [other_parameters]
-    if psql -lqt | cut -d \| -f 1 | grep -qw $1; then #check if the database already exists
-    	if [ $(so-version $1) != $(git_branch_version $ODOO) ]
-    	then
-		echo "version mismatch"
-		echo "db version is :"
-		so-version $1
-		echo "repo version is :"
-		git_branch_version $ODOO
+	#params  -->   dbname [port] [other_parameters]
+	if psql -lqt | cut -d \| -f 1 | grep -qw $1; then #check if the database already exists
+		if [ $(so-version $1) != $(git_branch_version $ODOO) ]
+		then
+			echo "version mismatch"
+			echo "db version is :"
+			so-version $1
+			echo "repo version is :"
+			git_branch_version $ODOO
+			return
+		fi
+	fi
+
+	if [ $# -lt 1 ]
+	then
+		echo "At least give me a name :( "
+		echo "so dbname [port] [other_parameters]"
 		return
 	fi
-    fi
+	if [ $# -lt 2 ]
+	then
+		so $1 8069
+		return
+	fi
 
-    if [ $# -lt 1 ]
-    then
-	echo "At least give me a name :( "
-	echo "so dbname [port] [other_parameters]"
-	return
-    fi
-    if [ $# -lt 2 ]
-    then
-	so $1 8069
-	return
-    fi
-
-    odoo_bin="$ODOO/odoo-bin"
-    odoo_py="$ODOO/odoo.py"
-    path_community="--addons-path=$ODOO/addons"
-    path_enterprise="--addons-path=$ENTERPRISE,$ODOO/addons"
-    params_normal="--db-filter=^$1$ -d $1 --xmlrpc-port=$2"
-    params_silent="--db-filter=^$1$ -d $1 --xmlrpc-port=$2 --log-level=warn --log-handler=werkzeug:CRITICAL"
-    if [ -f $ODOO/odoo-bin ]
-    then
+	odoo_bin="$ODOO/odoo-bin"
+	odoo_py="$ODOO/odoo.py"
+	path_community="--addons-path=$ODOO/addons"
+	path_enterprise="--addons-path=$ENTERPRISE,$ODOO/addons"
+	params_normal="--db-filter=^$1$ -d $1 --xmlrpc-port=$2"
+	params_silent="--db-filter=^$1$ -d $1 --xmlrpc-port=$2 --log-level=warn --log-handler=werkzeug:CRITICAL"
+	if [ -f $ODOO/odoo-bin ]
+	then
 		#version 10 or above
 		if [ "$3" != "silent" ]
 		then
@@ -171,7 +171,7 @@ so(){
 		else
 			eval $odoo_bin $path_enterprise $params_silent $@[4,-1]
 		fi
-    else
+	else
 		#version 9 or below
 		if [ $(git_branch_version $ODOO ) = "8.0" ]
 		then
@@ -191,7 +191,7 @@ so(){
 				eval $odoo_py $path_enterprise $params_silent $@[4,-1]
 		    fi
 		fi
-    fi
+	fi
 }
 
 so-version(){
@@ -444,10 +444,10 @@ luoe(){
 
 #port killer
 listport () {
-    lsof -i tcp:$1 
+	lsof -i tcp:$1 
 }
 killport () {
-    listport $1 | sed -n '2p' | awk '{print $2}' |  xargs kill -9 
+	listport $1 | sed -n '2p' | awk '{print $2}' |  xargs kill -9 
 }
 
 
