@@ -60,7 +60,8 @@ eza(){
 }
 
 geza(){
-	gedit $AP/zsh_alias.sh &
+	gedit $AP/zsh_alias.sh &&
+	reload_zshrc
 }
 
 ###########################################################
