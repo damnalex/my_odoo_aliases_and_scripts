@@ -55,8 +55,12 @@ DEFAULT_USER='odoo'
 alias e="vim"
 
 eza(){
-	e $AP/zsh_alias && 
+	e $AP/zsh_alias.sh && 
 	reload_zshrc
+}
+
+geza(){
+	gedit $AP/zsh_alias.sh &
 }
 
 ###########################################################
