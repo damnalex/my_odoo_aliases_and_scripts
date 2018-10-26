@@ -3,10 +3,10 @@
 ###########################################################
 
 export SRC="/home/odoo/src"
-export AP="/home/odoo/Documents/my_scripts/aliases_and_script_repo" #alias path
 export ODOO="$SRC/odoo"
 export ENTERPRISE="$SRC/enterprise"
 export INTERNAL="$SRC/internal"
+export AP="/home/odoo/Documents/my_scripts/aliases_and_script_repo" #alias path
 
 ###########################################################
 ############  things to make my system work  ##############
@@ -83,12 +83,6 @@ go(){ #switch branch for all odoo repos
 	git -C $SRC/design-themes checkout $1 
 }
 
-gopull(){ #pull all odoo repos
-	git -C $ODOO pull --rebase &&
-    	git -C $ENTERPRISE pull --rebase &&
-	git -C $SRC/design-themes pull --rebase 
-}
-
 git_update_and_clean(){ # fetch pull and clean a bit a given repo
 	git -C $1 fetch --all &&
 	git -C $1 pull --rebase &&
@@ -96,6 +90,10 @@ git_update_and_clean(){ # fetch pull and clean a bit a given repo
 }
 
 go_update_and_clean(){
+	if [ $# -eq 1 ]
+	then
+		go $1
+	fi
 	git_update_and_clean $ODOO &&
 	git_update_and_clean $ENTERPRISE &&
 	git_update_and_clean $SRC/design-themes &&
@@ -157,7 +155,7 @@ so(){
     odoo_bin="$ODOO/odoo-bin"
     odoo_py="$ODOO/odoo.py"
     path_community="--addons-path=$ODOO/addons"
-    path_enterprise="--addons-path=$ODOO/addons,$ENTERPRISE"
+    path_enterprise="--addons-path=$ENTERPRISE,$ODOO/addons"
     params_normal="--db-filter=^$1$ -d $1 --xmlrpc-port=$2"
     params_silent="--db-filter=^$1$ -d $1 --xmlrpc-port=$2 --log-level=warn --log-handler=werkzeug:CRITICAL"
     if [ -f $ODOO/odoo-bin ]
@@ -218,7 +216,24 @@ sou(){
 
 dropodoo(){
 	# drop the db, also removes it from meta if it was a local saas db
-	drop_local_saas_db $1
+	if [ $# -lt 1 ]
+	then
+		echo "requires the name(s) of the DB(s) to drop"
+		echo "dropodoo DB_Name [Other_DB_name* ]"
+		return
+	fi
+	if [ $# -eq 1 ]
+	then
+		drop_local_saas_db $1 2> /dev/null || echo "failed to delete db $1, maybe it doesn't exist ?"
+		return 
+	fi
+	
+	# drop multiple DB at the same time
+	for db_name in $@[1,-1]
+	do
+		dropodoo $db_name
+	done
+	return
 }
 
 
@@ -228,13 +243,14 @@ dropodoo(){
 #local-saas
 
 build_local_saas_db(){
+	godb $1
 	if [ -f $ODOO/odoo-bin ]
 	then
 		eval $ODOO/odoo-bin --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons --load=saas_worker,web -d $1 -i saas_trial,project --stop-after-init
 	else
 		eval $ODOO/odoo.py --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons --load=saas_worker,web -d $1 -i saas_trial,project --stop-after-init
 	fi
-	local db_uuid=$(echo "SELECT value FROM ir_config_parameter WHERE key = 'database.uuid';" | psql $1 | sed -n '4p' | tr -d '[:space:]')
+	local db_uuid=$(echo "SELECT value FROM ir_config_parameter WHERE key = 'database.uuid';" | psql -d $1 -q | sed -n '3p' | tr -d '[:space:]')
 	echo $db_uuid
 	echo "INSERT INTO databases (name, uuid, port, mode, extra_apps, create_date, expire_date, last_cnx_date, cron_round, cron_time, email_daily_limit, email_daily_count, email_total_count, print_waiting_counter, print_counter, print_counter_limit) VALUES ('$1', '$db_uuid', 8069, 'trial', true, '2018-05-23 09:33:08.811069', '2040-02-22 23:59:59', '2018-06-28 13:44:03.980693', 0, '2018-09-21 00:40:28', 30, 10, 0, 0, 0, 10)" | psql meta
 }
@@ -249,7 +265,7 @@ start_local_saas_db(){
 	local_saas_config_files_set &&
 	if [ -f $ODOO/odoo-bin ]
 	then
-		eval $ODOO/odoo-bin --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons,$SRC/design-themes --load=saas_worker,web -d $1;
+		eval $ODOO/odoo-bin --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons,$SRC/design-themes --load=saas_worker,web -d $1 --db-filter=^$1$;
 	else
 		eval $ODOO/odoo.py --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons,$SRC/design-themes --load=saas_worker,web -d $1;
 	fi
@@ -271,7 +287,6 @@ list_local_saas(){
 	echo "to create a new one --> build_local_saas_db db-name"
 	echo "to drop --> drop_local_saas_db db-name"
 }
-
 alias lls='list_local_saas'
 
 SaaS_Inj_git10_and_start(){
@@ -315,25 +330,6 @@ SaaS_Inj_git8patched_and_start(){
 
 
 #helpdesk-mig
-helpdesk113_drop_build_start_db(){
-	dropdb helpdesk113 && 
-	createdb helpdesk113 && 
-	psql helpdesk113 < /home/odoo/Documents/mig/helpdesk113.dump.sql && 
-	cd ~/src/odoo && 
-	git checkout saas-11.3 && 
-	cd ~/src/enterprise && 
-	git checkout saas-11.3 && 
-	cd && 
-	/home/odoo/src/odoo/odoo-bin --addons-path=/home/odoo/src/internal/default,/home/odoo/src/internal/private,/home/odoo/src/internal/test,/home/odoo/src/enterprise,/home/odoo/src/odoo/addons --load=saas_worker,web -d helpdesk113
-}
-
-helpdesk113_migrate(){
-	date +%s.%N
-	# psql helpdesk113 < /home/odoo/Documents/mig/whe-migration_script_more_readable.sql
-	psql helpdesk113 < /home/odoo/Documents/mig/migration/Migration_from_project.task_to_helpdesk.ticket.sql
-	date +%s.%N
-}
-
 helpdesk114_drop_build_start_db(){
 	dropdb helpdesk114 && 
 	createdb helpdesk114 && 
@@ -408,8 +404,13 @@ poe(){
 
 pl(){
 	#echo "select t1.datname as db_name, pg_size_pretty(pg_database_size(t1.datname)) as db_size from pg_database t1 order by t1.datname;" | psql postgres
+	local where_clause=" "
+	if [ $# -eq 1 ] 
+	then
+		where_clause="where t1.datname like '%$1%'"
+	fi
 	local db_name
-	for db_name in $(psql -tAqX -d postgres -c "SELECT t1.datname AS db_name FROM pg_database t1 ORDER BY LOWER(t1.datname);")
+	for db_name in $(psql -tAqX -d postgres -c "SELECT t1.datname AS db_name FROM pg_database t1 $where_clause ORDER BY LOWER(t1.datname);")
 	do
 		local db_size=$(psql -tAqX -d $db_name -c "SELECT pg_size_pretty(pg_database_size('$db_name'));" 2> /dev/null)
 		local db_version=$(so-version $db_name 2> /dev/null)
@@ -420,24 +421,17 @@ pl(){
 	done
 }
 
-ploe(){ 
-	pl | grep oe_support_ 
+ploe(){
+	# the grep is not necessary, but it makes the base name of the DBs more readable	
+	pl oe_support_ | grep oe_support_ 
 }
 
 lu(){
 	psql -d $1 -c "SELECT id, login FROM res_users ORDER BY id;"
 }
 
-lsu(){
-	psql -d $1 -c "SELECT id, login FROM res_users WHERE id = 1;"
-}
-
 luoe(){	
 	lu oe_support_$1 
-}
-
-lsuoe(){ 
-	lsu oe_support_$1 
 }
 
 
@@ -451,5 +445,23 @@ listport () {
 killport () {
     listport $1 | sed -n '2p' | awk '{print $2}' |  xargs kill -9 
 }
-alias kp="killport"
+
+
+#history analytics
+history_count(){
+	history -n | cut -d' ' -f1 | sort | uniq -c | trim | sort -g
+}
+trim(){
+	awk '{$1=$1};1'
+}
+
+
+
+
+
+
+##############################################
+#############""  tmp aliases
+#############################################
+
 
