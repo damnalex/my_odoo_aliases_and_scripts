@@ -124,10 +124,18 @@ golist(){
 
 godb(){
 	#switch repos branch to the version of the given DB
-	go $(so-version $1)
+	if psql -lqt | cut -d \| -f 1 | grep -qw $1; then #check if the database already exists
+		go $(so-version $1)
+	else
+		echo "DB $1 does not exist"
+	fi
 }
 
-
+goso(){
+	# switch repos to the versiojn of given db and starts it
+	godb $1 &&
+	so $1
+}
 
 
 #start odoo
@@ -149,6 +157,7 @@ so(){
 	then
 		echo "At least give me a name :( "
 		echo "so dbname [port] [other_parameters]"
+		echo "note : port is mandatory if you want to add other parameters"
 		return
 	fi
 	if [ $# -lt 2 ]
@@ -160,7 +169,7 @@ so(){
 	odoo_bin="$ODOO/odoo-bin"
 	odoo_py="$ODOO/odoo.py"
 	path_community="--addons-path=$ODOO/addons"
-	path_enterprise="--addons-path=$ENTERPRISE,$ODOO/addons"
+	path_enterprise="--addons-path=$ENTERPRISE,$ODOO/addons,$SRC/design-themes"
 	params_normal="--db-filter=^$1$ -d $1 --xmlrpc-port=$2"
 	params_silent="--db-filter=^$1$ -d $1 --xmlrpc-port=$2 --log-level=warn --log-handler=werkzeug:CRITICAL"
 	if [ -f $ODOO/odoo-bin ]
@@ -229,6 +238,7 @@ dropodoo(){
 	fi
 	if [ $# -eq 1 ]
 	then
+		psql -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$1';" -q > /dev/null 
 		drop_local_saas_db $1 2> /dev/null || echo "failed to delete db $1, maybe it doesn't exist ?"
 		return 
 	fi
@@ -242,6 +252,15 @@ dropodoo(){
 }
 
 
+droplike(){
+	local dbs_list=$(list_db_like $1 | tr '\n' ' ')
+	if [ -z $dbs_list ]
+	then
+		echo "no DB matching the given pattern were found"
+	else
+		eval dropodoo $dbs_list
+	fi
+}
 
 
 
@@ -255,7 +274,7 @@ build_local_saas_db(){
 	else
 		eval $ODOO/odoo.py --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons --load=saas_worker,web -d $1 -i saas_trial,project --stop-after-init
 	fi
-	local db_uuid=$(echo "SELECT value FROM ir_config_parameter WHERE key = 'database.uuid';" | psql -d $1 -q | sed -n '3p' | tr -d '[:space:]')
+	local db_uuid=$(psql -tAqX -d $1 -c "SELECT value FROM ir_config_parameter WHERE key = 'database.uuid';")
 	echo $db_uuid
 	echo "INSERT INTO databases (name, uuid, port, mode, extra_apps, create_date, expire_date, last_cnx_date, cron_round, cron_time, email_daily_limit, email_daily_count, email_total_count, print_waiting_counter, print_counter, print_counter_limit) VALUES ('$1', '$db_uuid', 8069, 'trial', true, '2018-05-23 09:33:08.811069', '2040-02-22 23:59:59', '2018-06-28 13:44:03.980693', 0, '2018-09-21 00:40:28', 30, 10, 0, 0, 0, 10)" | psql meta
 }
@@ -287,7 +306,7 @@ local_saas_config_files_unset(){
 
 list_local_saas(){
 	echo "Below, the list of local saas DBs"
-	psql -d meta -c "SELECT name, id FROM databases ORDER BY id;"
+	psql -d meta -c "SELECT name, id FROM databases ORDER BY id;" -q
 	echo "to start --> start_local_saas_db db-name"
 	echo "to create a new one --> build_local_saas_db db-name"
 	echo "to drop --> drop_local_saas_db db-name"
@@ -432,14 +451,16 @@ ploe(){
 }
 
 lu(){
-	psql -d $1 -c "SELECT id, login FROM res_users ORDER BY id;"
+	psql -d $1 -c "SELECT id, login FROM res_users ORDER BY id;" -q
 }
 
 luoe(){	
 	lu oe_support_$1 
 }
 
-
+list_db_like(){
+	psql -tAqX -d postgres -c "SELECT t1.datname AS db_name FROM pg_database t1 WHERE t1.datname like '$1' ORDER BY LOWER(t1.datname);"
+}
 
 
 
