@@ -177,9 +177,9 @@ so(){
 		#version 10 or above
 		if [ "$3" != "silent" ]
 		then
-			eval $odoo_bin $path_enterprise $params_normal $@[3,-1]
+			eval ptvsd $odoo_bin $path_enterprise $params_normal $@[3,-1]
 		else
-			eval $odoo_bin $path_enterprise $params_silent $@[4,-1]
+			eval ptvsd $odoo_bin $path_enterprise $params_silent $@[4,-1]
 		fi
 	else
 		#version 9 or below
@@ -188,17 +188,17 @@ so(){
 		    # V8
 		    if [ "$3" != "silent" ]
 		    then
-				eval $odoo_py $path_community $params_normal $@[3,-1]
+				eval ptvsd $odoo_py $path_community $params_normal $@[3,-1]
 		    else
-				eval $odoo_py $path_community $params_silent $@[4,-1]
+				eval ptvsd $odoo_py $path_community $params_silent $@[4,-1]
 		    fi
 		else
 		    # V9 (probably)
 		    if [ "$3" != "silent" ]
 		    then
-				eval $odoo_py $path_enterprise $params_normal $@[3,-1]
+				eval ptvsd $odoo_py $path_enterprise $params_normal $@[3,-1]
 		    else
-				eval $odoo_py $path_enterprise $params_silent $@[4,-1]
+				eval ptvsd $odoo_py $path_enterprise $params_silent $@[4,-1]
 		    fi
 		fi
 	fi
@@ -289,9 +289,9 @@ start_local_saas_db(){
 	local_saas_config_files_set &&
 	if [ -f $ODOO/odoo-bin ]
 	then
-		eval $ODOO/odoo-bin --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons,$SRC/design-themes --load=saas_worker,web -d $1 --db-filter=^$1$;
+		eval ptvsd $ODOO/odoo-bin --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons,$SRC/design-themes --load=saas_worker,web -d $1 --db-filter=^$1$;
 	else
-		eval $ODOO/odoo.py --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons,$SRC/design-themes --load=saas_worker,web -d $1;
+		eval ptvsd $ODOO/odoo.py --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons,$SRC/design-themes --load=saas_worker,web -d $1;
 	fi
 	local_saas_config_files_unset
 }
@@ -484,7 +484,10 @@ trim(){
 
 
 
-
+#start python scripts with the vscode python debugger
+ptvsd(){
+	eval python -m ptvsd --host localhost --port 5678 $@[1,-1] 
+}
 
 ##############################################
 #############""  tmp aliases
