@@ -177,9 +177,9 @@ so(){
 		#version 10 or above
 		if [ "$3" != "silent" ]
 		then
-			eval ptvsd $odoo_bin $path_enterprise $params_normal $@[3,-1]
+			eval $ptvsd_T $odoo_bin $path_enterprise $params_normal $@[3,-1]
 		else
-			eval ptvsd $odoo_bin $path_enterprise $params_silent $@[4,-1]
+			eval $ptvsd_T $odoo_bin $path_enterprise $params_silent $@[4,-1]
 		fi
 	else
 		#version 9 or below
@@ -188,17 +188,17 @@ so(){
 		    # V8
 		    if [ "$3" != "silent" ]
 		    then
-				eval ptvsd $odoo_py $path_community $params_normal $@[3,-1]
+				eval $ptvsd_T $odoo_py $path_community $params_normal $@[3,-1]
 		    else
-				eval ptvsd $odoo_py $path_community $params_silent $@[4,-1]
+				eval $ptvsd_T $odoo_py $path_community $params_silent $@[4,-1]
 		    fi
 		else
 		    # V9 (probably)
 		    if [ "$3" != "silent" ]
 		    then
-				eval ptvsd $odoo_py $path_enterprise $params_normal $@[3,-1]
+				eval $ptvsd_T $odoo_py $path_enterprise $params_normal $@[3,-1]
 		    else
-				eval ptvsd $odoo_py $path_enterprise $params_silent $@[4,-1]
+				eval $ptvsd_T $odoo_py $path_enterprise $params_silent $@[4,-1]
 		    fi
 		fi
 	fi
@@ -278,6 +278,7 @@ build_local_saas_db(){
 	echo $db_uuid
 	echo "INSERT INTO databases (name, uuid, port, mode, extra_apps, create_date, expire_date, last_cnx_date, cron_round, cron_time, email_daily_limit, email_daily_count, email_total_count, print_waiting_counter, print_counter, print_counter_limit) VALUES ('$1', '$db_uuid', 8069, 'trial', true, '2018-05-23 09:33:08.811069', '2040-02-22 23:59:59', '2018-06-28 13:44:03.980693', 0, '2018-09-21 00:40:28', 30, 10, 0, 0, 0, 10)" | psql meta
 }
+alias bloc='build_local_saas_db'
 
 drop_local_saas_db(){
 	echo "DELETE FROM databases WHERE name = '$1'" | psql meta > /dev/null
@@ -289,12 +290,13 @@ start_local_saas_db(){
 	local_saas_config_files_set &&
 	if [ -f $ODOO/odoo-bin ]
 	then
-		eval ptvsd $ODOO/odoo-bin --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons,$SRC/design-themes --load=saas_worker,web -d $1 --db-filter=^$1$;
+		eval $ptvsd_T $ODOO/odoo-bin --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons,$SRC/design-themes --load=saas_worker,web -d $1 --db-filter=^$1$;
 	else
-		eval ptvsd $ODOO/odoo.py --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons,$SRC/design-themes --load=saas_worker,web -d $1;
+		eval $ptvsd_T $ODOO/odoo.py --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons,$SRC/design-themes --load=saas_worker,web -d $1;
 	fi
 	local_saas_config_files_unset
 }
+alias sloc='start_local_saas_db'
 
 local_saas_config_files_set(){
 	sed -i "s|OAUTH_BASE_URL = 'http://accounts.127.0.0.1.xip.io:8369'|OAUTH_BASE_URL = 'https://accounts.odoo.com' #tempcomment|" $INTERNAL/default/saas_worker/const.py
@@ -475,7 +477,7 @@ killport () {
 
 #history analytics
 history_count(){
-	history -n | cut -d' ' -f1 | sort | uniq -c | trim | sort -g
+	history -n | cut -d' ' -f1 | sort | uniq -c | trim | sort -g | tac | less
 }
 trim(){
 	awk '{$1=$1};1'
@@ -488,6 +490,27 @@ trim(){
 ptvsd(){
 	eval python -m ptvsd --host localhost --port 5678 $@[1,-1] 
 }
+
+export ptvsd_T=" "
+ptvsd_toggle(){
+	if [ $ptvsd_T = " " ]; then
+		export ptvsd_T="python -m ptvsd --host localhost --port 5678"
+		echo "ptvsd_T activated"
+	else
+		export ptvsd_T=" "
+		echo "ptvsd_T deactivated"
+	fi
+}
+
+# ptvsd_odoo_set(){
+# 	# add ptvsd code to odoo
+# 	# code to add :    import ptvsd; ptvsd.enable_attach(address=('localhost', 5678), redirect_output=True);
+# }
+# 
+# ptvsd_odoo_unset(){
+# 	# remove ptvsd code from odoo
+# 	# code to remove :    import ptvsd; ptvsd.enable_attach(address=('localhost', 5678), redirect_output=True);
+# }
 
 ##############################################
 #############""  tmp aliases
