@@ -492,18 +492,43 @@ ptvsd_toggle(){
 	fi
 }
 
-# ptvsd_odoo_set(){
-# 	# add ptvsd code to odoo
-# 	# code to add :    import ptvsd; ptvsd.enable_attach(address=('localhost', 5678), redirect_output=True);
-# }
-# 
-# ptvsd_odoo_unset(){
-# 	# remove ptvsd code from odoo
-# 	# code to remove :    import ptvsd; ptvsd.enable_attach(address=('localhost', 5678), redirect_output=True);
-# }
+ptvsd_odoo(){
+	# wrapper alias adding ptvsd import to odoo code
+	# executing wrapped command
+	# then removing import code from odoo code
+	ptvsd_odoo_set &&
+	eval $@[1,-1] ; 
+	ptvsd_odoo_unset
+}
+
+ptvsd_odoo_set(){
+	# add ptvsd code to odoo
+	# code to add :    import ptvsd; ptvsd.enable_attach(address=('localhost', 5678), redirect_output=True);
+	if [ -f $ODOO/odoo-bin ]
+	then
+		# v10 and after
+		sed -i "s|import odoo|import odoo;import ptvsd; ptvsd.enable_attach(address=('localhost', 5678), redirect_output=True);|" $ODOO/odoo-bin
+	else
+		# v9 and before
+		sed -i "s|import os|import os;import ptvsd; ptvsd.enable_attach(address=('localhost', 5678), redirect_output=True);|" $ODOO/odoo.py
+	fi
+}
+
+ptvsd_odoo_unset(){
+	# remove ptvsd code from odoo
+	# code to remove :    import ptvsd; ptvsd.enable_attach(address=('localhost', 5678), redirect_output=True);
+	if [ -f $ODOO/odoo-bin ]
+	then
+		# v10 and after
+		sed -i "s|import odoo;import ptvsd; ptvsd.enable_attach(address=('localhost', 5678), redirect_output=True);|import odoo|" $ODOO/odoo-bin
+	else
+		# v9 and before
+		sed -i "s|import os;import ptvsd; ptvsd.enable_attach(address=('localhost', 5678), redirect_output=True);|import os|" $ODOO/odoo.py
+	fi
+}
 
 ##############################################
-#############""  tmp aliases
-#############################################
+###############  tmp aliases #################
+##############################################
 
 
