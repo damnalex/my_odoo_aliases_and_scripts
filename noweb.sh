@@ -13,6 +13,7 @@
 # #!/bin/bash'
 # iptables -I OUTPUT 1 -m owner --gid-owner no_web -p tcp --dport 80 -j DROP
 # iptables -I OUTPUT 1 -m owner --gid-owner no_web -p tcp --dport 443 -j DROP
+# don't forget to make it executable
 
 # or execute the following :
 #
@@ -26,4 +27,5 @@
 noweb(){
 	sg no_web $@[1,-1] 
 }
+alias ni='noweb'
 
