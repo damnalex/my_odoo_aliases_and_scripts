@@ -483,12 +483,22 @@ ptvsd(){
 
 export ptvsd_T=" "
 ptvsd_toggle(){
-	if [ $ptvsd_T = " " ]; then
+	if [ "$1" = "activate" ]; then
 		export ptvsd_T="python -m ptvsd --host localhost --port 5678"
 		echo "ptvsd_T activated"
+		return
+	elif [ "$1" = "deactivate" ]; then
+		export ptvsd_T=" "
+		echo "ptvsd_T deactivated"
+		return
+	elif [ "$ptvsd_T" = " " ]; then
+		export ptvsd_T="python -m ptvsd --host localhost --port 5678"
+		echo "ptvsd_T activated"
+		return
 	else
 		export ptvsd_T=" "
 		echo "ptvsd_T deactivated"
+		return
 	fi
 }
 
