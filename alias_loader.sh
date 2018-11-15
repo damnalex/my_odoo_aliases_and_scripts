@@ -11,4 +11,4 @@ export AP="/home/odoo/Documents/my_scripts/aliases_and_script_repo" #alias path
 
 
 source $AP/zsh_alias.sh
-source $AP/noweb.sh
+source $AP/odoo_alias.sh
