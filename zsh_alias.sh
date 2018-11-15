@@ -102,14 +102,19 @@ git_branch_version(){
 golist(){
 	echo "current community branch"
 	git_branch_version $ODOO
+	git -C $ODOO status --short
 	echo "current enterprise branch"
 	git_branch_version $ENTERPRISE
+	git -C $ENTERPRISE status --short
 	echo "current design branch"
 	git_branch_version $SRC/design-themes
+	git -C $SRC/design-themes status --short
 	echo "current internal branch"
 	git_branch_version $INTERNAL
+	git -C $INTERNAL status --short
 	echo "current support-tools branch"
 	git_branch_version $SRC/support-tools
+	git -C $SRC/support-tools status --short
 }
 
 godb(){
