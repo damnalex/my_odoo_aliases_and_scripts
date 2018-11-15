@@ -48,14 +48,49 @@ DEFAULT_USER='odoo'
 alias e="vim"
 
 eza(){
-	e $AP/odoo_alias.sh && 
-	reload_zshrc
+	era vim $1
 }
 
 geza(){
-	gedit $AP/zsh_alias.sh &&
-	reload_zshrc
+	era gedit $1
 }
+
+era(){
+	# edit and reload alias
+	# era [vim|gedit] the_alias_file_to_edit
+	local file_to_load=" "
+	case $2 in
+		zsh)
+			file_to_load="zsh_alias.sh"
+			;;
+		loader)
+			file_to_load="alias_loader.sh"
+			;;
+		odoo)
+			file_to_load="odoo_alias.sh"
+			;;
+		*)
+			#default
+			file_to_load="odoo_alias.sh"
+			;;
+	esac
+
+	if [ "$1" = "vim" ]
+	then
+		e $AP/$file_to_load &&
+		reload_zshrc
+	else
+		gedit $AP/$file_to_load &&
+		reload_zshrc
+	fi
+}
+
+
+
+
+
+
+
 
 #history analytics
 history_count(){
