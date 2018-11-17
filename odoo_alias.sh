@@ -178,6 +178,11 @@ dropodoo(){
 		echo "dropodoo DB_Name [Other_DB_name* ]"
 		return
 	fi
+    if [[ $1 =~ $(echo ^\($(paste -sd'|' $AP/drop_protected_dbs.txt)\)$) ]]; then 
+        echo "db $1 is drop protected --> aborting"
+        echo "to override protection, modify protection file at $AP/drop_protected_dbs.txt"
+        return
+    fi
 	if [ $# -eq 1 ]
 	then
 		psql -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$1';" -q > /dev/null 
