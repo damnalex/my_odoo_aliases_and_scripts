@@ -69,6 +69,12 @@ era(){
         odoo)
             file_to_load="odoo_alias.sh"
             ;;
+        --help)
+            echo "zsh_alias.sh --> (g)eza zsh"
+            echo "alias_loader.sh --> (g)eza loader"
+            echo "odoo_alias.sh --> (g)eza odoo   or   (g)eza"
+            return
+            ;;
         *)
             #default
             file_to_load="odoo_alias.sh"
