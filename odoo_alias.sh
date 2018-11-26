@@ -83,6 +83,14 @@ goso(){
 #start odoo
 so(){ 
     #params  -->   dbname [port] [other_parameters]
+    if [ $# -lt 1 ]
+    then
+        echo "At least give me a name :( "
+        echo "so dbname [port] [other_parameters]"
+        echo "note : port is mandatory if you want to add other parameters"
+        return
+    fi
+
     if psql -lqt | cut -d \| -f 1 | grep -qw $1; then #check if the database already exists
         if [ $(so-version $1) != $(git_branch_version $ODOO) ]
         then
@@ -95,13 +103,6 @@ so(){
         fi
     fi
 
-    if [ $# -lt 1 ]
-    then
-        echo "At least give me a name :( "
-        echo "so dbname [port] [other_parameters]"
-        echo "note : port is mandatory if you want to add other parameters"
-        return
-    fi
     if [ $# -lt 2 ]
     then
         so $1 8069
