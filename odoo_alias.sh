@@ -359,14 +359,15 @@ helpdesk12_update_dump(){
 
 
 
-
-
 #start mailcatcher
 smailcatcher(){
     echo 'rvm use 2.3 && mailcatcher' | /bin/bash --login
 }
 
 
+ngrok(){
+    eval /home/odoo/Documents/programs/ngrok $@[1,-1]
+}
 
 
 
