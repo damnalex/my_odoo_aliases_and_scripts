@@ -171,6 +171,11 @@ sou(){
     soiu u $1 $@[2,-1]
 }
 
+oes(){
+    #start odoo support
+    eval $SRC/support-tools/oe-support.py $@[1,-1]
+}
+
 dropodoo(){
     # drop the db, also removes it from meta if it was a local saas db
     if [ $# -lt 1 ]
