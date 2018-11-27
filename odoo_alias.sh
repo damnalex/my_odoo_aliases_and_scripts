@@ -407,7 +407,7 @@ ploe(){
 }
 
 lu(){
-    psql -d $1 -c "SELECT id, login FROM res_users ORDER BY id;" -q
+    psql -d $1 -c "SELECT id, login FROM res_users where active = true ORDER BY id;" -q
 }
 
 luoe(){ 
