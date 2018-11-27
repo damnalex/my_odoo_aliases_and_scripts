@@ -43,8 +43,6 @@ alias ni='noweb'
 #############  zsh stuffs  ##################
 #############################################
 
-DEFAULT_USER='odoo'
-
 alias e="vim"
 
 eza(){

@@ -2,12 +2,11 @@
 ########################  PATHS  ##########################
 ###########################################################
 
-export SRC="/home/odoo/src"
+export SRC="$HOME/src"
 export ODOO="$SRC/odoo"
 export ENTERPRISE="$SRC/enterprise"
 export INTERNAL="$SRC/internal"
-export AP="/home/odoo/Documents/my_scripts/aliases_and_script_repo" #alias path
-
+export AP=$(dirname $0)
 
 
 source $AP/zsh_alias.sh
