@@ -46,21 +46,28 @@ git_branch_version(){
     git -C $1 symbolic-ref --short HEAD
 }
 
+git_branch_info(){
+    local branch_version="$(git_branch_version $1)"
+    local branch_late=$(git -C $1 cherry $branch_version origin/$branch_version | wc -l)
+    local branch_ahead=$(git -C $1 cherry origin/$branch_version $branch_version | wc -l)
+    echo "$branch_version        ↓ $branch_late ↑ $branch_ahead"
+}
+
 golist(){
     echo "current community branch"
-    git_branch_version $ODOO
+    git_branch_info $ODOO
     git -C $ODOO status --short
     echo "\ncurrent enterprise branch"
-    git_branch_version $ENTERPRISE
+    git_branch_info $ENTERPRISE
     git -C $ENTERPRISE status --short
     echo "\ncurrent design branch"
-    git_branch_version $SRC/design-themes
+    git_branch_info $SRC/design-themes
     git -C $SRC/design-themes status --short
     echo "\ncurrent internal branch"
-    git_branch_version $INTERNAL
+    git_branch_info $INTERNAL
     git -C $INTERNAL status --short
     echo "\ncurrent support-tools branch"
-    git_branch_version $SRC/support-tools
+    git_branch_info $SRC/support-tools
     git -C $SRC/support-tools status --short
 }
 
