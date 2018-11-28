@@ -104,3 +104,13 @@ trim(){
     awk '{$1=$1};1'
 }
 
+
+#########################################
+######## system specific stuffs #########
+#########################################
+
+if [ "$OSTYPE" = "darwin18.0" ]
+then
+    export LC_ALL=en_US.UTF-8
+    export LANG=en_US.UTF-8
+fi

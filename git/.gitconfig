@@ -1,0 +1,17 @@
+[user]
+	name = MOENS Alexandre
+	email = mao@odoo.com
+[core]
+	excludesfile = /home/odoo/.gitignore_global
+	editor = vim
+[alias]
+	co = checkout
+	st = status --short
+	hist = log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short
+	ci = commit
+	a = add
+[filter "lfs"]
+    clean = git-lfs clean -- %f
+    smudge = git-lfs smudge -- %f
+    process = git-lfs filter-process
+    required = true
