@@ -48,8 +48,8 @@ git_branch_version(){
 
 git_branch_info(){
     local branch_version="$(git_branch_version $1)"
-    local branch_late=$(git -C $1 cherry $branch_version origin/$branch_version | wc -l)
-    local branch_ahead=$(git -C $1 cherry origin/$branch_version $branch_version | wc -l)
+    local branch_late=$(git -C $1 cherry $branch_version origin/$branch_version | wc -l | trim)
+    local branch_ahead=$(git -C $1 cherry origin/$branch_version $branch_version | wc -l | trim)
     echo "$branch_version \t\t↓ $branch_late ↑ $branch_ahead"
 }
 
