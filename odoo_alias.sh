@@ -259,11 +259,11 @@ start_local_saas_db(){
 alias sloc='start_local_saas_db'
 
 local_saas_config_files_set(){
-    sed -i "s|OAUTH_BASE_URL = 'http://accounts.127.0.0.1.xip.io:8369'|OAUTH_BASE_URL = 'https://accounts.odoo.com' #tempcomment|" $INTERNAL/default/saas_worker/const.py
+    sed -i "" "s|OAUTH_BASE_URL = 'http://accounts.127.0.0.1.xip.io:8369'|OAUTH_BASE_URL = 'https://accounts.odoo.com' #tempcomment|" $INTERNAL/default/saas_worker/const.py
 }
 
 local_saas_config_files_unset(){
-    sed -i "s|OAUTH_BASE_URL = 'https://accounts.odoo.com' #tempcomment|OAUTH_BASE_URL = 'http://accounts.127.0.0.1.xip.io:8369'|" $INTERNAL/default/saas_worker/const.py   
+    sed -i "" "s|OAUTH_BASE_URL = 'https://accounts.odoo.com' #tempcomment|OAUTH_BASE_URL = 'http://accounts.127.0.0.1.xip.io:8369'|" $INTERNAL/default/saas_worker/const.py   
 }
 
 list_local_saas(){
@@ -478,10 +478,10 @@ ptvsd_odoo_set(){
     if [ -f $ODOO/odoo-bin ]
     then
         # v10 and after
-        sed -i "s|import odoo|import odoo;import ptvsd; ptvsd.enable_attach(address=('localhost', 5678), redirect_output=True);|" $ODOO/odoo-bin
+        sed -i "" "s|import odoo|import odoo;import ptvsd; ptvsd.enable_attach(address=('localhost', 5678), redirect_output=True);|" $ODOO/odoo-bin
     else
         # v9 and before
-        sed -i "s|import os|import os;import ptvsd; ptvsd.enable_attach(address=('localhost', 5678), redirect_output=True);|" $ODOO/odoo.py
+        sed -i "" "s|import os|import os;import ptvsd; ptvsd.enable_attach(address=('localhost', 5678), redirect_output=True);|" $ODOO/odoo.py
     fi
 }
 
@@ -491,10 +491,10 @@ ptvsd_odoo_unset(){
     if [ -f $ODOO/odoo-bin ]
     then
         # v10 and after
-        sed -i "s|import odoo;import ptvsd; ptvsd.enable_attach(address=('localhost', 5678), redirect_output=True);|import odoo|" $ODOO/odoo-bin
+        sed -i "" "s|import odoo;import ptvsd; ptvsd.enable_attach(address=('localhost', 5678), redirect_output=True);|import odoo|" $ODOO/odoo-bin
     else
         # v9 and before
-        sed -i "s|import os;import ptvsd; ptvsd.enable_attach(address=('localhost', 5678), redirect_output=True);|import os|" $ODOO/odoo.py
+        sed -i "" "s|import os;import ptvsd; ptvsd.enable_attach(address=('localhost', 5678), redirect_output=True);|import os|" $ODOO/odoo.py
     fi
 }
 
