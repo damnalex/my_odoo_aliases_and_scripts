@@ -113,4 +113,6 @@ if [ "$OSTYPE" = "darwin18.0" ]
 then
     export LC_ALL=en_US.UTF-8
     export LANG=en_US.UTF-8
+    alias gedit='/usr/local/Cellar/gedit/3.30.2/bin/gedit'
+    alias code='/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code'
 fi
