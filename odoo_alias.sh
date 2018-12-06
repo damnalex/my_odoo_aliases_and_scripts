@@ -22,7 +22,8 @@ go(){ #switch branch for all odoo repos
         git -C $ENTERPRISE checkout $1 &&
     fi
     echo "checking out design-themes"
-    git -C $SRC/design-themes checkout $1 
+    git -C $SRC/design-themes checkout $1 &&
+    go_fetch &
 }
 
 git_update_and_clean(){ # fetch pull and clean a bit a given repo
@@ -40,6 +41,14 @@ go_update_and_clean(){
     git_update_and_clean $ENTERPRISE &&
     git_update_and_clean $SRC/design-themes &&
     clear_pyc
+}
+
+go_fetch(){
+    git -C $ODOO fetch origin $(git_branch_version $ODOO) -q
+    git -C $ENTERPRISE fetch origin $(git_branch_version $ENTERPRISE) -q
+    git -C $SRC/design-themes fetch origin $(git_branch_version $SRC/design-themes) -q
+    git -C $INTERNAL fetch origin $(git_branch_version $INTERNAL) -q
+    git -C $SRC/support-tools fetch origin $(git_branch_version $SRC/support-tools) -q
 }
 
 git_branch_version(){
