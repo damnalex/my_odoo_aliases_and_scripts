@@ -98,7 +98,7 @@ era(){
 
 #history analytics
 history_count(){
-    history -n | cut -d' ' -f1 | sort | uniq -c | trim | sort -g | tac | less
+    history -n | cut -d' ' -f1 | sort | uniq -c | trim | sort -gr | less
 }
 trim(){
     awk '{$1=$1};1'
