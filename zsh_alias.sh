@@ -98,7 +98,7 @@ era(){
 
 #history analytics
 history_count(){
-    history -n | cut -d' ' -f1 | sort | uniq -c | trim | sort -g | tac | less
+    history -n | cut -d' ' -f1 | sort | uniq -c | trim | sort -gr | less
 }
 trim(){
     awk '{$1=$1};1'
@@ -113,4 +113,6 @@ if [ "$OSTYPE" = "darwin18.0" ]
 then
     export LC_ALL=en_US.UTF-8
     export LANG=en_US.UTF-8
+    alias gedit='/usr/local/Cellar/gedit/3.30.2/bin/gedit'
+    alias code='/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code'
 fi

@@ -22,7 +22,8 @@ go(){ #switch branch for all odoo repos
         git -C $ENTERPRISE checkout $1 &&
     fi
     echo "checking out design-themes"
-    git -C $SRC/design-themes checkout $1 
+    git -C $SRC/design-themes checkout $1 &&
+    go_fetch &
 }
 
 git_update_and_clean(){ # fetch pull and clean a bit a given repo
@@ -40,6 +41,14 @@ go_update_and_clean(){
     git_update_and_clean $ENTERPRISE &&
     git_update_and_clean $SRC/design-themes &&
     clear_pyc
+}
+
+go_fetch(){
+    git -C $ODOO fetch origin $(git_branch_version $ODOO) -q
+    git -C $ENTERPRISE fetch origin $(git_branch_version $ENTERPRISE) -q
+    git -C $SRC/design-themes fetch origin $(git_branch_version $SRC/design-themes) -q
+    git -C $INTERNAL fetch origin $(git_branch_version $INTERNAL) -q
+    git -C $SRC/support-tools fetch origin $(git_branch_version $SRC/support-tools) -q
 }
 
 git_branch_version(){
@@ -259,11 +268,11 @@ start_local_saas_db(){
 alias sloc='start_local_saas_db'
 
 local_saas_config_files_set(){
-    sed -i "s|OAUTH_BASE_URL = 'http://accounts.127.0.0.1.xip.io:8369'|OAUTH_BASE_URL = 'https://accounts.odoo.com' #tempcomment|" $INTERNAL/default/saas_worker/const.py
+    sed -i "" "s|OAUTH_BASE_URL = 'http://accounts.127.0.0.1.xip.io:8369'|OAUTH_BASE_URL = 'https://accounts.odoo.com' #tempcomment|" $INTERNAL/default/saas_worker/const.py
 }
 
 local_saas_config_files_unset(){
-    sed -i "s|OAUTH_BASE_URL = 'https://accounts.odoo.com' #tempcomment|OAUTH_BASE_URL = 'http://accounts.127.0.0.1.xip.io:8369'|" $INTERNAL/default/saas_worker/const.py   
+    sed -i "" "s|OAUTH_BASE_URL = 'https://accounts.odoo.com' #tempcomment|OAUTH_BASE_URL = 'http://accounts.127.0.0.1.xip.io:8369'|" $INTERNAL/default/saas_worker/const.py   
 }
 
 list_local_saas(){
@@ -478,10 +487,10 @@ ptvsd_odoo_set(){
     if [ -f $ODOO/odoo-bin ]
     then
         # v10 and after
-        sed -i "s|import odoo|import odoo;import ptvsd; ptvsd.enable_attach(address=('localhost', 5678), redirect_output=True);|" $ODOO/odoo-bin
+        sed -i "" "s|import odoo|import odoo;import ptvsd; ptvsd.enable_attach(address=('localhost', 5678), redirect_output=True);|" $ODOO/odoo-bin
     else
         # v9 and before
-        sed -i "s|import os|import os;import ptvsd; ptvsd.enable_attach(address=('localhost', 5678), redirect_output=True);|" $ODOO/odoo.py
+        sed -i "" "s|import os|import os;import ptvsd; ptvsd.enable_attach(address=('localhost', 5678), redirect_output=True);|" $ODOO/odoo.py
     fi
 }
 
@@ -491,10 +500,10 @@ ptvsd_odoo_unset(){
     if [ -f $ODOO/odoo-bin ]
     then
         # v10 and after
-        sed -i "s|import odoo;import ptvsd; ptvsd.enable_attach(address=('localhost', 5678), redirect_output=True);|import odoo|" $ODOO/odoo-bin
+        sed -i "" "s|import odoo;import ptvsd; ptvsd.enable_attach(address=('localhost', 5678), redirect_output=True);|import odoo|" $ODOO/odoo-bin
     else
         # v9 and before
-        sed -i "s|import os;import ptvsd; ptvsd.enable_attach(address=('localhost', 5678), redirect_output=True);|import os|" $ODOO/odoo.py
+        sed -i "" "s|import os;import ptvsd; ptvsd.enable_attach(address=('localhost', 5678), redirect_output=True);|import os|" $ODOO/odoo.py
     fi
 }
 
