@@ -38,7 +38,7 @@ noweb(){
 }
 alias ni='noweb'
 
-
+alias gti='git'
 #############################################
 #############  zsh stuffs  ##################
 #############################################
@@ -111,6 +111,7 @@ trim(){
 
 if [ "$OSTYPE" = "darwin18.0" ]
 then
+    # macos
     export LC_ALL=en_US.UTF-8
     export LANG=en_US.UTF-8
     alias gedit='/usr/local/Cellar/gedit/3.30.2/bin/gedit'

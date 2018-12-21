@@ -23,7 +23,7 @@ go(){ #switch branch for all odoo repos
     fi
     echo "checking out design-themes"
     git -C $SRC/design-themes checkout $1 &&
-    go_fetch &
+    go_fetch & # keep this single & here, it's on purpose, also this line needs to be the last one
 }
 
 git_update_and_clean(){ # fetch pull and clean a bit a given repo
@@ -57,8 +57,8 @@ git_branch_version(){
 
 git_branch_info(){
     local branch_version="$(git_branch_version $1)"
-    local branch_late=$(git -C $1 cherry $branch_version origin/$branch_version | wc -l | trim)
-    local branch_ahead=$(git -C $1 cherry origin/$branch_version $branch_version | wc -l | trim)
+    local branch_late=$(git -C $1 cherry $branch_version origin/$branch_version 2> /dev/null | wc -l | trim)
+    local branch_ahead=$(git -C $1 cherry origin/$branch_version $branch_version 2> /dev/null| wc -l | trim)
     echo "$branch_version \t\t↓ $branch_late ↑ $branch_ahead"
 }
 
@@ -115,7 +115,15 @@ so(){
             so-version $1
             echo "repo version is :"
             git_branch_version $ODOO
-            return
+            echo "continue anyway ? (Y/n): "
+            read answer
+            if [ "$answer" = "Y" ]
+            then
+                echo "I hope you know what you're doing ..."
+            else
+                echo "Yeah, that's probably safer :D "
+                return
+            fi
         fi
     fi
 
@@ -269,10 +277,14 @@ alias sloc='start_local_saas_db'
 
 local_saas_config_files_set(){
     sed -i "" "s|OAUTH_BASE_URL = 'http://accounts.127.0.0.1.xip.io:8369'|OAUTH_BASE_URL = 'https://accounts.odoo.com' #tempcomment|" $INTERNAL/default/saas_worker/const.py
+    sed -i "" "s|if not has_role('trial'):|if not has_role('trial') and False: #tempcomment|" $INTERNAL/default/saas_worker/controllers/support.py
+    sed -i "" "s|assert isnamedtuple(db)|#assert isnamedtuple(db) #tempcomment|" $INTERNAL/default/saas_worker/metabase.py
 }
 
 local_saas_config_files_unset(){
     sed -i "" "s|OAUTH_BASE_URL = 'https://accounts.odoo.com' #tempcomment|OAUTH_BASE_URL = 'http://accounts.127.0.0.1.xip.io:8369'|" $INTERNAL/default/saas_worker/const.py   
+    sed -i "" "s|if not has_role('trial') and False: #tempcomment|if not has_role('trial'):|" $INTERNAL/default/saas_worker/controllers/support.py
+    sed -i "" "s|#assert isnamedtuple(db) #tempcomment|assert isnamedtuple(db)|" $INTERNAL/default/saas_worker/metabase.py
 }
 
 list_local_saas(){
