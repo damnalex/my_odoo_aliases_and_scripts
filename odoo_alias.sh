@@ -199,6 +199,13 @@ oes(){
     #start odoo support
     eval $SRC/support-tools/oe-support.py $@[1,-1]
 }
+alias eos="oes"
+
+clean_database(){
+    eval $SRC/support-tools/clean_database.py $@[2,-1] dbname=$1 2> /dev/null ||
+    echo "DB $1 does not exist, executing script as standard \n" &&
+    eval $SRC/support-tools/clean_database.py $@[1,-1]
+}
 
 dropodoo(){
     # drop the db, also removes it from meta if it was a local saas db
