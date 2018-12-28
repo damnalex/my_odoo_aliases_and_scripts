@@ -107,6 +107,12 @@ so(){
         return
     fi
 
+    if [ $# -lt 2 ]
+    then
+        so $1 8069
+        return
+    fi
+
     if psql -lqt | cut -d \| -f 1 | grep -qw $1; then #check if the database already exists
         if [ $(so-version $1) != $(git_branch_version $ODOO) ]
         then
@@ -127,46 +133,24 @@ so(){
         fi
     fi
 
-    if [ $# -lt 2 ]
-    then
-        so $1 8069
-        return
-    fi
-
     odoo_bin="$ODOO/odoo-bin"
     odoo_py="$ODOO/odoo.py"
     path_community="--addons-path=$ODOO/addons"
     path_enterprise="--addons-path=$ENTERPRISE,$ODOO/addons,$SRC/design-themes"
     params_normal="--db-filter=^$1$ -d $1 --xmlrpc-port=$2"
-    params_silent="--db-filter=^$1$ -d $1 --xmlrpc-port=$2 --log-level=warn --log-handler=werkzeug:CRITICAL"
     if [ -f $ODOO/odoo-bin ]
     then
         #version 10 or above
-        if [ "$3" != "silent" ]
-        then
-            eval $ptvsd_T $odoo_bin $path_enterprise $params_normal $@[3,-1]
-        else
-            eval $ptvsd_T $odoo_bin $path_enterprise $params_silent $@[4,-1]
-        fi
+        eval $ptvsd_T $odoo_bin $path_enterprise $params_normal $@[3,-1]
     else
         #version 9 or below
         if [ $(git_branch_version $ODOO ) = "8.0" ]
         then
             # V8
-            if [ "$3" != "silent" ]
-            then
-                eval $ptvsd_T $odoo_py $path_community $params_normal $@[3,-1]
-            else
-                eval $ptvsd_T $odoo_py $path_community $params_silent $@[4,-1]
-            fi
+            eval $ptvsd_T $odoo_py $path_community $params_normal $@[3,-1]
         else
             # V9 (probably)
-            if [ "$3" != "silent" ]
-            then
-                eval $ptvsd_T $odoo_py $path_enterprise $params_normal $@[3,-1]
-            else
-                eval $ptvsd_T $odoo_py $path_enterprise $params_silent $@[4,-1]
-            fi
+            eval $ptvsd_T $odoo_py $path_enterprise $params_normal $@[3,-1]
         fi
     fi
 }
