@@ -285,12 +285,14 @@ alias sloc='start_local_saas_db'
 local_saas_config_files_set(){
     sed -i "" "s|OAUTH_BASE_URL = 'http://accounts.127.0.0.1.xip.io:8369'|OAUTH_BASE_URL = 'https://accounts.odoo.com' #tempcomment|" $INTERNAL/default/saas_worker/const.py
     sed -i "" "s|if not has_role('trial'):|if not has_role('trial') and False: #tempcomment|" $INTERNAL/default/saas_worker/controllers/support.py
+    # this following line only usefull on the mac until I find time to find the cause of the inconsistency
     sed -i "" "s|assert isnamedtuple(db)|#assert isnamedtuple(db) #tempcomment|" $INTERNAL/default/saas_worker/metabase.py
 }
 
 local_saas_config_files_unset(){
     sed -i "" "s|OAUTH_BASE_URL = 'https://accounts.odoo.com' #tempcomment|OAUTH_BASE_URL = 'http://accounts.127.0.0.1.xip.io:8369'|" $INTERNAL/default/saas_worker/const.py   
     sed -i "" "s|if not has_role('trial') and False: #tempcomment|if not has_role('trial'):|" $INTERNAL/default/saas_worker/controllers/support.py
+    # this following line only usefull on the mac until I find time to find the cause of the inconsistency
     sed -i "" "s|#assert isnamedtuple(db) #tempcomment|assert isnamedtuple(db)|" $INTERNAL/default/saas_worker/metabase.py
 }
 
@@ -401,6 +403,7 @@ helpdesk12_update_dump(){
 
 
 #start mailcatcher
+# this one is only usefull on the odoo linux laptop because I fucked the config up
 smailcatcher(){
     echo 'rvm use 2.3 && mailcatcher' | /bin/bash --login
 }
@@ -429,7 +432,7 @@ pl(){
     do
         local db_size=$(psql -tAqX -d $db_name -c "SELECT pg_size_pretty(pg_database_size('$db_name'));" 2> /dev/null)
         local db_version=$(so-version $db_name 2> /dev/null)
-        if ! [ -z $db_version ]
+        if [ "$db_version" != "" ] #ignore non-odoo DBs
         then
             echo "$db_version:    \t $db_name \t($db_size)"
         fi
@@ -466,6 +469,10 @@ killport () {
 
 
 #start python scripts with the vscode python debugger
+# note that the debbuger is on the called scrpt, 
+# if that script calls another one, that one is not "debugged"
+# so it doesn't work with oe-support.
+# doesn't work with alias calling python scripts
 ptvsd(){
     eval python -m ptvsd --host localhost --port 5678 $@[1,-1] 
 }
