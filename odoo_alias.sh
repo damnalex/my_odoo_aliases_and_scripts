@@ -78,6 +78,7 @@ golist(){
     echo "\ncurrent support-tools branch"
     git_branch_info $SRC/support-tools
     git -C $SRC/support-tools status --short
+    go_fetch & # keep this single & here, it's on purpose, also this line needs to be the last one
 }
 
 godb(){
