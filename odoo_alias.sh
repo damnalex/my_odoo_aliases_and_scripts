@@ -23,7 +23,6 @@ go(){ #switch branch for all odoo repos
     fi
     echo "checking out design-themes"
     git -C $SRC/design-themes checkout $1 &&
-    go_fetch & # keep this single & here, it's on purpose, also this line needs to be the last one
 }
 
 git_update_and_clean(){ # fetch pull and clean a bit a given repo

@@ -1,0 +1,7 @@
+MAILTO=""
+0 * * * * git -C /Users/odoo/Documents/my_scripts/my_odoo_aliases_and_scripts fetch --all --verbose >> /Users/odoo/tmp/cronlog.log
+*/20 * * * * git -C /Users/odoo/src/odoo fetch --all --verbose >> /Users/odoo/tmp/cronlog.log
+*/20 * * * * git -C /Users/odoo/src/enterprise fetch --all --verbose >> /Users/odoo/tmp/cronlog.log
+*/20 * * * * git -C /Users/odoo/src/design-themes fetch --all --verbose >> /Users/odoo/tmp/cronlog.log
+*/20 * * * * git -C /Users/odoo/src/internal fetch --all --verbose >> /Users/odoo/tmp/cronlog.log
+*/20 * * * * git -C /Users/odoo/src/support-tools fetch --all --verbose >> /Users/odoo/tmp/cronlog.log
