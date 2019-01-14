@@ -134,6 +134,7 @@ so(){
         fi
     fi
 
+    # do the thing
     odoo_bin="$ODOO/odoo-bin"
     odoo_py="$ODOO/odoo.py"
     path_community="--addons-path=$ODOO/addons"
@@ -397,6 +398,11 @@ ploe(){
     pl oe_support_ | grep oe_support_ 
 }
 
+plike(){
+    psql $(list_db_like $1) ||
+    echo "\n\n\nlooks like there was multiple result for $1, try something more precise"
+}
+
 lu(){
     psql -d $1 -c "SELECT id, login FROM res_users where active = true ORDER BY id;" -q
 }
@@ -408,7 +414,7 @@ luoe(){
 list_db_like(){
     psql -tAqX -d postgres -c "SELECT t1.datname AS db_name FROM pg_database t1 WHERE t1.datname like '$1' ORDER BY LOWER(t1.datname);"
 }
-
+alias ldl="list_db_like"
 
 
 #port killer
