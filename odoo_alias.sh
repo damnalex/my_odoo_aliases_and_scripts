@@ -327,38 +327,6 @@ SaaS_Inj_git8patched_and_start(){
 
 
 
-
-
-#helpdesk-mig
-helpdesk114_drop_build_start_db(){
-    dropdb helpdesk114 && 
-    createdb helpdesk114 && 
-    psql helpdesk114 < /home/odoo/Documents/mig/helpdesk114.dump.sql && 
-    cd ~/src/odoo && 
-    git checkout saas-11.4 && 
-    cd ~/src/enterprise && 
-    git checkout saas-11.4 && 
-    cd && 
-    /home/odoo/src/odoo/odoo-bin --addons-path=/home/odoo/src/internal/default,/home/odoo/src/internal/private,/home/odoo/src/internal/test,/home/odoo/src/enterprise,/home/odoo/src/odoo/addons --load=saas_worker,web -d helpdesk114
-}
-
-helpdesk114_just_start(){
-    go saas-11.4 &&
-    eval $ODOO/odoo-bin --addons-path=$INTERNAL/default,$INTERNAL/private,$INTERNAL/test,$ENTERPRISE,$ODOO/addons --load=saas_worker,web -d helpdesk114
-}
-
-helpdesk114_migrate(){
-    date +%s.%N
-    # psql helpdesk114 < /home/odoo/Documents/mig/whe-migration_script_more_readable.sql
-    psql helpdesk114 < /home/odoo/Documents/mig/migration/Migration_from_project.task_to_helpdesk.ticket.sql
-    date +%s.%N
-}
-
-helpdesk114_update_dump(){
-    pg_dump helpdesk114 > /home/odoo/Documents/mig/helpdesk114.dump.sql
-}
-
-
 # not ready yet (enterprise repo needs to be update to be ready for v12)
 helpdesk12_drop_build_start_db(){
     dropdb helpdesk12 &&
