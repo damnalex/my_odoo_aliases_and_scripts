@@ -23,6 +23,7 @@ go(){ #switch branch for all odoo repos
     fi
     echo "checking out design-themes"
     git -C $SRC/design-themes checkout $1 &&
+    ( go_fetch 2> /dev/null & ) # keep this single & here, it's on purpose, also this line needs to be the last one
 }
 
 git_update_and_clean(){ # fetch pull and clean a bit a given repo
@@ -49,6 +50,9 @@ go_fetch(){
     git -C $INTERNAL fetch origin $(git_branch_version $INTERNAL) -q
     git -C $SRC/support-tools fetch origin $(git_branch_version $SRC/support-tools) -q
 }
+( go_fetch 2> /dev/null & )
+# this is to fetch everytime a terminal is loaded, or sourced, so it happens often 
+# & is especially important here
 
 git_branch_version(){
     git -C $1 symbolic-ref --short HEAD
@@ -77,7 +81,7 @@ golist(){
     echo "\ncurrent support-tools branch"
     git_branch_info $SRC/support-tools
     git -C $SRC/support-tools status --short
-    go_fetch & # keep this single & here, it's on purpose, also this line needs to be the last one
+    ( go_fetch 2> /dev/null & ) # keep this single & here, it's on purpose, also this line needs to be the last one
 }
 
 godb(){
