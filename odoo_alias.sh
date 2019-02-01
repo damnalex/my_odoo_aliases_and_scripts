@@ -96,7 +96,7 @@ godb(){
 goso(){
     # switch repos to the versiojn of given db and starts it
     godb $1 &&
-    so $1
+    eval so $1 $@[2,-1]
 }
 
 
@@ -202,12 +202,12 @@ dropodoo(){
     then
         echo "requires the name(s) of the DB(s) to drop"
         echo "dropodoo DB_Name [Other_DB_name* ]"
-        return
+        return 1
     fi
     if [[ $1 =~ $(echo ^\($(paste -sd'|' $AP/drop_protected_dbs.txt)\)$) ]]; then 
         echo "db $1 is drop protected --> aborting"
         echo "to override protection, modify protection file at $AP/drop_protected_dbs.txt"
-        return
+        return 1
     fi
     if [ $# -eq 1 ]
     then
@@ -439,10 +439,14 @@ ptvsd(){
     eval python -m ptvsd --host localhost --port 5678 $@[1,-1] 
 }
 
+ptvsd3(){
+    eval python3 -m ptvsd --host localhost --port 5678 $@[1,-1] 
+}
+
 export ptvsd_T=" "
 ptvsd_toggle(){
     if [ "$1" = "activate" ]; then
-        export ptvsd_T="python -m ptvsd --host localhost --port 5678"
+        export ptvsd_T="python3 -m ptvsd --host localhost --port 5678"
         echo "ptvsd_T activated"
         return
     elif [ "$1" = "deactivate" ]; then
@@ -450,7 +454,7 @@ ptvsd_toggle(){
         echo "ptvsd_T deactivated"
         return
     elif [ "$ptvsd_T" = " " ]; then
-        export ptvsd_T="python -m ptvsd --host localhost --port 5678"
+        export ptvsd_T="python3 -m ptvsd --host localhost --port 5678"
         echo "ptvsd_T activated"
         return
     else
