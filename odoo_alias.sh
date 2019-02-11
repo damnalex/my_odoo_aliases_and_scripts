@@ -27,7 +27,7 @@ go(){ #switch branch for all odoo repos
 }
 
 git_update_and_clean(){ # fetch pull and clean a bit a given repo
-    git -C $1 fetch --all &&
+    git -C $1 fetch --all -p  &&
     git -C $1 pull --rebase &&
     git -C $1 prune
 }

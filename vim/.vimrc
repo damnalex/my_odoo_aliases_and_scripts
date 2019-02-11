@@ -17,3 +17,6 @@ cmap w!! w !sudo tee > /dev/null %
 
 syntax on
 set nowrap
+
+set incsearch
+set hlsearch
