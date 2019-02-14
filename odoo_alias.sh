@@ -12,24 +12,26 @@ alias clear_all_pyc="clear_pyc"
 
 #git
 go(){ #switch branch for all odoo repos
+    local version=$1
     echo "cleaning the junk"
     clear_pyc
     echo "checking out odoo"
-    git -C $ODOO checkout $1 &&
-    if [ $1 != "8.0" ]
+    git -C $ODOO checkout $version &&
+    if [ $version != "8.0" ]
     then
         echo "checking out enterprise"
-        git -C $ENTERPRISE checkout $1 &&
+        git -C $ENTERPRISE checkout $version &&
     fi
     echo "checking out design-themes"
-    git -C $SRC/design-themes checkout $1 &&
+    git -C $SRC/design-themes checkout $version &&
     ( go_fetch 2> /dev/null & ) # keep this single & here, it's on purpose, also this line needs to be the last one
 }
 
 git_update_and_clean(){ # fetch pull and clean a bit a given repo
-    git -C $1 fetch --all -p  &&
-    git -C $1 pull --rebase &&
-    git -C $1 prune
+    local folder=$1
+    git -C $folder fetch --all -p  &&
+    git -C $folder pull --rebase &&
+    git -C $folder prune
 }
 
 go_update_and_clean(){
@@ -59,9 +61,10 @@ git_branch_version(){
 }
 
 git_branch_info(){
-    local branch_version="$(git_branch_version $1)"
-    local branch_late=$(git -C $1 cherry $branch_version origin/$branch_version 2> /dev/null | wc -l | trim)
-    local branch_ahead=$(git -C $1 cherry origin/$branch_version $branch_version 2> /dev/null| wc -l | trim)
+    local folder=$1
+    local branch_version="$(git_branch_version $folder)"
+    local branch_late=$(git -C $folder cherry $branch_version origin/$branch_version 2> /dev/null | wc -l | trim)
+    local branch_ahead=$(git -C $folder cherry origin/$branch_version $branch_version 2> /dev/null| wc -l | trim)
     echo "$branch_version \t\t↓ $branch_late ↑ $branch_ahead"
 }
 
@@ -86,43 +89,53 @@ golist(){
 
 godb(){
     #switch repos branch to the version of the given DB
-    if psql -lqt | cut -d \| -f 1 | grep -qw $1; then #check if the database already exists
-        go $(so-version $1)
+    local db_name=$1
+    if psql -lqt | cut -d \| -f 1 | grep -qw $db_name; then #check if the database already exists
+        go $(so-version $db_name)
     else
-        echo "DB $1 does not exist"
+        echo "DB $db_name does not exist"
     fi
 }
 
 goso(){
     # switch repos to the versiojn of given db and starts it
-    godb $1 &&
-    eval so $1 $@[2,-1]
+    local db_name=$1
+    godb $db_name &&
+    eval so $db_name $@[2,-1]
 }
 
 
 #start odoo
 so(){ 
+    local db_name=$1
     #params  -->   dbname [port] [other_parameters]
     if [ $# -lt 1 ]
     then
         echo "At least give me a name :( "
         echo "so dbname [port] [other_parameters]"
         echo "note : port is mandatory if you want to add other parameters"
-        return
+        return 1
+    fi
+
+    if [[ $db_name == CLEAN_ODOO* ]]
+    then
+        echo "Don't play with that one ! "
+        echo "$db_name is a protected database"
+        return 1
     fi
 
     if [ $# -lt 2 ]
     then
-        so $1 8069
+        so $db_name 8069
         return
     fi
 
-    if psql -lqt | cut -d \| -f 1 | grep -qw $1; then #check if the database already exists
-        if [ $(so-version $1) != $(git_branch_version $ODOO) ]
+    if psql -lqt | cut -d \| -f 1 | grep -qw $db_name; then #check if the database already exists
+        if [ $(so-version $db_name) != $(git_branch_version $ODOO) ]
         then
             echo "version mismatch"
             echo "db version is :"
-            so-version $1
+            so-version $db_name
             echo "repo version is :"
             git_branch_version $ODOO
             echo "continue anyway ? (Y/n): "
@@ -132,7 +145,7 @@ so(){
                 echo "I hope you know what you're doing ..."
             else
                 echo "Yeah, that's probably safer :D "
-                return
+                return 1
             fi
         fi
     fi
@@ -142,7 +155,7 @@ so(){
     odoo_py="$ODOO/odoo.py"
     path_community="--addons-path=$ODOO/addons"
     path_enterprise="--addons-path=$ENTERPRISE,$ODOO/addons,$SRC/design-themes"
-    params_normal="--db-filter=^$1$ -d $1 --xmlrpc-port=$2"
+    params_normal="--db-filter=^$db_name$ -d $db_name --xmlrpc-port=$2"
     if [ -f $ODOO/odoo-bin ]
     then
         #version 10 or above
@@ -191,12 +204,11 @@ oes(){
 alias eos="oes"
 
 clean_database(){
-    eval $SRC/support-tools/clean_database.py $@[2,-1] dbname=$1 2> /dev/null ||
-    echo "DB $1 does not exist, executing script as standard \n" &&
     eval $SRC/support-tools/clean_database.py $@[1,-1]
 }
 
 dropodoo(){
+    local db_name_1=$1
     # drop the db, also removes it from meta if it was a local saas db
     if [ $# -lt 1 ]
     then
@@ -204,15 +216,15 @@ dropodoo(){
         echo "dropodoo DB_Name [Other_DB_name* ]"
         return 1
     fi
-    if [[ $1 =~ $(echo ^\($(paste -sd'|' $AP/drop_protected_dbs.txt)\)$) ]]; then 
-        echo "db $1 is drop protected --> aborting"
+    if [[ $db_name_1 =~ $(echo ^\($(paste -sd'|' $AP/drop_protected_dbs.txt)\)$) ]]; then 
+        echo "db $db_name_1 is drop protected --> aborting"
         echo "to override protection, modify protection file at $AP/drop_protected_dbs.txt"
         return 1
     fi
     if [ $# -eq 1 ]
     then
-        psql -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$1';" -q > /dev/null 
-        drop_local_saas_db $1 2> /dev/null || echo "failed to delete db $1, maybe it doesn't exist ?"
+        psql -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$db_name_1';" -q > /dev/null 
+        drop_local_saas_db $db_name_1 2> /dev/null || echo "failed to delete db $1, maybe it doesn't exist ?"
         return 
     fi
     
@@ -240,16 +252,17 @@ droplike(){
 #local-saas
 
 build_local_saas_db(){
-    godb $1
+    local db_name=$1
+    godb $db_name
     if [ -f $ODOO/odoo-bin ]
     then
-        eval $ODOO/odoo-bin --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons --load=saas_worker,web -d $1 -i saas_trial,project --stop-after-init
+        eval $ODOO/odoo-bin --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons --load=saas_worker,web -d $db_name -i saas_trial,project --stop-after-init
     else
-        eval $ODOO/odoo.py --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons --load=saas_worker,web -d $1 -i saas_trial,project --stop-after-init
+        eval $ODOO/odoo.py --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons --load=saas_worker,web -d $db_name -i saas_trial,project --stop-after-init
     fi
-    local db_uuid=$(psql -tAqX -d $1 -c "SELECT value FROM ir_config_parameter WHERE key = 'database.uuid';")
+    local db_uuid=$(psql -tAqX -d $db_name -c "SELECT value FROM ir_config_parameter WHERE key = 'database.uuid';")
     echo $db_uuid
-    echo "INSERT INTO databases (name, uuid, port, mode, extra_apps, create_date, expire_date, last_cnx_date, cron_round, cron_time, email_daily_limit, email_daily_count, email_total_count, print_waiting_counter, print_counter, print_counter_limit) VALUES ('$1', '$db_uuid', 8069, 'trial', true, '2018-05-23 09:33:08.811069', '2040-02-22 23:59:59', '2018-06-28 13:44:03.980693', 0, '2018-09-21 00:40:28', 30, 10, 0, 0, 0, 10)" | psql meta
+    echo "INSERT INTO databases (name, uuid, port, mode, extra_apps, create_date, expire_date, last_cnx_date, cron_round, cron_time, email_daily_limit, email_daily_count, email_total_count, print_waiting_counter, print_counter, print_counter_limit) VALUES ('$db_name', '$db_uuid', 8069, 'trial', true, '2018-05-23 09:33:08.811069', '2040-02-22 23:59:59', '2018-06-28 13:44:03.980693', 0, '2018-09-21 00:40:28', 30, 10, 0, 0, 0, 10)" | psql meta
 }
 alias bloc='build_local_saas_db'
 
@@ -259,13 +272,14 @@ drop_local_saas_db(){
 }
 
 start_local_saas_db(){
-    godb $1
+    local db_name=$1
+    godb $db_name
     local_saas_config_files_set &&
     if [ -f $ODOO/odoo-bin ]
     then
-        eval $ptvsd_T $ODOO/odoo-bin --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons,$SRC/design-themes --load=saas_worker,web -d $1 --db-filter=^$1$;
+        eval $ptvsd_T $ODOO/odoo-bin --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons,$SRC/design-themes --load=saas_worker,web -d $db_name --db-filter=^$1$;
     else
-        eval $ptvsd_T $ODOO/odoo.py --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons,$SRC/design-themes --load=saas_worker,web -d $1;
+        eval $ptvsd_T $ODOO/odoo.py --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons,$SRC/design-themes --load=saas_worker,web -d $db_name;
     fi
     local_saas_config_files_unset
 }
@@ -379,7 +393,7 @@ poe(){
 
 pl(){
     #echo "select t1.datname as db_name, pg_size_pretty(pg_database_size(t1.datname)) as db_size from pg_database t1 order by t1.datname;" | psql postgres
-    local where_clause=" "
+    local where_clause="where t1.datname not like 'CLEAN_ODOO%' "
     if [ $# -eq 1 ] 
     then
         where_clause="where t1.datname like '%$1%'"
