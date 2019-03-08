@@ -224,7 +224,10 @@ dropodoo(){
     if [ $# -eq 1 ]
     then
         psql -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$db_name_1';" -q > /dev/null 
-        drop_local_saas_db $db_name_1 2> /dev/null || echo "failed to delete db $1, maybe it doesn't exist ?"
+        remove_from_meta $db_name_1 2> /dev/null 
+        rm -rf $ODOO_STORAGE/filestore/$db_name_1
+        dropdb $db_name_1 || return 1
+        echo "$db_name_1 has been dropped"
         return 
     fi
     
@@ -266,9 +269,8 @@ build_local_saas_db(){
 }
 alias bloc='build_local_saas_db'
 
-drop_local_saas_db(){
+remove_from_meta(){
     echo "DELETE FROM databases WHERE name = '$1'" | psql meta > /dev/null
-    dropdb $1 && echo "database $1 has been dropped"
 }
 
 start_local_saas_db(){
@@ -304,7 +306,7 @@ list_local_saas(){
     psql -d meta -c "SELECT name, id FROM databases ORDER BY id;" -q
     echo "to start --> start_local_saas_db db-name"
     echo "to create a new one --> build_local_saas_db db-name"
-    echo "to drop --> drop_local_saas_db db-name"
+    echo "to drop --> dropodoo db-name"
 }
 alias lls='list_local_saas'
 
