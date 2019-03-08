@@ -250,7 +250,31 @@ droplike(){
     fi
 }
 
-
+build_runbot(){
+    # build a runbot like DB
+    local version=$1
+    local new_db_name=$2
+    dropodoo $new_db_name 2> /dev/null
+    mkdir $ODOO_STORAGE/filestore/$new_db_name/
+    case $version in 
+       (9) createdb -T CLEAN_ODOO_V9 $new_db_name 
+            cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V9/* $ODOO_STORAGE/filestore/$new_db_name/
+            ;;
+       (10) createdb -T CLEAN_ODOO_V10 $new_db_name
+            cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V10/* $ODOO_STORAGE/filestore/$new_db_name/
+            ;;
+       (11) createdb -T CLEAN_ODOO_V11 $new_db_name
+            cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V11/* $ODOO_STORAGE/filestore/$new_db_name/
+            psql_seg_fault_fixer $new_db_name
+            ;;
+       (12) createdb -T CLEAN_ODOO_V12 $new_db_name
+            cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V12/* $ODOO_STORAGE/filestore/$new_db_name/
+            ;;
+       (*) echo "no match" ;;
+    esac
+    echo 'built'
+}
+alias runbot="build_runbot"
 
 #local-saas
 
@@ -515,8 +539,12 @@ ptvsd_odoo_unset(){
     fi
 }
 
+psql_seg_fault_fixer(){
+    local db_name=$1
+    pg_dump $db_name > $HOME/tmp/tmp.sql && dropdb $db_name && createdb $db_name && psql $db_name -q < $HOME/tmp/tmp.sql && echo "you can restart $db_name now, have fun ! :D"
+}
+
 ##############################################
 ###############  tmp aliases #################
 ##############################################
-
 
