@@ -270,7 +270,10 @@ build_runbot(){
        (12) createdb -T CLEAN_ODOO_V12 $new_db_name
             cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V12/* $ODOO_STORAGE/filestore/$new_db_name/
             ;;
-       (*) echo "no match" ;;
+       (*)  echo "no match for version ${version}" 
+            echo "list of valid version:\n9\n10\n11\n12"
+            return 1
+            ;;
     esac
     echo 'built'
 }
