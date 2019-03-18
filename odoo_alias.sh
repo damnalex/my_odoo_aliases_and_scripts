@@ -337,69 +337,6 @@ list_local_saas(){
 }
 alias lls='list_local_saas'
 
-SaaS_Inj_git10_and_start(){
-    clear
-    go 10.0 &&
-    local_saas_config_files_set &&
-    eval $ODOO/odoo-bin --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons --load=saas_worker,web --db-filter=SAAS_TEST_Sess_Inject_V10 ;
-    local_saas_config_files_unset
-}
-
-SaaS_Inj_git11_and_start(){
-    clear 
-    go 11.0 &&
-    local_saas_config_files_set &&
-    eval $ODOO/odoo-bin --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons --load=saas_worker,web -d SAAS_TEST_Sess_Inject ;
-    local_saas_config_files_unset
-}
-
-SaaS_Inj_git9tbe_and_start(){
-    clear
-    clear_pyc &&
-    git -C $ODOO checkout 9.0-session-token-tbe && 
-    git -C $ENTERPRISE checkout 9.0 && 
-    local_saas_config_files_set &&
-    eval $ODOO/odoo.py --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons --load=saas_worker,web --db-filter=SAAS_TEST_Sess_Inject_V9tbe ;
-    local_saas_config_files_unset
-}
-
-SaaS_Inj_git8patched_and_start(){
-    clear 
-    clear_all_pyc && 
-    git -C $ODOO checkout 8.0-local_patch_for_local_saas && 
-    local_saas_config_files_set &&
-    eval $ODOO/odoo.py -d SAAS_V8 --db-filter=^SAAS_V8$ --addons-path=$ODOO/addons,$INTERNAL/default/,$INTERNAL/trial/ --load=saas_worker,web ;
-    local_saas_config_files_unset
-}
-
-
-
-
-# not ready yet (enterprise repo needs to be update to be ready for v12)
-helpdesk12_drop_build_start_db(){
-    dropdb helpdesk12 &&
-    createdb helpdesk12 &&
-    psql helpdesk12 < /home/odoo/Documents/mig/helpdesk12.dump.sql &&
-    go 12.0 &&
-    eval $ODOO/odoo-bin --addons-path=$INTERNAL/default,$INTERNAL/private,$INTERNAL/test,$ENTERPRISE,$ODOO/addons --load=saas_worker,web -d helpdesk12
-}
-
-helpdesk12_just_start_db(){
-    go 12.0 &&
-    eval $ODOO/odoo-bin --addons-path=$INTERNAL/default,$INTERNAL/private,$INTERNAL/test,$ENTERPRISE,$ODOO/addons --load=saas_worker,web -d helpdesk12
-}
-
-helpdesk12_migrate(){
-    date +%s.%N
-    psql helpdesk12 < /home/odoo/Documents/mig/migration/Migration_from_project.task_to_helpdesk.ticket.sql
-    date +%s.%N
-}
-
-helpdesk12_update_dump(){
-    pg_dump helpdesk12 > /home/odoo/Documents/mig/helpdesk12.dump.sql
-}
-
-
 
 
 #start mailcatcher
