@@ -422,13 +422,25 @@ killport () {
 # if that script calls another one, that one is not "debugged"
 # so it doesn't work with oe-support.
 # doesn't work with alias calling python scripts
-ptvsd(){
-    eval python -m ptvsd --host localhost --port 5678 $@[1,-1] 
+ptvsd2(){
+    eval python2 -m ptvsd --host localhost --port 5678 $@[1,-1] 
 }
+
+ptvsd2-so(){
+    _so_checker $@[1,-1] || return 1
+    eval ptvsd2 $(_so_builder $@[1,-1])
+}
+alias do2="ptvsd2-so"
 
 ptvsd3(){
     eval python3 -m ptvsd --host localhost --port 5678 $@[1,-1] 
 }
+
+ptvsd3-so(){
+    _so_checker $@[1,-1] || return 1
+    eval ptvsd3 $(_so_builder $@[1,-1])
+}
+alias do="ptvsd3-so"
 
 export ptvsd_T=" "
 ptvsd_toggle(){
