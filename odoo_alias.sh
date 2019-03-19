@@ -170,16 +170,16 @@ _so_builder(){
     if [ -f $ODOO/odoo-bin ]
     then
         #version 10 or above
-        echo $ptvsd_T $odoo_bin $path_enterprise $params_normal $@[3,-1]
+        echo $odoo_bin $path_enterprise $params_normal $@[3,-1]
     else
         #version 9 or below
         if [ $(git_branch_version $ODOO ) = "8.0" ]
         then
             # V8
-            echo $ptvsd_T $odoo_py $path_community $params_normal $@[3,-1]
+            echo $odoo_py $path_community $params_normal $@[3,-1]
         else
             # V9 (probably)
-            echo $ptvsd_T $odoo_py $path_enterprise $params_normal $@[3,-1]
+            echo $odoo_py $path_enterprise $params_normal $@[3,-1]
         fi
     fi
 }
@@ -313,9 +313,9 @@ start_local_saas_db(){
     local_saas_config_files_set &&
     if [ -f $ODOO/odoo-bin ]
     then
-        eval $ptvsd_T $ODOO/odoo-bin --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons,$SRC/design-themes --load=saas_worker,web -d $db_name --db-filter=^$1$;
+        eval $ODOO/odoo-bin --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons,$SRC/design-themes --load=saas_worker,web -d $db_name --db-filter=^$1$;
     else
-        eval $ptvsd_T $ODOO/odoo.py --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons,$SRC/design-themes --load=saas_worker,web -d $db_name;
+        eval $ODOO/odoo.py --addons-path=$INTERNAL/default,$INTERNAL/trial,$ENTERPRISE,$ODOO/addons,$SRC/design-themes --load=saas_worker,web -d $db_name;
     fi
     local_saas_config_files_unset
 }
@@ -441,27 +441,6 @@ ptvsd3-so(){
     eval ptvsd3 $(_so_builder $@[1,-1])
 }
 alias do="ptvsd3-so"
-
-export ptvsd_T=" "
-ptvsd_toggle(){
-    if [ "$1" = "activate" ]; then
-        export ptvsd_T="python3 -m ptvsd --host localhost --port 5678"
-        echo "ptvsd_T activated"
-        return
-    elif [ "$1" = "deactivate" ]; then
-        export ptvsd_T=" "
-        echo "ptvsd_T deactivated"
-        return
-    elif [ "$ptvsd_T" = " " ]; then
-        export ptvsd_T="python3 -m ptvsd --host localhost --port 5678"
-        echo "ptvsd_T activated"
-        return
-    else
-        export ptvsd_T=" "
-        echo "ptvsd_T deactivated"
-        return
-    fi
-}
 
 ptvsd_odoo(){
     # wrapper alias adding ptvsd import to odoo code
