@@ -91,10 +91,14 @@ godb(){
     #switch repos branch to the version of the given DB
     local db_name=$1
     if psql -lqt | cut -d \| -f 1 | grep -qw $db_name; then #check if the database already exists
-        go $(so-version $db_name)
+        go $(_db_version $db_name)
     else
         echo "DB $db_name does not exist"
     fi
+}
+
+_db_version(){
+    psql -tAqX -d $1 -c "SELECT replace((regexp_matches(latest_version, '^\d+\.0|^saas~\d+\.\d+|saas~\d+'))[1], '~', '-') FROM ir_module_module WHERE name='base';"
 }
 
 goso(){
@@ -107,8 +111,14 @@ goso(){
 
 #start odoo
 so(){ 
+    _so_checker $@[1,-1] || return 1
+
+    eval $(_so_builder $@[1,-1])
+    echo $(_so_builder $@[1,-1])
+}
+
+_so_checker(){ 
     local db_name=$1
-    #params  -->   dbname [port] [other_parameters]
     if [ $# -lt 1 ]
     then
         echo "At least give me a name :( "
@@ -124,18 +134,12 @@ so(){
         return 1
     fi
 
-    if [ $# -lt 2 ]
-    then
-        so $db_name 8069
-        return
-    fi
-
     if psql -lqt | cut -d \| -f 1 | grep -qw $db_name; then #check if the database already exists
-        if [ $(so-version $db_name) != $(git_branch_version $ODOO) ]
+        if [ $(_db_version $db_name) != $(git_branch_version $ODOO) ]
         then
             echo "version mismatch"
             echo "db version is :"
-            so-version $db_name
+            _db_version $db_name
             echo "repo version is :"
             git_branch_version $ODOO
             echo "continue anyway ? (Y/n): "
@@ -149,8 +153,15 @@ so(){
             fi
         fi
     fi
+}
 
-    # do the thing
+_so_builder(){
+    local db_name=$1
+    if [ $# -lt 2 ]
+    then
+        _so_builder $db_name 8069
+        return
+    fi
     odoo_bin="$ODOO/odoo-bin"
     odoo_py="$ODOO/odoo.py"
     path_community="--addons-path=$ODOO/addons"
@@ -159,22 +170,18 @@ so(){
     if [ -f $ODOO/odoo-bin ]
     then
         #version 10 or above
-        eval $ptvsd_T $odoo_bin $path_enterprise $params_normal $@[3,-1]
+        echo $ptvsd_T $odoo_bin $path_enterprise $params_normal $@[3,-1]
     else
         #version 9 or below
         if [ $(git_branch_version $ODOO ) = "8.0" ]
         then
             # V8
-            eval $ptvsd_T $odoo_py $path_community $params_normal $@[3,-1]
+            echo $ptvsd_T $odoo_py $path_community $params_normal $@[3,-1]
         else
             # V9 (probably)
-            eval $ptvsd_T $odoo_py $path_enterprise $params_normal $@[3,-1]
+            echo $ptvsd_T $odoo_py $path_enterprise $params_normal $@[3,-1]
         fi
     fi
-}
-
-so-version(){
-    psql -tAqX -d $1 -c "SELECT replace((regexp_matches(latest_version, '^\d+\.0|^saas~\d+\.\d+|saas~\d+'))[1], '~', '-') FROM ir_module_module WHERE name='base';"
 }
 
 soiu(){
@@ -368,7 +375,7 @@ pl(){
     for db_name in $(psql -tAqX -d postgres -c "SELECT t1.datname AS db_name FROM pg_database t1 $where_clause ORDER BY LOWER(t1.datname);")
     do
         local db_size=$(psql -tAqX -d $db_name -c "SELECT pg_size_pretty(pg_database_size('$db_name'));" 2> /dev/null)
-        local db_version=$(so-version $db_name 2> /dev/null)
+        local db_version=$(_db_version $db_name 2> /dev/null)
         if [ "$db_version" != "" ] #ignore non-odoo DBs
         then
             echo "$db_version:    \t $db_name \t($db_size)"
