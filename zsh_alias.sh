@@ -17,7 +17,7 @@ fullmaj(){
     sudo apt-get autoremove -y
 }
 
-alias reload_zshrc='source ~/.zshrc'
+alias reload_zshrc='source $AP/alias_loader.sh'
 
 alias cya='systemctl suspend -i'
 
