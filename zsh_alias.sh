@@ -46,18 +46,10 @@ alias gti='git'
 alias e="vim"
 
 eza(){
-    era vim $1
-}
-
-geza(){
-    era gedit $1
-}
-
-era(){
     # edit and reload alias
-    # era [vim|gedit] the_alias_file_to_edit
+    # eza the_alias_file_to_edit
     local file_to_load=" "
-    case $2 in
+    case $1 in
         zsh)
             file_to_load="zsh_alias.sh"
             ;;
@@ -68,9 +60,9 @@ era(){
             file_to_load="odoo_alias.sh"
             ;;
         --help)
-            echo "zsh_alias.sh --> (g)eza zsh"
-            echo "alias_loader.sh --> (g)eza loader"
-            echo "odoo_alias.sh --> (g)eza odoo   or   (g)eza"
+            echo "zsh_alias.sh --> eza zsh"
+            echo "alias_loader.sh --> eza loader"
+            echo "odoo_alias.sh --> eza odoo   or   eza"
             return
             ;;
         *)
@@ -79,14 +71,8 @@ era(){
             ;;
     esac
 
-    if [ "$1" = "vim" ]
-    then
-        e $AP/$file_to_load &&
-        reload_zshrc
-    else
-        gedit $AP/$file_to_load &&
-        reload_zshrc
-    fi
+    e $AP/$file_to_load &&
+    reload_zshrc
 }
 
 
