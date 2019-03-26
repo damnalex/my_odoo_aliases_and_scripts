@@ -209,6 +209,7 @@ oes(){
     eval $SRC/support-tools/oe-support.py $@[1,-1]
 }
 alias eos="oes"
+alias ose="oes"
 
 clean_database(){
     eval $SRC/support-tools/clean_database.py $@[1,-1]
@@ -406,6 +407,11 @@ list_db_like(){
 }
 alias ldl="list_db_like"
 
+db_age(){
+   local db_name=$1
+   local query="SELECT datname, (pg_stat_file('base/'||oid ||'/PG_VERSION')).modification FROM pg_database WHERE datname LIKE '$db_name'"
+   psql -c "$query" -d postgres
+}
 
 #port killer
 listport () {
