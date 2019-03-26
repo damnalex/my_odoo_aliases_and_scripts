@@ -91,6 +91,27 @@ trim(){
 }
 
 
+
+#patern finder
+find_pattern(){
+    local pattern=$1
+    local folder=$2
+    for i in $(find "$folder" -not -name "*.po*" -not -name "*.pyc" 2> /dev/null); 
+    do 
+        local grepped=$(grep -C 5 "$pattern" $i 2> /dev/null) 
+        if [ "$grepped" != "" ]
+        then
+            echo "\n~~~~~~~~~~~~~~~~~~~~~~~~~~\n$i" && 
+            echo "$grepped" | grep -C 5 "$pattern" ; 
+        fi
+    done
+    # make it search multiple folders
+    for other_folder in $@[3,-1]
+    do
+        find_pattern $pattern $other_folder
+    done
+}
+
 #########################################
 ######## system specific stuffs #########
 #########################################
