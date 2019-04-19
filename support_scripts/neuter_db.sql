@@ -6,11 +6,61 @@ INSERT INTO ir_mail_server(active,name,smtp_host,smtp_port,smtp_encryption) VALU
 UPDATE res_users SET password=login;
 DELETE FROM ir_attachment WHERE name like '%assets_%';
 
+INSERT INTO ir_config_parameter(key, value)
+VALUES ('iap.endpoint', 'https://iap-sandbox.odoo.com')
+ON CONFLICT (key) DO UPDATE SET
+value = 'https://iap-sandbox.odoo.com';
+
+UPDATE ir_config_parameter SET value = 'https://iap-services-test.odoo.com' WHERE key = 'snailmail.endpoint';
+UPDATE ir_config_parameter SET value = 'https://iap-services-test.odoo.com' WHERE key = 'reveal.endpoint';
+UPDATE ir_config_parameter SET value = 'https://iap-services-test.odoo.com' WHERE key = 'iap.partner_autocomplete.endpoint';
+UPDATE ir_config_parameter SET value = 'https://iap-services-test.odoo.com' WHERE key = 'sms.endpoint';
+
 DO $$
     BEGIN
         UPDATE auth_oauth_provider SET enabled = false;
     EXCEPTION
-        WHEN undefined_table THEN
+        WHEN undefined_table OR undefined_column THEN
+    END;
+$$;
+
+DO $$
+    BEGIN
+        UPDATE
+            res_company
+        SET
+            yodlee_access_token = NULL,
+            yodlee_user_password = NULL,
+            yodlee_user_access_token = NULL;
+    EXCEPTION
+        WHEN undefined_table OR undefined_column THEN
+    END;
+$$;
+
+DO $$
+    BEGIN
+        UPDATE
+            account_online_provider
+        SET
+            provider_account_identifier = NULL;
+    EXCEPTION
+        WHEN undefined_table OR undefined_column THEN
+    END;
+$$;
+
+DO $$
+    BEGIN
+        UPDATE delivery_carrier set active='f';
+    EXCEPTION
+        WHEN undefined_table OR undefined_column THEN
+    END;
+$$;
+
+DO $$
+    BEGIN
+        UPDATE payment_acquirer set environment='test';
+    EXCEPTION
+        WHEN undefined_table OR undefined_column THEN
     END;
 $$;
 

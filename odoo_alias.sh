@@ -215,6 +215,11 @@ clean_database(){
     eval $SRC/support-tools/clean_database.py $@[1,-1]
 }
 
+neuter_db(){
+    local db_name=$1
+    psql $db_name < $AP/support_scripts/neuter_db.sql
+}
+
 dropodoo(){
     local db_name_1=$1
     # drop the db, also removes it from meta if it was a local saas db
@@ -267,16 +272,20 @@ build_runbot(){
     case $version in 
        (9) createdb -T CLEAN_ODOO_V9 $new_db_name 
             cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V9/* $ODOO_STORAGE/filestore/$new_db_name/
+            neuter_db $new_db_name
             ;;
        (10) createdb -T CLEAN_ODOO_V10 $new_db_name
             cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V10/* $ODOO_STORAGE/filestore/$new_db_name/
+            neuter_db $new_db_name
             ;;
        (11) createdb -T CLEAN_ODOO_V11 $new_db_name
             cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V11/* $ODOO_STORAGE/filestore/$new_db_name/
+            neuter_db $new_db_name
             psql_seg_fault_fixer $new_db_name
             ;;
        (12) createdb -T CLEAN_ODOO_V12 $new_db_name
             cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V12/* $ODOO_STORAGE/filestore/$new_db_name/
+            neuter_db $new_db_name
             ;;
        (*)  echo "no match for version ${version}" 
             echo "list of valid version:\n9\n10\n11\n12"
