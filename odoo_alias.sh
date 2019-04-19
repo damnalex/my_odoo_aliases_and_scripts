@@ -45,6 +45,21 @@ go_update_and_clean(){
     clear_pyc
 }
 
+go_update_and_clean_all_branches(){
+    go_update_and_clean 10.0;
+    go_update_and_clean saas-13;
+    go_update_and_clean saas-14;
+    go_update_and_clean saas-15;
+    go_update_and_clean 11.0;
+    go_update_and_clean saas-11.1;
+    go_update_and_clean saas-11.2;
+    go_update_and_clean saas-11.3;
+    go_update_and_clean saas-11.4;
+    go_update_and_clean saas-12.1;
+    go_update_and_clean saas-12.2;
+    go_update_and_clean 12.0;
+}
+
 go_fetch(){
     git -C $ODOO fetch origin $(git_branch_version $ODOO) -q
     git -C $ENTERPRISE fetch origin $(git_branch_version $ENTERPRISE) -q
@@ -102,7 +117,7 @@ _db_version(){
 }
 
 goso(){
-    # switch repos to the versiojn of given db and starts it
+    # switch repos to the version of given db and starts it
     local db_name=$1
     godb $db_name &&
     eval so $db_name $@[2,-1]
