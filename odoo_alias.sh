@@ -370,20 +370,6 @@ list_local_saas(){
 alias lls='list_local_saas'
 
 
-
-#start mailcatcher
-# this one is only usefull on the odoo linux laptop because I fucked the config up
-smailcatcher(){
-    echo 'rvm use 2.3 && mailcatcher' | /bin/bash --login
-}
-
-
-ngrok(){
-    eval /home/odoo/Documents/programs/ngrok $@[1,-1]
-}
-
-
-
 #psql aliases
 poe(){
     psql oe_support_$1 
@@ -472,40 +458,6 @@ ptvsd3-so(){
 }
 alias debo="ptvsd3-so"
 
-ptvsd_odoo(){
-    # wrapper alias adding ptvsd import to odoo code
-    # executing wrapped command
-    # then removing import code from odoo code
-    ptvsd_odoo_set &&
-    eval $@[1,-1] ; 
-    ptvsd_odoo_unset
-}
-
-ptvsd_odoo_set(){
-    # add ptvsd code to odoo
-    # code to add :    import ptvsd; ptvsd.enable_attach(address=('localhost', 5678), redirect_output=True);
-    if [ -f $ODOO/odoo-bin ]
-    then
-        # v10 and after
-        sed -i "" "s|import odoo|import odoo;import ptvsd; ptvsd.enable_attach(address=('localhost', 5678), redirect_output=True);|" $ODOO/odoo-bin
-    else
-        # v9 and before
-        sed -i "" "s|import os|import os;import ptvsd; ptvsd.enable_attach(address=('localhost', 5678), redirect_output=True);|" $ODOO/odoo.py
-    fi
-}
-
-ptvsd_odoo_unset(){
-    # remove ptvsd code from odoo
-    # code to remove :    import ptvsd; ptvsd.enable_attach(address=('localhost', 5678), redirect_output=True);
-    if [ -f $ODOO/odoo-bin ]
-    then
-        # v10 and after
-        sed -i "" "s|import odoo;import ptvsd; ptvsd.enable_attach(address=('localhost', 5678), redirect_output=True);|import odoo|" $ODOO/odoo-bin
-    else
-        # v9 and before
-        sed -i "" "s|import os;import ptvsd; ptvsd.enable_attach(address=('localhost', 5678), redirect_output=True);|import os|" $ODOO/odoo.py
-    fi
-}
 
 psql_seg_fault_fixer(){
     local db_name=$1
