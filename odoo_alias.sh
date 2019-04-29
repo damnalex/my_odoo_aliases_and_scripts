@@ -16,7 +16,7 @@ go(){ #switch branch for all odoo repos
     echo "cleaning the junk"
     clear_pyc
     $AP/python_scripts/git_odoo.py checkout $version
-    ( go_fetch 2> /dev/null & ) # keep this single & here, it's on purpose, also this line needs to be the last one
+    ( go_fetch > /dev/null & ) # keep this single & here, it's on purpose, also this line needs to be the last one
 }
 
 go_update_and_clean(){

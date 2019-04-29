@@ -98,7 +98,7 @@ def odoo_repos_checkout(version):
     """ checkout to the :version branche of the community, enterprise and design themes repos.
     """
     repos = ["odoo", "enterprise", "design-themes"]
-    if version != "8.0":
+    if version == "8.0":
         repos.remove("enterprise")
     for repo_name, repo in zip(repos, _repos(repos)):
         print("checkouting %s to %s" % (repo_name, version))
