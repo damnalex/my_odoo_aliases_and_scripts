@@ -15,59 +15,28 @@ go(){ #switch branch for all odoo repos
     local version=$1
     echo "cleaning the junk"
     clear_pyc
-    echo "checking out odoo"
-    git -C $ODOO checkout $version &&
-    if [ $version != "8.0" ]
-    then
-        echo "checking out enterprise"
-        git -C $ENTERPRISE checkout $version &&
-    fi
-    echo "checking out design-themes"
-    git -C $SRC/design-themes checkout $version &&
+    $AP/python_scripts/git_odoo.py checkout $version
     ( go_fetch 2> /dev/null & ) # keep this single & here, it's on purpose, also this line needs to be the last one
-}
-
-git_update_and_clean(){ # fetch pull and clean a bit a given repo
-    local folder=$1
-    git -C $folder fetch --all -p  &&
-    git -C $folder pull --rebase &&
-    git -C $folder prune
 }
 
 go_update_and_clean(){
     if [ $# -eq 1 ]
     then
-        go $1
+        $AP/python_scripts/git_odoo.py pull --version $1
+    else
+        $AP/python_scripts/git_odoo.py pull
     fi
-    git_update_and_clean $ODOO &&
-    git_update_and_clean $ENTERPRISE &&
-    git_update_and_clean $SRC/design-themes &&
     clear_pyc
 }
 
 go_update_and_clean_all_branches(){
-    go_update_and_clean 10.0;
-    go_update_and_clean saas-13;
-    go_update_and_clean saas-14;
-    go_update_and_clean saas-15;
-    go_update_and_clean 11.0;
-    go_update_and_clean saas-11.1;
-    go_update_and_clean saas-11.2;
-    go_update_and_clean saas-11.3;
-    go_update_and_clean saas-11.4;
-    go_update_and_clean saas-12.1;
-    go_update_and_clean saas-12.2;
-    go_update_and_clean 12.0;
+    $AP/python_scripts/git_odoo.py pull --all
 }
 
 go_fetch(){
-    git -C $ODOO fetch origin $(git_branch_version $ODOO) -q
-    git -C $ENTERPRISE fetch origin $(git_branch_version $ENTERPRISE) -q
-    git -C $SRC/design-themes fetch origin $(git_branch_version $SRC/design-themes) -q
-    git -C $INTERNAL fetch origin $(git_branch_version $INTERNAL) -q
-    git -C $SRC/support-tools fetch origin $(git_branch_version $SRC/support-tools) -q
+    $AP/python_scripts/git_odoo.py fetch
 }
-( go_fetch 2> /dev/null & )
+( go_fetch > /dev/null & )
 # this is to fetch everytime a terminal is loaded, or sourced, so it happens often 
 # & is especially important here
 
@@ -75,38 +44,16 @@ git_branch_version(){
     git -C $1 symbolic-ref --short HEAD
 }
 
-git_branch_info(){
-    local folder=$1
-    local branch_version="$(git_branch_version $folder)"
-    local branch_late=$(git -C $folder cherry $branch_version origin/$branch_version 2> /dev/null | wc -l | trim)
-    local branch_ahead=$(git -C $folder cherry origin/$branch_version $branch_version 2> /dev/null| wc -l | trim)
-    echo "$branch_version \t\t↓ $branch_late ↑ $branch_ahead"
-}
-
 golist(){
-    echo "current community branch"
-    git_branch_info $ODOO
-    git -C $ODOO status --short
-    echo "\ncurrent enterprise branch"
-    git_branch_info $ENTERPRISE
-    git -C $ENTERPRISE status --short
-    echo "\ncurrent design branch"
-    git_branch_info $SRC/design-themes
-    git -C $SRC/design-themes status --short
-    echo "\ncurrent internal branch"
-    git_branch_info $INTERNAL
-    git -C $INTERNAL status --short
-    echo "\ncurrent support-tools branch"
-    git_branch_info $SRC/support-tools
-    git -C $SRC/support-tools status --short
-    ( go_fetch 2> /dev/null & ) # keep this single & here, it's on purpose, also this line needs to be the last one
+    $AP/python_scripts/git_odoo.py list
+    ( go_fetch > /dev/null & ) # keep this single & here, it's on purpose, also this line needs to be the last one
 }
 
 godb(){
     #switch repos branch to the version of the given DB
     local db_name=$1
     if psql -lqt | cut -d \| -f 1 | grep -qw $db_name; then #check if the database already exists
-        go $(_db_version $db_name)
+        $AP/python_scripts/git_odoo.py checkout --dbname $db_name
     else
         echo "DB $db_name does not exist"
     fi
