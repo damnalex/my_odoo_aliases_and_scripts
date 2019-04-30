@@ -11,32 +11,33 @@ clear_pyc(){
 alias clear_all_pyc="clear_pyc"
 
 #git
+alias git_odoo="$AP/python_scripts/git_odoo.py"
 go(){ #switch branch for all odoo repos
     local version=$1
     echo "cleaning the junk"
     clear_pyc
-    $AP/python_scripts/git_odoo.py checkout $version
-    ( go_fetch > /dev/null & ) # keep this single & here, it's on purpose, also this line needs to be the last one
+    git_odoo checkout $version
+    ( go_fetch > /dev/null 2>&1 & ) # keep this single & here, it's on purpose, also this line needs to be the last one
 }
 
 go_update_and_clean(){
     if [ $# -eq 1 ]
     then
-        $AP/python_scripts/git_odoo.py pull --version $1
+        git_odoo pull --version $1
     else
-        $AP/python_scripts/git_odoo.py pull
+        git_odoo pull
     fi
     clear_pyc
 }
 
 go_update_and_clean_all_branches(){
-    $AP/python_scripts/git_odoo.py pull --all
+    git_odoo pull --all
 }
 
 go_fetch(){
-    $AP/python_scripts/git_odoo.py fetch
+    git_odoo fetch
 }
-( go_fetch > /dev/null & )
+( go_fetch > /dev/null 2>&1 & )
 # this is to fetch everytime a terminal is loaded, or sourced, so it happens often 
 # & is especially important here
 
@@ -45,7 +46,7 @@ git_branch_version(){
 }
 
 golist(){
-    $AP/python_scripts/git_odoo.py list
+    git_odoo list
     ( go_fetch > /dev/null & ) # keep this single & here, it's on purpose, also this line needs to be the last one
 }
 
@@ -53,7 +54,7 @@ godb(){
     #switch repos branch to the version of the given DB
     local db_name=$1
     if psql -lqt | cut -d \| -f 1 | grep -qw $db_name; then #check if the database already exists
-        $AP/python_scripts/git_odoo.py checkout --dbname $db_name
+        git_odoo checkout --dbname $db_name
     else
         echo "DB $db_name does not exist"
     fi
