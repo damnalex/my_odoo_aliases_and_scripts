@@ -18,7 +18,6 @@ from docopt import docopt
 import psycopg2
 import git
 
-
 relevant_saas_versions = ["13", "14", "15", "11.1", "11.2", "11.3", "11.4"]
 RELEVANT_BRANCHES = ["saas-%s" % s for s in relevant_saas_versions]
 RELEVANT_BRANCHES += ["10.0", "11.0", "12.0"]
@@ -33,11 +32,12 @@ def _repos(repos_names):
 
 def _nbr_commits_ahead_and_behind(repo):
     branch_name = repo.active_branch.name
+    # HACK: getting the length of a generator
     nbr_commit_ahead = sum(
-        1 for c in repo.iter_commits("origin/%s..%s" % (branch_name, branch_name))
+        1 for _ in repo.iter_commits("origin/%s..%s" % (branch_name, branch_name))
     )
     nbr_commit_behind = sum(
-        1 for c in repo.iter_commits("%s..origin/%s" % (branch_name, branch_name))
+        1 for _ in repo.iter_commits("%s..origin/%s" % (branch_name, branch_name))
     )
     return (nbr_commit_ahead, nbr_commit_behind)
 
@@ -48,7 +48,10 @@ def list_all_repos_info():
     """
     repos = ["odoo", "enterprise", "design-themes", "internal", "support-tools"]
     for repo_name, repo in zip(repos, _repos(repos)):
-        nbr_ahead, nbr_behind = _nbr_commits_ahead_and_behind(repo)
+        try:
+            nbr_ahead, nbr_behind = _nbr_commits_ahead_and_behind(repo)
+        except git.exc.GitCommandError:
+            nbr_ahead, nbr_behind = "N/A", "N/A"
         print("current %s branch" % (repo_name))
         print("  %s\t\t↓ %s ↑ %s" % (repo.active_branch.name, nbr_behind, nbr_ahead))
         if repo.index.diff(None):
