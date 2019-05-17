@@ -47,7 +47,6 @@ alias e="vim"
 
 eza(){
     # edit and reload alias
-    # eza the_alias_file_to_edit
     local file_to_load=" "
     case $1 in
         zsh)
@@ -59,15 +58,31 @@ eza(){
         odoo)
             file_to_load="odoo_alias.sh"
             ;;
-        --help)
+        git)
+            file_to_load="python_scripts/git_odoo.py"
+            ;;
+        start)
+            file_to_load="python_scripts/start_odoo.py"
+            ;;
+        psql)
+            file_to_load="python_scripts/psql_odoo.py"
+            ;;
+        drop)
+            file_to_load="drop_protected_dbs.txt"
+            ;;
+        "")
+            #default
+            file_to_load="odoo_alias.sh"
+            ;;
+        *)
             echo "zsh_alias.sh --> eza zsh"
             echo "alias_loader.sh --> eza loader"
             echo "odoo_alias.sh --> eza odoo   or   eza"
+            echo "drop_protected_dbs.txt --> eza drop"
+            echo "git_odoo.py --> eza git"
+            echo "psql_odoo.py --> eza psql"
+            echo "start_odoo.py --> eza psql"
             return
-            ;;
-        *)
-            #default
-            file_to_load="odoo_alias.sh"
             ;;
     esac
 
