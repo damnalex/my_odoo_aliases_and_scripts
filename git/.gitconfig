@@ -1,5 +1,5 @@
 [user]
-	name = MOENS Alexandre
+	name = Moens Alexandre
 	email = mao@odoo.com
 [core]
 	excludesfile = /home/odoo/.gitignore_global
@@ -15,3 +15,5 @@
     smudge = git-lfs smudge -- %f
     process = git-lfs filter-process
     required = true
+[checkout]
+    defaultRemote = origin

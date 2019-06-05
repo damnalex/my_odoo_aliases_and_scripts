@@ -18,7 +18,7 @@ from docopt import docopt
 import psycopg2
 import git
 
-relevant_saas_versions = ["13", "14", "15", "11.1", "11.2", "11.3", "11.4"]
+relevant_saas_versions = ["13", "14", "15", "11.1", "11.2", "11.3", "11.4", "12.2", "12.3"]
 RELEVANT_BRANCHES = ["saas-%s" % s for s in relevant_saas_versions]
 RELEVANT_BRANCHES += ["10.0", "11.0", "12.0"]
 
