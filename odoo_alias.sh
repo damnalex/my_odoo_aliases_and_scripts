@@ -171,6 +171,7 @@ sou(){
 oes(){
     #start odoo support
     eval $SRC/support-tools/oe-support.py $@[1,-1]
+    ( clear_pyc & )
 }
 alias eos="oes"
 alias ose="oes"
