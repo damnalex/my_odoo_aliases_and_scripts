@@ -186,7 +186,7 @@ neuter_db(){
 
 odoosh_ssh(){
     local url=$1
-    eval $AP/support_scripts/odoosh_ssh.py $url
+    eval $SRC/support-tools/odoosh/odoosh.py $url
 }
 
 alias psql_odoo="$AP/python_scripts/psql_odoo.py"
