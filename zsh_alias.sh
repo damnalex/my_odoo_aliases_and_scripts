@@ -43,7 +43,7 @@ eza(){
             echo "drop_protected_dbs.txt --> eza drop"
             echo "git_odoo.py --> eza git"
             echo "psql_odoo.py --> eza psql"
-            echo "start_odoo.py --> eza psql"
+            echo "start_odoo.py --> eza start"
             return
             ;;
     esac
