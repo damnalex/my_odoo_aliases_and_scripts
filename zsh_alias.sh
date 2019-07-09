@@ -1,49 +1,11 @@
 ##############################################
-############  personnal stuffs  ##############
+##############  misc  stuffs  ################
 ##############################################
 
-maj(){
-    sudo apt-get update && 
-    sudo apt-get upgrade -y && 
-    sudo apt-get autoclean && 
-    sudo apt-get autoremove -y
-}
-
-fullmaj(){
-    sudo apt-get update &&
-    sudo apt-get upgrade -y &&
-    sudo apt-get dist-upgrade -y &&
-    sudo apt-get autoclean &&
-    sudo apt-get autoremove -y
-}
-
-alias reload_zshrc='source $AP/alias_loader.sh'
-
-alias cya='systemctl suspend -i'
-
-clear_ram(){
-    echo "This is going to take a while ..." && 
-    echo "Droppping cache" && 
-    sudo su -c "echo 3 > /proc/sys/vm/drop_caches" root && 
-    echo "Cache dropped" && 
-    echo "turning swap off" && 
-    sudo swapoff -a && 
-    echo "turning swap back on" && 
-    sudo swapon -a && 
-    echo "Aaaaaand... done!" 
-}
-
-noweb(){
-        sg no_web $@[1,-1]
-}
-alias ni='noweb'
-
-alias gti='git'
-#############################################
-#############  zsh stuffs  ##################
-#############################################
 
 alias e="vim"
+
+alias reload_zshrc='source $AP/alias_loader.sh'
 
 eza(){
     # edit and reload alias
@@ -92,11 +54,6 @@ eza(){
 
 
 
-
-
-
-
-
 #history analytics
 history_count(){
     history -n | cut -d' ' -f1 | sort | uniq -c | trim | sort -gr | less
@@ -105,27 +62,6 @@ trim(){
     awk '{$1=$1};1'
 }
 
-
-
-#patern finder
-find_pattern(){
-    local pattern=$1
-    local folder=$2
-    for i in $(find "$folder" -not -name "*.po*" -not -name "*.pyc" 2> /dev/null); 
-    do 
-        local grepped=$(grep -C 5 "$pattern" $i 2> /dev/null) 
-        if [ "$grepped" != "" ]
-        then
-            echo "\n~~~~~~~~~~~~~~~~~~~~~~~~~~\n$i" && 
-            echo "$grepped" | grep -C 5 "$pattern" ; 
-        fi
-    done
-    # make it search multiple folders
-    for other_folder in $@[3,-1]
-    do
-        find_pattern $pattern $other_folder
-    done
-}
 
 #########################################
 ######## system specific stuffs #########
@@ -138,4 +74,62 @@ then
     export LANG=en_US.UTF-8
     alias gedit='/usr/local/Cellar/gedit/3.30.2/bin/gedit'
     alias code='/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code'
+
+    #monitoring
+    alias netdata="netdata_start > /dev/null && open http://localhost:19999"
+    alias netdata_start="brew services start netdata"
+    alias netdata_stop="brew services stop netdata"
+
+    # end of macos stuffs
+else
+    # linux
+
+    maj(){
+        sudo apt-get update && 
+        sudo apt-get upgrade -y && 
+        sudo apt-get autoclean && 
+        sudo apt-get autoremove -y
+    }
+    
+    fullmaj(){
+        sudo apt-get update &&
+        sudo apt-get upgrade -y &&
+        sudo apt-get dist-upgrade -y &&
+        sudo apt-get autoclean &&
+        sudo apt-get autoremove -y
+    }
+    
+    
+    alias cya='systemctl suspend -i'
+    
+    clear_ram(){
+        echo "This is going to take a while ..." && 
+        echo "Droppping cache" && 
+        sudo su -c "echo 3 > /proc/sys/vm/drop_caches" root && 
+        echo "Cache dropped" && 
+        echo "turning swap off" && 
+        sudo swapoff -a && 
+        echo "turning swap back on" && 
+        sudo swapon -a && 
+        echo "Aaaaaand... done!" 
+    }
+
+    noweb(){
+            sg no_web $@[1,-1]
+    }
+    alias ni='noweb'
+
+    # end of linux stuff
 fi
+
+
+
+##############################################
+##############  typo  stuffs  ################
+##############################################
+
+alias gti='git'
+alias pyhton3='python3'
+alias pyhton='python'
+
+
