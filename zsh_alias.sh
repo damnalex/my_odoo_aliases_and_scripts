@@ -32,6 +32,9 @@ eza(){
         drop)
             file_to_load="drop_protected_dbs.txt"
             ;;
+        typo)
+            file_to_load="typo.sh"
+            ;;
         "")
             #default
             file_to_load="odoo_alias.sh"
@@ -44,6 +47,7 @@ eza(){
             echo "git_odoo.py --> eza git"
             echo "psql_odoo.py --> eza psql"
             echo "start_odoo.py --> eza start"
+            echo "typo.py --> eza typo"
             return
             ;;
     esac
@@ -128,8 +132,11 @@ fi
 ##############  typo  stuffs  ################
 ##############################################
 
-alias gti='git'
-alias pyhton3='python3'
-alias pyhton='python'
+new_typo(){
+    local typo=$1
+    local correct_command=$2
+    echo "alias '$typo'='$correct_command'" >> $AP/typo.sh
+    reload_zshrc
+}
 
 
