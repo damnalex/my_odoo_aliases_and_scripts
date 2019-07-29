@@ -173,8 +173,6 @@ oes(){
     eval $SRC/support-tools/oe-support.py $@[1,-1]
     ( clear_pyc & )
 }
-alias eos="oes"
-alias ose="oes"
 
 clean_database(){
     eval $SRC/support-tools/clean_database.py $@[1,-1]
