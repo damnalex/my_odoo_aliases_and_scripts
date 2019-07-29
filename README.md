@@ -7,4 +7,4 @@ disclaimer :
 this is made to work for zsh shell and python 3.6, no effort has been made to make it work with other versions
 
 disclaimer 2 : 
-this is made to work on my personnal machine, with it's shitty config and idiosyncrasies. If this breaks yours, it's on you, no support will be providied, just so you know
+this is made to work on my personnal machine, with it's shitty config and idiosyncrasies. If this breaks yours, it's on you, no support will be providied, you have been warned.
