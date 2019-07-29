@@ -336,10 +336,10 @@ pl(){
     local db_name
     for db_name in $(psql -tAqX -d postgres -c "SELECT t1.datname AS db_name FROM pg_database t1 $where_clause ORDER BY LOWER(t1.datname);")
     do
-        local db_size=$(psql -tAqX -d $db_name -c "SELECT pg_size_pretty(pg_database_size('$db_name'));" 2> /dev/null)
         local db_version=$(_db_version $db_name 2> /dev/null)
         if [ "$db_version" != "" ] #ignore non-odoo DBs
         then
+            local db_size=$(psql -tAqX -d $db_name -c "SELECT pg_size_pretty(pg_database_size('$db_name'));" 2> /dev/null)
             echo "$db_version:    \t $db_name \t($db_size)"
         fi
     done
