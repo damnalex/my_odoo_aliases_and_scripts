@@ -240,6 +240,9 @@ build_runbot(){
     dropodoo $new_db_name 2> /dev/null
     mkdir $ODOO_STORAGE/filestore/$new_db_name/
     case $version in 
+       (8) createdb -T CLEAN_ODOO_V8 $new_db_name 
+            cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V8/* $ODOO_STORAGE/filestore/$new_db_name/
+            ;;
        (9) createdb -T CLEAN_ODOO_V9 $new_db_name 
             cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V9/* $ODOO_STORAGE/filestore/$new_db_name/
             ;;
