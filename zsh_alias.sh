@@ -3,6 +3,7 @@
 ##############################################
 
 
+alias c='clear'
 alias e="vim"
 
 alias reload_zshrc='source $AP/alias_loader.sh'
@@ -89,12 +90,12 @@ else
     # linux
 
     maj(){
-        sudo apt-get update && 
-        sudo apt-get upgrade -y && 
-        sudo apt-get autoclean && 
+        sudo apt-get update &&
+        sudo apt-get upgrade -y &&
+        sudo apt-get autoclean &&
         sudo apt-get autoremove -y
     }
-    
+
     fullmaj(){
         sudo apt-get update &&
         sudo apt-get upgrade -y &&
@@ -102,20 +103,20 @@ else
         sudo apt-get autoclean &&
         sudo apt-get autoremove -y
     }
-    
-    
+
+
     alias cya='systemctl suspend -i'
-    
+
     clear_ram(){
-        echo "This is going to take a while ..." && 
-        echo "Droppping cache" && 
-        sudo su -c "echo 3 > /proc/sys/vm/drop_caches" root && 
-        echo "Cache dropped" && 
-        echo "turning swap off" && 
-        sudo swapoff -a && 
-        echo "turning swap back on" && 
-        sudo swapon -a && 
-        echo "Aaaaaand... done!" 
+        echo "This is going to take a while ..." &&
+        echo "Droppping cache" &&
+        sudo su -c "echo 3 > /proc/sys/vm/drop_caches" root &&
+        echo "Cache dropped" &&
+        echo "turning swap off" &&
+        sudo swapoff -a &&
+        echo "turning swap back on" &&
+        sudo swapon -a &&
+        echo "Aaaaaand... done!"
     }
 
     noweb(){

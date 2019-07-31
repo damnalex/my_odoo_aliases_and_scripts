@@ -38,7 +38,7 @@ go_fetch(){
     git_odoo fetch
 }
 ( go_fetch > /dev/null 2>&1 & )
-# this is to fetch everytime a terminal is loaded, or sourced, so it happens often 
+# this is to fetch everytime a terminal is loaded, or sourced, so it happens often
 # & is especially important here
 
 git_branch_version(){
@@ -74,14 +74,14 @@ goso(){
 
 #start odoo
 alias start_odoo="$AP/python_scripts/start_odoo.py"
-so(){ 
+so(){
     _so_checker $@[1,-1] || return 1
 
     eval $(_so_builder $@[1,-1])
     echo $(_so_builder $@[1,-1])
 }
 
-_so_checker(){ 
+_so_checker(){
     local db_name=$1
     if [ $# -lt 1 ]
     then
@@ -199,21 +199,21 @@ dropodoo(){
         echo "dropodoo DB_Name [Other_DB_name* ]"
         return 1
     fi
-    if [[ $db_name_1 =~ $(echo ^\($(paste -sd'|' $AP/drop_protected_dbs.txt)\)$) ]]; then 
+    if [[ $db_name_1 =~ $(echo ^\($(paste -sd'|' $AP/drop_protected_dbs.txt)\)$) ]]; then
         echo "db $db_name_1 is drop protected --> aborting"
         echo "to override protection, modify protection file at $AP/drop_protected_dbs.txt"
         return 1
     fi
     if [ $# -eq 1 ]
     then
-        psql -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$db_name_1';" -q > /dev/null 
-        remove_from_meta $db_name_1 2> /dev/null 
+        psql -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$db_name_1';" -q > /dev/null
+        remove_from_meta $db_name_1 2> /dev/null
         rm -rf $ODOO_STORAGE/filestore/$db_name_1
         dropdb $db_name_1 || return 1
         echo "$db_name_1 has been dropped"
-        return 
+        return
     fi
-    
+
     # drop multiple DB at the same time
     for db_name in $@[1,-1]
     do
@@ -239,11 +239,11 @@ build_runbot(){
     local new_db_name=$2
     dropodoo $new_db_name 2> /dev/null
     mkdir $ODOO_STORAGE/filestore/$new_db_name/
-    case $version in 
-       (8) createdb -T CLEAN_ODOO_V8 $new_db_name 
+    case $version in
+       (8) createdb -T CLEAN_ODOO_V8 $new_db_name
             cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V8/* $ODOO_STORAGE/filestore/$new_db_name/
             ;;
-       (9) createdb -T CLEAN_ODOO_V9 $new_db_name 
+       (9) createdb -T CLEAN_ODOO_V9 $new_db_name
             cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V9/* $ODOO_STORAGE/filestore/$new_db_name/
             ;;
        (10) createdb -T CLEAN_ODOO_V10 $new_db_name
@@ -256,7 +256,7 @@ build_runbot(){
        (12) createdb -T CLEAN_ODOO_V12 $new_db_name
             cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V12/* $ODOO_STORAGE/filestore/$new_db_name/
             ;;
-       (*)  echo "no match for version ${version}" 
+       (*)  echo "no match for version ${version}"
             echo "list of valid version:\n9\n10\n11\n12"
             return 1
             ;;
@@ -308,7 +308,7 @@ local_saas_config_files_set(){
 }
 
 local_saas_config_files_unset(){
-    sed -i "" "s|OAUTH_BASE_URL = 'https://accounts.odoo.com' #tempcomment|OAUTH_BASE_URL = 'http://accounts.127.0.0.1.xip.io:8369'|" $INTERNAL/default/saas_worker/const.py   
+    sed -i "" "s|OAUTH_BASE_URL = 'https://accounts.odoo.com' #tempcomment|OAUTH_BASE_URL = 'http://accounts.127.0.0.1.xip.io:8369'|" $INTERNAL/default/saas_worker/const.py
     sed -i "" "s|if not has_role('trial') and False: #tempcomment|if not has_role('trial'):|" $INTERNAL/default/saas_worker/controllers/support.py
     # this following line only usefull on the mac until I find time to find the cause of the inconsistency
     sed -i "" "s|#assert isnamedtuple(db) #tempcomment|assert isnamedtuple(db)|" $INTERNAL/default/saas_worker/metabase.py
@@ -326,13 +326,13 @@ alias lls='list_local_saas'
 
 #psql aliases
 poe(){
-    psql oe_support_$1 
+    psql oe_support_$1
 }
 
 pl(){
     #echo "select t1.datname as db_name, pg_size_pretty(pg_database_size(t1.datname)) as db_size from pg_database t1 order by t1.datname;" | psql postgres
     local where_clause="where t1.datname not like 'CLEAN_ODOO%' "
-    if [ $# -eq 1 ] 
+    if [ $# -eq 1 ]
     then
         where_clause="where t1.datname like '%$1%'"
     fi
@@ -349,8 +349,8 @@ pl(){
 }
 
 ploe(){
-    # the grep is not necessary, but it makes the base name of the DBs more readable    
-    pl oe_support_ | grep oe_support_ 
+    # the grep is not necessary, but it makes the base name of the DBs more readable
+    pl oe_support_ | grep oe_support_
 }
 
 plike(){
@@ -362,8 +362,8 @@ lu(){
     psql -d $1 -c "SELECT id, login FROM res_users where active = true ORDER BY id;" -q
 }
 
-luoe(){ 
-    lu oe_support_$1 
+luoe(){
+    lu oe_support_$1
 }
 
 list_db_like(){
@@ -379,21 +379,21 @@ db_age(){
 
 #port killer
 listport () {
-    lsof -i tcp:$1 
+    lsof -i tcp:$1
 }
 killport () {
-    listport $1 | sed -n '2p' | awk '{print $2}' |  xargs kill -9 
+    listport $1 | sed -n '2p' | awk '{print $2}' |  xargs kill -9
 }
 
 
 
 #start python scripts with the vscode python debugger
-# note that the debbuger is on the called scrpt, 
+# note that the debbuger is on the called scrpt,
 # if that script calls another one, that one is not "debugged"
 # so it doesn't work with oe-support.
 # doesn't work with alias calling python scripts
 ptvsd2(){
-    eval python2 -m ptvsd --host localhost --port 5678 $@[1,-1] 
+    eval python2 -m ptvsd --host localhost --port 5678 $@[1,-1]
 }
 
 ptvsd2-so(){
@@ -403,7 +403,7 @@ ptvsd2-so(){
 alias debo2="ptvsd2-so"
 
 ptvsd3(){
-    eval python3 -m ptvsd --host localhost --port 5678 $@[1,-1] 
+    eval python3 -m ptvsd --host localhost --port 5678 $@[1,-1]
 }
 
 ptvsd3-so(){
