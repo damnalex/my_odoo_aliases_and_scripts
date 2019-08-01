@@ -140,4 +140,7 @@ new_typo(){
     reload_zshrc
 }
 
-
+commit_typos(){
+    git -C $AP add $AP/typo.sh
+    git -C $AP commit -m "[AUTOMATIC] update typos file"
+}
