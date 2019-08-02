@@ -196,7 +196,7 @@ dropodoo(){
     if [ $# -lt 1 ]
     then
         echo "requires the name(s) of the DB(s) to drop"
-        echo "dropodoo DB_Name [Other_DB_name* ]"
+        echo "dropodoo DB_Name [Other_DB_name* ...]"
         return 1
     fi
     if [[ $db_name_1 =~ $(echo ^\($(paste -sd'|' $AP/drop_protected_dbs.txt)\)$) ]]; then
