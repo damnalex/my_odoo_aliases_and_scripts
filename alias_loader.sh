@@ -6,6 +6,7 @@ export SRC="$HOME/src"
 export ODOO="$SRC/odoo"
 export ENTERPRISE="$SRC/enterprise"
 export INTERNAL="$SRC/internal"
+export ST="$SRC/support-tools"
 export AP=$(dirname $0)
 export SRC_MULTI="$HOME/multi_src"
 

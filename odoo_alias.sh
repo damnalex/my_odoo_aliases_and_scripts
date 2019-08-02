@@ -170,12 +170,12 @@ sou(){
 
 oes(){
     #start odoo support
-    eval $SRC/support-tools/oe-support.py $@[1,-1]
+    eval $ST/oe-support.py $@[1,-1]
     ( clear_pyc & )
 }
 
 clean_database(){
-    eval $SRC/support-tools/clean_database.py $@[1,-1]
+    eval $ST/clean_database.py $@[1,-1]
 }
 
 neuter_db(){
@@ -185,7 +185,7 @@ neuter_db(){
 
 odoosh_ssh(){
     local url=$1
-    eval $SRC/support-tools/odoosh/odoosh.py $url
+    eval $ST/odoosh/odoosh.py $url
 }
 
 alias psql_odoo="$AP/python_scripts/psql_odoo.py"
