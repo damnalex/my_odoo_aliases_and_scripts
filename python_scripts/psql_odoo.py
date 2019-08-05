@@ -14,6 +14,11 @@ options:
 from docopt import docopt
 import psycopg2
 
+def _is_odoo_db(dbname):
+    """ Returns True if the database is an odoo database, False otherwise.
+    """
+    raise NotImplementedError
+
 
 def _list_db_like(pattern):
     """ returns a list of DB name that match the sql like pattern
