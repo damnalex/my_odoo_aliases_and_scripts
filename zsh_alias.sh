@@ -67,6 +67,34 @@ trim(){
     awk '{$1=$1};1'
 }
 
+find_file_with_all(){
+    # find_file_with_all [--ext <ext>] <expressions>...
+    # list all the files in the current directory and its subdirectories
+    # where all the expressions are present
+    # only looks in the file of type "ext" if --ext is provided
+    # looks in py files otherwise
+    local ext=""
+    local first_word=""
+    local other_words_start=0
+    if [ "$1" = "--ext" ]
+    then
+        ext=$2
+        first_word=$3
+        other_words_start=4
+    else
+        ext="py"
+        first_word=$1
+        other_words_start=2
+    fi
+    local cmd="grep -rl $first_word **/*.$ext"
+    for word in $@[$other_words_start,-1]
+    do
+        cmd="grep -l $word \$("$cmd")"
+    done
+    eval $cmd
+    # echo "\n\n\nthe commmand that ran : "
+    # echo $cmd
+}
 
 #########################################
 ######## system specific stuffs #########
