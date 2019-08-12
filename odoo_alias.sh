@@ -423,3 +423,4 @@ psql_seg_fault_fixer(){
 ##############################################
 
 alias todayilearned="e ~/Documents/meetings_notes/today_I_leanred_backlog.txt"
+alias thingsToChangeInOESupport="e ~/Documents/things_to_change_in_oe-support.txt"
