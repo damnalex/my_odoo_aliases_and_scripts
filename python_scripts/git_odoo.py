@@ -32,13 +32,33 @@ def _repos(repos_names):
 
 def _nbr_commits_ahead_and_behind(repo):
     branch_name = repo.active_branch.name
-    # HACK: getting the length of a generator
-    nbr_commit_ahead = sum(
-        1 for _ in repo.iter_commits("origin/%s..%s" % (branch_name, branch_name))
-    )
-    nbr_commit_behind = sum(
-        1 for _ in repo.iter_commits("%s..origin/%s" % (branch_name, branch_name))
-    )
+
+    def count_commits(repo, branch_name, remote_name="origin", ahead=True):
+        s = "{remote}/{branch}..{branch}" if ahead else "{branch}..{remote}/{branch}"
+        s = s.format(remote=remote_name, branch=branch_name)
+        # HACK: getting the length of a generator
+        nbr_commit = sum(1 for _ in repo.iter_commits(s))
+        return nbr_commit
+
+    try:
+        nbr_commit_ahead = count_commits(repo, branch_name, ahead=True)
+        nbr_commit_behind = count_commits(repo, branch_name, ahead=False)
+    except git.exc.GitCommandError as ge:
+        # test all the remotes for this branch, return for the first one matching
+        found_valide_remote = False
+        for remote in repo.remotes:
+            try:
+                nbr_commit_ahead = count_commits(repo, branch_name, remote_name=remote.name, ahead=True)
+                nbr_commit_behind = count_commits(repo, branch_name, remote_name=remote.name, ahead=False)
+            except git.exc.GitCommandError:
+                pass
+            else:
+                found_valide_remote = True
+                break
+        if not found_valide_remote:
+            # did not find any remote matching, reraising original error
+            raise ge
+
     return (nbr_commit_ahead, nbr_commit_behind)
 
 
