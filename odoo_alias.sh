@@ -8,7 +8,11 @@ export PYTHONPATH="${PYTHONPATH}:$SRC/odoo"
 clear_pyc(){
     find $SRC -name '*.pyc' -delete
 }
-alias clear_all_pyc="clear_pyc"
+
+clear_all_pyc(){
+    clear_pyc
+    find $SRC_MULTI -name '*.pyc' -delete
+}
 
 #git
 alias git_odoo="$AP/python_scripts/git_odoo.py"
@@ -32,6 +36,8 @@ go_update_and_clean(){
 
 go_update_and_clean_all_branches(){
     git_odoo pull --all
+    $SRC_MULTI/update_all_multiverse_branches.sh
+    clear_all_pyc
 }
 
 go_fetch(){
