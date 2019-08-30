@@ -113,14 +113,6 @@ then
     alias netdata_start="brew services start netdata"
     alias netdata_stop="brew services stop netdata"
 
-    # Homebrew
-    if [[ $(( $RANDOM % 50 )) -eq 0 ]]
-    then
-        # display outdated brew formuleas once in a while
-        brew outdated
-        echo "^^^^^^ outdated brew formuleas"
-    fi
-
     # end of macos stuffs
 else
     # linux
