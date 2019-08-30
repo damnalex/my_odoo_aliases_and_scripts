@@ -17,6 +17,12 @@ else
     export ODOO_STORAGE="$HOME/.local/Odoo"
 fi
 
+# activate bash style completion
+autoload bashcompinit
+bashcompinit
+
+
 source $AP/zsh_alias.sh
 source $AP/odoo_alias.sh
 source $AP/typo.sh
+source $AP/completion.sh
