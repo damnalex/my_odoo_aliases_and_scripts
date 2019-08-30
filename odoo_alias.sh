@@ -179,6 +179,8 @@ oes(){
     eval $ST/oe-support.py $@[1,-1]
     ( clear_pyc & )
 }
+source $ST/scripts/completion/oe-support-completion.sh
+complete -F _oe-support oes
 
 clean_database(){
     eval $ST/clean_database.py $@[1,-1]
