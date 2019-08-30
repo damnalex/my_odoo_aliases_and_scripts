@@ -105,7 +105,7 @@ then
     # macos
     export LC_ALL=en_US.UTF-8
     export LANG=en_US.UTF-8
-    alias gedit='/usr/local/Cellar/gedit/3.30.2/bin/gedit'
+    export PATH="/usr/local/sbin:$PATH"
     alias code='/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code'
 
     # monitoring
