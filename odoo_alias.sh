@@ -181,7 +181,7 @@ oes(){
 }
 #source $AP/completion.sh
 source $ST/scripts/completion/oe-support-completion.sh
-complete -F _oe-support oes
+complete -o default -F _oe-support oes
 
 clean_database(){
     eval $ST/clean_database.py $@[1,-1]
