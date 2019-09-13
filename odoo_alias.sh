@@ -179,7 +179,6 @@ oes(){
     eval $ST/oe-support.py $@[1,-1]
     ( clear_pyc & )
 }
-#source $AP/completion.sh
 source $ST/scripts/completion/oe-support-completion.sh
 complete -o default -F _oe-support oes
 
