@@ -1,1 +1,1 @@
-cp $AP/editors/vim/.vimrc ~/.vimrc 
+cat $AP/editors/vim/.vimrc > ~/.vimrc
