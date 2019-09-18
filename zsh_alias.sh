@@ -100,6 +100,21 @@ find_file_with_all(){
     # echo $cmd
 }
 
+git_fame(){
+    local file_to_analyse=$1
+    git ls-tree -r -z --name-only HEAD -- ${file_to_analyse} | xargs -0 -n1 git blame --line-porcelain HEAD |grep  "^author "|sort|uniq -c|sort -nr
+}
+
+# make git_fame callable as "git fame" (as if it was a standard git comand)
+git(){
+    if [[ $1 == "fame" ]]
+    then
+        git_fame $2
+    else
+        command git "$@"
+    fi
+}
+
 #########################################
 ######## system specific stuffs #########
 #########################################
