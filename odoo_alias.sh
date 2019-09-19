@@ -334,7 +334,7 @@ alias lls='list_local_saas'
 
 #psql aliases
 poe(){
-    psql oe_support_$1
+    pgcli --auto-vertical-output oe_support_$1
 }
 
 pl(){
