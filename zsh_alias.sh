@@ -5,6 +5,7 @@
 
 alias c='clear'
 alias e="vim"
+alias l="ls -lAh"
 
 alias reload_zshrc='source $AP/alias_loader.sh'
 
