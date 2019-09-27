@@ -72,7 +72,7 @@ find_file_with_all(){
     # find_file_with_all [--ext <ext>] <expressions>...
     # list all the files in the current directory and its subdirectories
     # where all the expressions are present
-    # only looks in the file of type "ext" if --ext is provided
+    # looks in the file of type "ext" if --ext is provided
     # looks in py files otherwise
     local ext=""
     local first_word=""
