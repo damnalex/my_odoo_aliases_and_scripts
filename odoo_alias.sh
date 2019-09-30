@@ -77,17 +77,17 @@ goso(){
     # switch repos to the version of given db and starts it
     local db_name=$1
     godb $db_name &&
-    eval so $db_name $@[2,-1]
+    eval so $@
 }
 
 
 #start odoo
 alias start_odoo="$AP/python_scripts/start_odoo.py"
 so(){
-    _so_checker $@[1,-1] || return 1
+    _so_checker $@ || return 1
 
-    eval $(_so_builder $@[1,-1])
-    echo $(_so_builder $@[1,-1])
+    eval $(_so_builder $@)
+    echo $(_so_builder $@)
 }
 
 _so_checker(){
@@ -179,14 +179,14 @@ sou(){
 
 oes(){
     #start odoo support
-    eval $ST/oe-support.py $@[1,-1]
+    eval $ST/oe-support.py $@
     ( clear_pyc & )
 }
 source $ST/scripts/completion/oe-support-completion.sh
 complete -o default -F _oe-support oes
 
 clean_database(){
-    eval $ST/clean_database.py $@[1,-1]
+    eval $ST/clean_database.py $@
 }
 
 neuter_db(){
@@ -226,7 +226,7 @@ dropodoo(){
     fi
 
     # drop multiple DB at the same time
-    for db_name in $@[1,-1]
+    for db_name in $@
     do
         dropodoo $db_name
     done
@@ -404,22 +404,22 @@ killport () {
 # so it doesn't work with oe-support.
 # doesn't work with alias calling python scripts
 ptvsd2(){
-    eval python2 -m ptvsd --host localhost --port 5678 $@[1,-1]
+    eval python2 -m ptvsd --host localhost --port 5678 $@
 }
 
 ptvsd2-so(){
-    _so_checker $@[1,-1] || return 1
-    eval ptvsd2 $(_so_builder $@[1,-1])
+    _so_checker $@ || return 1
+    eval ptvsd2 $(_so_builder $@)
 }
 alias debo2="ptvsd2-so"
 
 ptvsd3(){
-    eval python3 -m ptvsd --host localhost --port 5678 $@[1,-1]
+    eval python3 -m ptvsd --host localhost --port 5678 $@
 }
 
 ptvsd3-so(){
-    _so_checker $@[1,-1] || return 1
-    eval ptvsd3 $(_so_builder $@[1,-1])
+    _so_checker $@ || return 1
+    eval ptvsd3 $(_so_builder $@)
 }
 alias debo="ptvsd3-so"
 
