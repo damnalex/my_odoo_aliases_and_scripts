@@ -32,6 +32,7 @@ go_update_and_clean(){
     else
         git_odoo pull
     fi
+    git -C $INTERNAL pull --rebase
     clear_pyc
     echo "-------"
     golist
