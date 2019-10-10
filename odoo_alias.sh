@@ -71,7 +71,7 @@ go_update_and_clean(){
 
 go_update_and_clean_all_branches(){
     git_odoo pull --all
-    $SRC_MULTI/update_all_multiverse_branches.sh
+    update_all_multiverse_branches
     clear_all_pyc
 }
 
@@ -274,6 +274,45 @@ droplike(){
     else
         eval dropodoo $dbs_list
     fi
+}
+
+build_multiverse_branch(){
+    local version=$1
+    # building branch
+    local repos=( "odoo" "enterprise" "design-themes" )
+    for rep in $repos; do {
+        echo ${rep}
+        git -C $SRC_MULTI/master/${rep} worktree prune
+        git -C $SRC_MULTI/master/${rep} worktree add $SRC_MULTI/${version}/${rep} ${version}
+    } done
+    # adding branch to list of known branches
+    echo ${version} >> $SRC_MULTI/version_list.txt &&
+    # cleaning the list of known branches from duplicates
+    echo "$(cat $SRC_MULTI/version_list.txt | sort | uniq -u)" > $SRC_MULTI/version_list.txt
+}
+
+update_multiverse_branch(){
+    local version=$1
+    local repos=( "odoo" "enterprise" "design-themes" )
+    for rep in $repos; do {
+        echo ${rep}
+        git -C $SRC_MULTI/${version}/${rep} pull --rebase
+    } done
+}
+
+update_all_multiverse_branches(){
+    local version
+    for version in $(cat $SRC_MULTI/version_list.txt); do {
+        echo $version
+        eval update_multiverse_branch $version
+    } done
+    echo "###########################################"
+    echo "###########################################"
+    echo "###########################################"
+    echo "###########################################"
+    echo "###########################################"
+    echo "###########################################"
+    echo "all done !!!!"
 }
 
 build_runbot(){
