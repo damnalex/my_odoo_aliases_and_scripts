@@ -100,6 +100,16 @@ find_file_with_all(){
     # echo $cmd
 }
 
+run(){
+    # source https://www.shellhacks.com/linux-repeat-command-n-times-bash-loop/
+    number=$1
+    shift
+    for n in $(seq $number); do
+      $@
+    done
+}
+
+
 git_fame(){
     local file_to_analyse=$1
     git ls-tree -r -z --name-only HEAD -- ${file_to_analyse} | xargs -0 -n1 git blame --line-porcelain HEAD |grep  "^author "|sort|uniq -c|sort -nr
