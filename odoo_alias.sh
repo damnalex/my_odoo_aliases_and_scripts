@@ -25,6 +25,7 @@ go(){ #switch branch for all odoo repos
     else
         local version=$1
         git_odoo checkout $version
+        go_venv $version
     fi
     echo "-------"
     golist
@@ -313,6 +314,36 @@ update_all_multiverse_branches(){
     echo "###########################################"
     echo "###########################################"
     echo "all done !!!!"
+}
+
+build_odoo_virtualenv(){
+    local version=$1
+    local python_inter
+    if [[ $# -gt 1 ]]
+    then
+        python_inter=$2
+    else
+        python_inter="python3"
+    fi
+    cd $SRC_MULTI/$version || return 1
+    deactivate || echo "no virtualenv activated"
+    virtualenv -p $(which $python_inter) "o_${version}" &&
+    go_venv $version &&
+    pip install -r $SRC_MULTI/$version/odoo/requirements.txt
+    pip install -r $ST/requirements.txt
+    pip install -r $AP/python_scripts/requirements.txt
+    pip install -r $AP/python_scripts/other_requirements.txt
+    cd $SRC_MULTI
+    echo "\n\n\n\n"
+    echo "virtualenv o_${version} is ready"
+    echo "watch out the current dir may have changed !"
+}
+
+go_venv(){
+    local version=$1
+    deactivate
+    source $SRC_MULTI/$version/o_$version/bin/activate
+    echo "virtualenv o_$version activated"
 }
 
 build_runbot(){

@@ -7,7 +7,10 @@ alias c='clear'
 alias e="vim"
 alias l="ls -lAh"
 
-alias reload_zshrc='source ~/.zshrc'
+reload_zshrc(){
+    # don't modify this one from eza to avoid headaches
+    source ~/.zshrc && deactivate > /dev/null 2>&1
+}
 
 eza(){
     # edit and reload alias
