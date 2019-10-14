@@ -337,7 +337,7 @@ build_odoo_virtualenv(){
 go_venv(){
     local version=$1
     deactivate
-    source $SRC_MULTI/$version/o_$version/bin/activate
+    source $SRC_MULTI/$version/o_$version/bin/activate &&
     echo "virtualenv o_$version activated"
 }
 
