@@ -1,11 +1,8 @@
 ##############################################
-##############  misc  stuffs  ################
+######  "manage this repo"  stuffs  ##########
 ##############################################
 
-
-alias c='clear'
 alias e="vim"
-alias l="ls -lAh"
 
 reload_zshrc(){
     # don't modify this one from eza to avoid headaches
@@ -61,7 +58,12 @@ eza(){
     source $AP/alias_loader.sh
 }
 
+###################################
+#########   Misc Stuff  ###########
+###################################
 
+alias c='clear'
+alias l="ls -lAh"
 
 #history analytics
 history_count(){
