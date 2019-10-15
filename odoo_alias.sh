@@ -72,6 +72,7 @@ go_update_and_clean(){
 
 go_update_and_clean_all_branches(){
     git_odoo pull --all
+    git -C $INTERNAL pull --rebase
     update_all_multiverse_branches
     clear_all_pyc
 }
