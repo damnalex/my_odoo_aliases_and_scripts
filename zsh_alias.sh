@@ -207,3 +207,20 @@ commit_typos(){
     git -C $AP add $AP/typo.sh
     git -C $AP commit -m "[AUTOMATIC] update typos file"
 }
+
+
+##############################################
+#############  python  stuffs  ###############
+##############################################
+
+new_lib_in_other_python_requirements(){
+    local library=$1
+    echo "$library" >> $AP/python_scripts/other_requirements.txt
+    sort_and_remove_duplicate $AP/python_scripts/other_requirements.txt
+}
+
+commit_new_lib_in_other_python_requirements(){
+    git -C $AP add $AP/python_scripts/other_requirements.txt
+    git -C $AP commit -m "[AUTOMATIC] update other_requirements.txt"
+}
+
