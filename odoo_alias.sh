@@ -289,8 +289,7 @@ build_multiverse_branch(){
     } done
     # adding branch to list of known branches
     echo ${version} >> $SRC_MULTI/version_list.txt &&
-    # cleaning the list of known branches from duplicates
-    echo "$(cat $SRC_MULTI/version_list.txt | sort | uniq -u)" > $SRC_MULTI/version_list.txt
+    sort_and_remove_duplicate $SRC_MULTI/version_list.txt
 }
 
 update_multiverse_branch(){
