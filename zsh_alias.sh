@@ -129,7 +129,7 @@ git(){
 
 sort_and_remove_duplicate(){
     local file=$1
-    echo "$(cat $file | sort | uniq -u)" > $file
+    echo "$(cat $file | sort | uniq )" > $file
 }
 #########################################
 ######## system specific stuffs #########
