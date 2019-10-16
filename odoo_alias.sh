@@ -335,11 +335,17 @@ build_odoo_virtualenv(){
 }
 
 go_venv(){
-    local version=$1
-    deactivate
-    source $SRC_MULTI/$version/o_$version/bin/activate &&
-    echo "virtualenv o_$version activated"
+    deactivate 2> /dev/null
+    if [[ $# -eq 1 ]]
+    then
+        local version=$1
+        source $SRC_MULTI/$version/o_$version/bin/activate &&
+        echo "virtualenv o_$version activated"
+    else
+        echo "no virtualenv name provided, falling back to standard python env"
+    fi
 }
+alias gov="go_venv"
 
 build_runbot(){
     # build a runbot like DB
