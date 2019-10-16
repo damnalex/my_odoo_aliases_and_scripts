@@ -37,6 +37,9 @@ eza(){
         typo)
             file_to_load="typo.sh"
             ;;
+        compl)
+            file_to_load="completion.sh"
+            ;;
         "")
             #default
             file_to_load="odoo_alias.sh"
@@ -50,6 +53,7 @@ eza(){
             echo "psql_odoo.py --> eza psql"
             echo "start_odoo.py --> eza start"
             echo "typo.py --> eza typo"
+            echo "completion.sh --> eza compl"
             return
             ;;
     esac
