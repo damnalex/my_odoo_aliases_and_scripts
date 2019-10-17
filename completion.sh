@@ -3,7 +3,6 @@
 ####################################
 
 _complete_db_name(){
-    local patern=$1
     local db_name=$(list_db_like "%%" | sed '/CLEAN*/d' | sed '/template*/d' | sed '/meta/d' |sed '/postgres/d' | tr '\n' ' ')
     COMPREPLY=($(compgen -W "$db_name" -- "${COMP_WORD[COMP_CWORD]}"))
 }
@@ -23,7 +22,7 @@ complete -o default -F _eza eza
 _so(){
     if [[ COMP_CWORD -eq 1 ]]
     then
-        _complete_db_name COMP_WORD[1]
+        _complete_db_name
     fi
 }
 complete -o default -F _so so
