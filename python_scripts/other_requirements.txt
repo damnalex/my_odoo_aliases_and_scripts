@@ -1,2 +1,6 @@
+appdirs
+prettytable
 ptvsd
+requests
 simplejson
+tqdm
