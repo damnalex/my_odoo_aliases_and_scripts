@@ -1,6 +1,14 @@
 ####################################
 ####    completion helpers     #####
 ####################################
+_complete_with_B_on_index_A(){
+    local index=$1
+    local funct=$2
+    if [[ COMP_CWORD -eq $(( $index )) ]]
+    then
+        eval $funct $@[3, -1]
+    fi
+}
 
 _complete_db_name(){
     local db_name=$(list_db_like "%%" | sed '/CLEAN*/d' | sed '/template*/d' | sed '/meta/d' |sed '/postgres/d' | tr '\n' ' ')
@@ -8,10 +16,7 @@ _complete_db_name(){
 }
 
 _complete_db_name_on_first_param(){
-    if [[ COMP_CWORD -eq 1 ]]
-    then
-        _complete_db_name
-    fi
+    _complete_with_B_on_index_A 1 _complete_db_name
 }
 ####################################
 ######     completions     #########
