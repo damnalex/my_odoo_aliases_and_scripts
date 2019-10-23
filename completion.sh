@@ -7,6 +7,12 @@ _complete_db_name(){
     COMPREPLY=($(compgen -W "$db_name" -- "${COMP_WORD[COMP_CWORD]}"))
 }
 
+_complete_db_name_on_first_param(){
+    if [[ COMP_CWORD -eq 1 ]]
+    then
+        _complete_db_name
+    fi
+}
 ####################################
 ######     completions     #########
 ####################################
@@ -20,18 +26,17 @@ _eza(){
 complete -o default -F _eza eza
 
 _so(){
-    if [[ COMP_CWORD -eq 1 ]]
-    then
-        _complete_db_name
-    fi
+    _complete_db_name_on_first_param
 }
 complete -o default -F _so so
 complete -o default -F _so soi
 complete -o default -F _so sou
-complete -o default -F _so godb
 complete -o default -F _so goso
-complete -o default -F _so clean_database
-complete -o default -F _so neuter_db
-complete -o default -F _so dropodoo
-complete -o default -F _so lu
+
+complete -o default -F _complete_db_name_on_first_param godb
+complete -o default -F _complete_db_name_on_first_param clean_database
+complete -o default -F _complete_db_name_on_first_param neuter_db
+complete -o default -F _complete_db_name_on_first_param dropodoo
+complete -o default -F _complete_db_name_on_first_param lu
+complete -o default -F _complete_db_name_on_first_param psql
 
