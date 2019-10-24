@@ -1,6 +1,7 @@
 ####################################
-####    completion helpers     #####
+#####    completion tools     ######
 ####################################
+
 _complete_with_B_on_index_A(){
     local index=$1
     local funct=$2
@@ -10,6 +11,10 @@ _complete_with_B_on_index_A(){
     fi
 }
 
+####################################
+####    completion 'bricks'    #####
+####################################
+
 _complete_db_name(){
     local db_name=$(list_db_like "%%" | sed '/CLEAN*/d' | sed '/template*/d' | sed '/meta/d' |sed '/postgres/d' | tr '\n' ' ')
     COMPREPLY=($(compgen -W "$db_name" -- "${COMP_WORD[COMP_CWORD]}"))
@@ -18,6 +23,7 @@ _complete_db_name(){
 _complete_db_name_on_first_param(){
     _complete_with_B_on_index_A 1 _complete_db_name
 }
+
 ####################################
 ######     completions     #########
 ####################################
@@ -29,6 +35,7 @@ _eza(){
     fi
 }
 complete -o default -F _eza eza
+
 
 _so(){
     _complete_db_name_on_first_param
