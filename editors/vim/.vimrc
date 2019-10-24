@@ -1,5 +1,6 @@
 set nocompatible
-set number 
+set number
+set relativenumbers
 
 set ignorecase
 set smartcase
