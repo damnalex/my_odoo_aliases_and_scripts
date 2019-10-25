@@ -1,18 +1,17 @@
 {
     "workbench.colorTheme": "Monokai",
     "editor.fontFamily": "'Operator Mono Lig','Operator Mono','Fira Code','Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
-    "editor.fontLigatures" : true,
+    "editor.fontLigatures": true,
     "editor.tokenColorCustomizations": {
         "textMateRules": [
-          {
-            "scope": "comment",
-            "settings": {
-              "fontStyle": "italic"
+            {
+                "scope": "comment",
+                "settings": {
+                    "fontStyle": "italic"
+                }
             }
-          }
         ]
     },
-
     "[python]": {
         "editor.rulers": [
             79,
@@ -22,33 +21,30 @@
     "workbench.colorCustomizations": {
         "editorRuler.foreground": "#3d3d3d88"
     },
-
     "python.pythonPath": "/usr/local/bin/python3",
-
     "editor.fontSize": 12,
     "extensions.ignoreRecommendations": false,
     "gitlens.advanced.messages": {
         "suppressShowKeyBindingsNotice": true
     },
-
     "files.exclude": {
         "**/.git": true,
         "**/.svn": true,
         "**/.hg": true,
         "**/CVS": true,
         "**/.DS_Store": true,
-        "**/*.pyc": {"when": "$(basename).py"},
+        "**/*.pyc": {
+            "when": "$(basename).py"
+        },
         "**/__pycache__": true,
     },
     "terminal.integrated.fontFamily": "'Operator mono large','Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
     "window.zoomLevel": 1,
     "terminal.integrated.scrollback": 10000,
     "workbench.activityBar.visible": true,
-
     "python.linting.pep8Enabled": true,
     "python.linting.pep8Args": [
         "--ignore=E501,E301,E302,E126,E123,E127,E128,E265",
-
     ],
     "disableLigatures.mode": "Line",
     "editor.cursorBlinking": "expand",

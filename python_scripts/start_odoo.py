@@ -29,9 +29,11 @@ def ask_user_to_checkout():
     raise NotImplementedError
     # 3 options : yes (continues as is), no (aborts the process), checkout (checkouts the right version and continues)
 
+
 def build_command(someargs_TODO):
     """ build a shell command usable by subprocess.call (in a list of strings, one string = one word) """
     raise NotImplementedError
+
 
 def run_command(cmd, some_other_args):
     """ run the odoo server, with the optionnal setup needed for the options:
@@ -39,19 +41,21 @@ def run_command(cmd, some_other_args):
     """
     raise NotImplementedError
 
+
 def main():
     # args parsing
     opt = docopt(__doc__)
     print(opt)
 
-    if opt.get('--checkout'):
+    if opt.get("--checkout"):
         # checkout the right version
         raise NotImplementedError
-    elif not repo_is_correct_version(opt.get('<dbname>')):
+    elif not repo_is_correct_version(opt.get("<dbname>")):
         ask_user_to_checkout()
 
     cmd = build_command(someargs_TODO)
     run_command(cmd, some_other_args)
+
 
 if __name__ == "__main__":
     main()
