@@ -48,8 +48,12 @@ def _nbr_commits_ahead_and_behind(repo):
         found_valide_remote = False
         for remote in repo.remotes:
             try:
-                nbr_commit_ahead = count_commits(repo, branch_name, remote_name=remote.name, ahead=True)
-                nbr_commit_behind = count_commits(repo, branch_name, remote_name=remote.name, ahead=False)
+                nbr_commit_ahead = count_commits(
+                    repo, branch_name, remote_name=remote.name, ahead=True
+                )
+                nbr_commit_behind = count_commits(
+                    repo, branch_name, remote_name=remote.name, ahead=False
+                )
             except git.exc.GitCommandError:
                 pass
             else:

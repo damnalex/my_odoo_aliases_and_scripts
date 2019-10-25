@@ -4,62 +4,62 @@
 
 alias e="vim"
 
-reload_zshrc(){
+reload_zshrc() {
     # don't modify this one from eza to avoid headaches
-    source ~/.zshrc && deactivate > /dev/null 2>&1
+    source ~/.zshrc && deactivate >/dev/null 2>&1
 }
 
-eza(){
+eza() {
     # edit and reload alias
     local file_to_load=" "
     case $1 in
-        zsh)
-            file_to_load="zsh_alias.sh"
-            ;;
-        loader)
-            file_to_load="alias_loader.sh"
-            ;;
-        odoo)
-            file_to_load="odoo_alias.sh"
-            ;;
-        git)
-            file_to_load="python_scripts/git_odoo.py"
-            ;;
-        start)
-            file_to_load="python_scripts/start_odoo.py"
-            ;;
-        psql)
-            file_to_load="python_scripts/psql_odoo.py"
-            ;;
-        drop)
-            file_to_load="drop_protected_dbs.txt"
-            ;;
-        typo)
-            file_to_load="typo.sh"
-            ;;
-        compl)
-            file_to_load="completion.sh"
-            ;;
-        "")
-            #default
-            file_to_load="odoo_alias.sh"
-            ;;
-        *)
-            echo "zsh_alias.sh --> eza zsh"
-            echo "alias_loader.sh --> eza loader"
-            echo "odoo_alias.sh --> eza odoo   or   eza"
-            echo "drop_protected_dbs.txt --> eza drop"
-            echo "git_odoo.py --> eza git"
-            echo "psql_odoo.py --> eza psql"
-            echo "start_odoo.py --> eza start"
-            echo "typo.py --> eza typo"
-            echo "completion.sh --> eza compl"
-            return
-            ;;
+    zsh)
+        file_to_load="zsh_alias.sh"
+        ;;
+    loader)
+        file_to_load="alias_loader.sh"
+        ;;
+    odoo)
+        file_to_load="odoo_alias.sh"
+        ;;
+    git)
+        file_to_load="python_scripts/git_odoo.py"
+        ;;
+    start)
+        file_to_load="python_scripts/start_odoo.py"
+        ;;
+    psql)
+        file_to_load="python_scripts/psql_odoo.py"
+        ;;
+    drop)
+        file_to_load="drop_protected_dbs.txt"
+        ;;
+    typo)
+        file_to_load="typo.sh"
+        ;;
+    compl)
+        file_to_load="completion.sh"
+        ;;
+    "")
+        #default
+        file_to_load="odoo_alias.sh"
+        ;;
+    *)
+        echo "zsh_alias.sh --> eza zsh"
+        echo "alias_loader.sh --> eza loader"
+        echo "odoo_alias.sh --> eza odoo   or   eza"
+        echo "drop_protected_dbs.txt --> eza drop"
+        echo "git_odoo.py --> eza git"
+        echo "psql_odoo.py --> eza psql"
+        echo "start_odoo.py --> eza start"
+        echo "typo.py --> eza typo"
+        echo "completion.sh --> eza compl"
+        return
+        ;;
     esac
 
     e $AP/$file_to_load &&
-    source $AP/alias_loader.sh
+        source $AP/alias_loader.sh
 }
 
 ###################################
@@ -70,14 +70,14 @@ alias c='clear'
 alias l="ls -lAh"
 
 #history analytics
-history_count(){
+history_count() {
     history -n | cut -d' ' -f1 | sort | uniq -c | trim | sort -gr | less
 }
-trim(){
+trim() {
     awk '{$1=$1};1'
 }
 
-find_file_with_all(){
+find_file_with_all() {
     # find_file_with_all [--ext <ext>] <expressions>...
     # list all the files in the current directory and its subdirectories
     # where all the expressions are present
@@ -86,8 +86,7 @@ find_file_with_all(){
     local ext=""
     local first_word=""
     local other_words_start=0
-    if [ "$1" = "--ext" ]
-    then
+    if [ "$1" = "--ext" ]; then
         ext=$2
         first_word=$3
         other_words_start=4
@@ -97,8 +96,7 @@ find_file_with_all(){
         other_words_start=2
     fi
     local cmd="grep -rl $first_word **/*.$ext"
-    for word in $@[$other_words_start,-1]
-    do
+    for word in $@[$other_words_start,-1]; do
         cmd="grep -l $word \$("$cmd")"
     done
     eval $cmd
@@ -106,41 +104,38 @@ find_file_with_all(){
     # echo $cmd
 }
 
-run(){
+run() {
     # source https://www.shellhacks.com/linux-repeat-command-n-times-bash-loop/
     number=$1
     shift
     for n in $(seq $number); do
-      $@
+        $@
     done
 }
 
-
-git_fame(){
+git_fame() {
     local file_to_analyse=$1
-    git ls-tree -r -z --name-only HEAD -- ${file_to_analyse} | xargs -0 -n1 git blame --line-porcelain HEAD |grep  "^author "|sort|uniq -c|sort -nr
+    git ls-tree -r -z --name-only HEAD -- ${file_to_analyse} | xargs -0 -n1 git blame --line-porcelain HEAD | grep "^author " | sort | uniq -c | sort -nr
 }
 
 # make git_fame callable as "git fame" (as if it was a standard git comand)
-git(){
-    if [[ $1 == "fame" ]]
-    then
+git() {
+    if [[ $1 == "fame" ]]; then
         git_fame $2
     else
         command git "$@"
     fi
 }
 
-sort_and_remove_duplicate(){
+sort_and_remove_duplicate() {
     local file=$1
-    echo "$(cat $file | sort | uniq )" > $file
+    echo "$(cat $file | sort | uniq)" >$file
 }
 #########################################
 ######## system specific stuffs #########
 #########################################
 
-if [ "$OSTYPE" = "darwin18.0" ]
-then
+if [ "$OSTYPE" = "darwin18.0" ]; then
     # macos
     export LC_ALL=en_US.UTF-8
     export LANG=en_US.UTF-8
@@ -156,75 +151,70 @@ then
 else
     # linux
 
-    maj(){
+    maj() {
         sudo apt-get update &&
-        sudo apt-get upgrade -y &&
-        sudo apt-get autoclean &&
-        sudo apt-get autoremove -y
+            sudo apt-get upgrade -y &&
+            sudo apt-get autoclean &&
+            sudo apt-get autoremove -y
     }
 
-    fullmaj(){
+    fullmaj() {
         sudo apt-get update &&
-        sudo apt-get upgrade -y &&
-        sudo apt-get dist-upgrade -y &&
-        sudo apt-get autoclean &&
-        sudo apt-get autoremove -y
+            sudo apt-get upgrade -y &&
+            sudo apt-get dist-upgrade -y &&
+            sudo apt-get autoclean &&
+            sudo apt-get autoremove -y
     }
-
 
     alias cya='systemctl suspend -i'
 
-    clear_ram(){
+    clear_ram() {
         echo "This is going to take a while ..." &&
-        echo "Droppping cache" &&
-        sudo su -c "echo 3 > /proc/sys/vm/drop_caches" root &&
-        echo "Cache dropped" &&
-        echo "turning swap off" &&
-        sudo swapoff -a &&
-        echo "turning swap back on" &&
-        sudo swapon -a &&
-        echo "Aaaaaand... done!"
+            echo "Droppping cache" &&
+            sudo su -c "echo 3 > /proc/sys/vm/drop_caches" root &&
+            echo "Cache dropped" &&
+            echo "turning swap off" &&
+            sudo swapoff -a &&
+            echo "turning swap back on" &&
+            sudo swapon -a &&
+            echo "Aaaaaand... done!"
     }
 
-    noweb(){
-            sg no_web $@[1,-1]
+    noweb() {
+        sg no_web $@[1,-1]
     }
     alias ni='noweb'
 
     # end of linux stuff
 fi
 
-
-
 ##############################################
 ##############  typo  stuffs  ################
 ##############################################
 
-new_typo(){
+new_typo() {
     local typo=$1
     local correct_command=$2
-    echo "alias '$typo'='$correct_command'" >> $AP/typo.sh
+    echo "alias '$typo'='$correct_command'" >>$AP/typo.sh
     reload_zshrc
 }
 
-commit_typos(){
+commit_typos() {
     git -C $AP add $AP/typo.sh
     git -C $AP commit -m "[AUTOMATIC] update typos file"
 }
-
 
 ##############################################
 #############  python  stuffs  ###############
 ##############################################
 
-new_lib_in_other_python_requirements(){
+new_lib_in_other_python_requirements() {
     local library=$1
-    echo "$library" >> $AP/python_scripts/other_requirements.txt
+    echo "$library" >>$AP/python_scripts/other_requirements.txt
     sort_and_remove_duplicate $AP/python_scripts/other_requirements.txt
 }
 
-commit_new_lib_in_other_python_requirements(){
+commit_new_lib_in_other_python_requirements() {
     git -C $AP add $AP/python_scripts/other_requirements.txt
     git -C $AP commit -m "[AUTOMATIC] update other_requirements.txt"
 }
-
