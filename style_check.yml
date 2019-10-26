@@ -1,4 +1,4 @@
-name: reviewdog
+name: style_check
 on: [pull_request, push]
 jobs:
   shellcheck:
@@ -11,3 +11,5 @@ jobs:
         with:
           github_token: ${{ secrets.github_token }}
           reporter: github-pr-review
+      - name: Black
+        uses: jpetrucciani/black-check@master
