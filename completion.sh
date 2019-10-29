@@ -48,3 +48,4 @@ complete -o default -F _complete_db_name_on_first_param neuter_db
 complete -o default -F _complete_db_name_on_first_param dropodoo
 complete -o default -F _complete_db_name_on_first_param lu
 complete -o default -F _complete_db_name_on_first_param psql
+complete -o default -F _complete_db_name_on_first_param pgcli
