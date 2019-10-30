@@ -5,7 +5,7 @@
 _complete_with_B_on_index_A() {
     local index=$1
     local funct=$2
-    if [[ COMP_CWORD -eq $(($index)) ]]; then
+    if [[ COMP_CWORD -eq $((index)) ]]; then
         eval $funct $3 $4 $5 $6 $7 $8 $9
         # this is very ugly, but the completion is doing weird stuff with $@[x,-1]
         # if I need more param, i'll just add more stuff here
@@ -26,7 +26,7 @@ _complete_db_name_on_first_param() {
     _complete_with_B_on_index_A 1 _complete_db_name
 }
 
-_complete_branch_name_on_repo_A(){
+_complete_branch_name_on_repo_A() {
     local repo_path=$1
     local branch_names=$(git -C $repo_path branch | tr '\n' ' ')
     COMPREPLY=($(compgen -W "$branch_names" -- "${COMP_WORD[COMP_CWORD]}"))
@@ -71,4 +71,3 @@ _go_update_and_clean() {
     _complete_with_B_on_index_A 1 _complete_branch_name_on_repo_A $ODOO
 }
 complete -o default -F _go_update_and_clean go_update_and_clean
-

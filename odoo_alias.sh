@@ -74,7 +74,7 @@ go_update_and_clean_all_branches() {
 go_fetch() {
     git_odoo fetch
 }
-(go_fetch >/dev/null 2>&1 &)
+(go_fetch > /dev/null 2>&1 &)
 # this is to fetch everytime a terminal is loaded, or sourced, so it happens often
 # & is especially important here
 
@@ -84,7 +84,7 @@ git_branch_version() {
 
 golist() {
     git_odoo list
-    (go_fetch >/dev/null 2>&1 &)
+    (go_fetch > /dev/null 2>&1 &)
 }
 
 godb() {
@@ -210,7 +210,7 @@ clean_database() {
 
 neuter_db() {
     local db_name=$1
-    psql $db_name <$AP/support_scripts/neuter_db.sql
+    psql $db_name < $AP/support_scripts/neuter_db.sql
 }
 
 odoosh_ssh() {
@@ -234,8 +234,8 @@ dropodoo() {
         return 1
     fi
     if [ $# -eq 1 ]; then
-        psql -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$db_name_1';" -q >/dev/null
-        remove_from_meta $db_name_1 2>/dev/null
+        psql -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$db_name_1';" -q > /dev/null
+        remove_from_meta $db_name_1 2> /dev/null
         rm -rf $ODOO_STORAGE/filestore/$db_name_1
         dropdb $db_name_1 || return 1
         echo "$db_name_1 has been dropped"
@@ -268,7 +268,7 @@ build_multiverse_branch() {
         git -C $SRC_MULTI/master/${rep} worktree add $SRC_MULTI/${version}/${rep} ${version}
     }; done
     # adding branch to list of known branches
-    echo ${version} >>$SRC_MULTI/version_list.txt &&
+    echo ${version} >> $SRC_MULTI/version_list.txt &&
         sort_and_remove_duplicate $SRC_MULTI/version_list.txt
 }
 
@@ -314,7 +314,7 @@ build_odoo_virtualenv() {
 }
 
 go_venv() {
-    deactivate 2>/dev/null
+    deactivate 2> /dev/null
     if [[ $# -eq 1 ]]; then
         local version=$1
         source $SRC_MULTI/$version/o_$version/bin/activate &&
@@ -329,35 +329,35 @@ build_runbot() {
     # build a runbot like DB
     local version=$1
     local new_db_name=$2
-    dropodoo $new_db_name 2>/dev/null
+    dropodoo $new_db_name 2> /dev/null
     mkdir $ODOO_STORAGE/filestore/$new_db_name/
     case $version in
-    8)
-        createdb -T CLEAN_ODOO_V8 $new_db_name
-        cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V8/* $ODOO_STORAGE/filestore/$new_db_name/
-        ;;
-    9)
-        createdb -T CLEAN_ODOO_V9 $new_db_name
-        cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V9/* $ODOO_STORAGE/filestore/$new_db_name/
-        ;;
-    10)
-        createdb -T CLEAN_ODOO_V10 $new_db_name
-        cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V10/* $ODOO_STORAGE/filestore/$new_db_name/
-        ;;
-    11)
-        createdb -T CLEAN_ODOO_V11 $new_db_name
-        cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V11/* $ODOO_STORAGE/filestore/$new_db_name/
-        psql_seg_fault_fixer $new_db_name
-        ;;
-    12)
-        createdb -T CLEAN_ODOO_V12 $new_db_name
-        cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V12/* $ODOO_STORAGE/filestore/$new_db_name/
-        ;;
-    *)
-        echo "no match for version ${version}"
-        echo "list of valid version:\n9\n10\n11\n12"
-        return 1
-        ;;
+        8)
+            createdb -T CLEAN_ODOO_V8 $new_db_name
+            cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V8/* $ODOO_STORAGE/filestore/$new_db_name/
+            ;;
+        9)
+            createdb -T CLEAN_ODOO_V9 $new_db_name
+            cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V9/* $ODOO_STORAGE/filestore/$new_db_name/
+            ;;
+        10)
+            createdb -T CLEAN_ODOO_V10 $new_db_name
+            cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V10/* $ODOO_STORAGE/filestore/$new_db_name/
+            ;;
+        11)
+            createdb -T CLEAN_ODOO_V11 $new_db_name
+            cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V11/* $ODOO_STORAGE/filestore/$new_db_name/
+            psql_seg_fault_fixer $new_db_name
+            ;;
+        12)
+            createdb -T CLEAN_ODOO_V12 $new_db_name
+            cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V12/* $ODOO_STORAGE/filestore/$new_db_name/
+            ;;
+        *)
+            echo "no match for version ${version}"
+            echo "list of valid version:\n9\n10\n11\n12"
+            return 1
+            ;;
     esac
     echo 'built'
 }
@@ -380,7 +380,7 @@ build_local_saas_db() {
 alias bloc='build_local_saas_db'
 
 remove_from_meta() {
-    echo "DELETE FROM databases WHERE name = '$1'" | psql meta >/dev/null
+    echo "DELETE FROM databases WHERE name = '$1'" | psql meta > /dev/null
 }
 
 start_local_saas_db() {
@@ -432,9 +432,9 @@ pl() {
     fi
     local db_name
     for db_name in $(psql -tAqX -d postgres -c "SELECT t1.datname AS db_name FROM pg_database t1 $where_clause ORDER BY LOWER(t1.datname);"); do
-        local db_version=$(_db_version $db_name 2>/dev/null)
+        local db_version=$(_db_version $db_name 2> /dev/null)
         if [ "$db_version" != "" ]; then #ignore non-odoo DBs
-            local db_size=$(psql -tAqX -d $db_name -c "SELECT pg_size_pretty(pg_database_size('$db_name'));" 2>/dev/null)
+            local db_size=$(psql -tAqX -d $db_name -c "SELECT pg_size_pretty(pg_database_size('$db_name'));" 2> /dev/null)
             echo "$db_version:    \t $db_name \t($db_size)"
         fi
     done
@@ -504,7 +504,7 @@ alias debo="ptvsd3-so"
 
 psql_seg_fault_fixer() {
     local db_name=$1
-    pg_dump $db_name >$HOME/tmp/tmp.sql && dropdb $db_name && createdb $db_name && psql $db_name -q <$HOME/tmp/tmp.sql && echo "you can restart $db_name now, have fun ! :D"
+    pg_dump $db_name > $HOME/tmp/tmp.sql && dropdb $db_name && createdb $db_name && psql $db_name -q < $HOME/tmp/tmp.sql && echo "you can restart $db_name now, have fun ! :D"
 }
 
 ##############################################

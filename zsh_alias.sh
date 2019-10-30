@@ -6,56 +6,56 @@ alias e="vim"
 
 reload_zshrc() {
     # don't modify this one from eza to avoid headaches
-    source ~/.zshrc && deactivate >/dev/null 2>&1
+    source ~/.zshrc && deactivate > /dev/null 2>&1
 }
 
 eza() {
     # edit and reload alias
     local file_to_load=" "
     case $1 in
-    zsh)
-        file_to_load="zsh_alias.sh"
-        ;;
-    loader)
-        file_to_load="alias_loader.sh"
-        ;;
-    odoo)
-        file_to_load="odoo_alias.sh"
-        ;;
-    git)
-        file_to_load="python_scripts/git_odoo.py"
-        ;;
-    start)
-        file_to_load="python_scripts/start_odoo.py"
-        ;;
-    psql)
-        file_to_load="python_scripts/psql_odoo.py"
-        ;;
-    drop)
-        file_to_load="drop_protected_dbs.txt"
-        ;;
-    typo)
-        file_to_load="typo.sh"
-        ;;
-    compl)
-        file_to_load="completion.sh"
-        ;;
-    "")
-        #default
-        file_to_load="odoo_alias.sh"
-        ;;
-    *)
-        echo "zsh_alias.sh --> eza zsh"
-        echo "alias_loader.sh --> eza loader"
-        echo "odoo_alias.sh --> eza odoo   or   eza"
-        echo "drop_protected_dbs.txt --> eza drop"
-        echo "git_odoo.py --> eza git"
-        echo "psql_odoo.py --> eza psql"
-        echo "start_odoo.py --> eza start"
-        echo "typo.py --> eza typo"
-        echo "completion.sh --> eza compl"
-        return
-        ;;
+        zsh)
+            file_to_load="zsh_alias.sh"
+            ;;
+        loader)
+            file_to_load="alias_loader.sh"
+            ;;
+        odoo)
+            file_to_load="odoo_alias.sh"
+            ;;
+        git)
+            file_to_load="python_scripts/git_odoo.py"
+            ;;
+        start)
+            file_to_load="python_scripts/start_odoo.py"
+            ;;
+        psql)
+            file_to_load="python_scripts/psql_odoo.py"
+            ;;
+        drop)
+            file_to_load="drop_protected_dbs.txt"
+            ;;
+        typo)
+            file_to_load="typo.sh"
+            ;;
+        compl)
+            file_to_load="completion.sh"
+            ;;
+        "")
+            #default
+            file_to_load="odoo_alias.sh"
+            ;;
+        *)
+            echo "zsh_alias.sh --> eza zsh"
+            echo "alias_loader.sh --> eza loader"
+            echo "odoo_alias.sh --> eza odoo   or   eza"
+            echo "drop_protected_dbs.txt --> eza drop"
+            echo "git_odoo.py --> eza git"
+            echo "psql_odoo.py --> eza psql"
+            echo "start_odoo.py --> eza start"
+            echo "typo.py --> eza typo"
+            echo "completion.sh --> eza compl"
+            return
+            ;;
     esac
 
     e $AP/$file_to_load &&
@@ -129,7 +129,7 @@ git() {
 
 sort_and_remove_duplicate() {
     local file=$1
-    echo "$(cat $file | sort | uniq)" >$file
+    echo "$(cat $file | sort | uniq)" > $file
 }
 #########################################
 ######## system specific stuffs #########
@@ -195,7 +195,7 @@ fi
 new_typo() {
     local typo=$1
     local correct_command=$2
-    echo "alias '$typo'='$correct_command'" >>$AP/typo.sh
+    echo "alias '$typo'='$correct_command'" >> $AP/typo.sh
     reload_zshrc
 }
 
@@ -210,7 +210,7 @@ commit_typos() {
 
 new_lib_in_other_python_requirements() {
     local library=$1
-    echo "$library" >>$AP/python_scripts/other_requirements.txt
+    echo "$library" >> $AP/python_scripts/other_requirements.txt
     sort_and_remove_duplicate $AP/python_scripts/other_requirements.txt
 }
 
