@@ -218,3 +218,12 @@ commit_new_lib_in_other_python_requirements() {
     git -C $AP add $AP/python_scripts/other_requirements.txt
     git -C $AP commit -m "[AUTOMATIC] update other_requirements.txt"
 }
+
+##############################################
+##############  style stuffs  ################
+##############################################
+
+ap_format_files() {
+    python3 -m black $AP
+    shfmt -l -i 4 -s -ci -sr -w $AP
+}
