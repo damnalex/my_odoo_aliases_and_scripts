@@ -2,7 +2,7 @@ set nocompatible
 
 " visual stuff
 set ruler
-set number 
+set number
 set relativenumber
 set cursorline
 syntax on
@@ -45,6 +45,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'itchyny/lightline.vim'
 Plug 'tomtom/tcomment_vim'
 Plug 'nathanaelkane/vim-indent-guides'
+Plug 'ntpeters/vim-better-whitespace'
 call plug#end()
 
 " plugin config
