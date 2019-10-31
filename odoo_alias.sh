@@ -92,6 +92,7 @@ godb() {
     local db_name=$1
     if psql -lqt | cut -d \| -f 1 | grep -qw $db_name; then #check if the database already exists
         git_odoo checkout --dbname $db_name
+        go_venv $(_db_version $db_name)
     else
         echo "DB $db_name does not exist"
     fi
