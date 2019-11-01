@@ -40,6 +40,9 @@ eza() {
         compl)
             file_to_load="completion.sh"
             ;;
+        vim)
+            file_to_load="editors/vim/.vimrc"
+            ;;
         "")
             #default
             file_to_load="odoo_alias.sh"
@@ -54,6 +57,7 @@ eza() {
             echo "start_odoo.py --> eza start"
             echo "typo.py --> eza typo"
             echo "completion.sh --> eza compl"
+            echo ".vimrc --> eza vim"
             return
             ;;
     esac
