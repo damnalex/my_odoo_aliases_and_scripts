@@ -25,12 +25,6 @@ eza() {
         git)
             file_to_load="python_scripts/git_odoo.py"
             ;;
-        start)
-            file_to_load="python_scripts/start_odoo.py"
-            ;;
-        psql)
-            file_to_load="python_scripts/psql_odoo.py"
-            ;;
         drop)
             file_to_load="drop_protected_dbs.txt"
             ;;
@@ -53,8 +47,6 @@ eza() {
             echo "odoo_alias.sh --> eza odoo   or   eza"
             echo "drop_protected_dbs.txt --> eza drop"
             echo "git_odoo.py --> eza git"
-            echo "psql_odoo.py --> eza psql"
-            echo "start_odoo.py --> eza start"
             echo "typo.py --> eza typo"
             echo "completion.sh --> eza compl"
             echo ".vimrc --> eza vim"

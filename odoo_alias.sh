@@ -110,7 +110,6 @@ goso() {
 }
 
 #start odoo
-alias start_odoo="$AP/python_scripts/start_odoo.py"
 so() {
     _so_checker $@ || return 1
 
