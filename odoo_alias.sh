@@ -299,6 +299,7 @@ build_odoo_virtualenv() {
     else
         python_inter="python3"
     fi
+    local start_dir=$(pwd)
     cd $SRC_MULTI/$version || return 1
     deactivate || echo "no virtualenv activated"
     virtualenv -p $(which $python_inter) "o_${version}" &&
@@ -307,10 +308,9 @@ build_odoo_virtualenv() {
     pip install -r $ST/requirements.txt
     pip install -r $AP/python_scripts/requirements.txt
     pip install -r $AP/python_scripts/other_requirements.txt
-    cd $SRC_MULTI
+    cd "$start_dir"
     echo "\n\n\n\n"
     echo "virtualenv o_${version} is ready"
-    echo "watch out the current dir may have changed !"
 }
 
 go_venv() {
