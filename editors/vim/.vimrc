@@ -26,6 +26,8 @@ set smarttab
 " Allow saving of files as sudo when I forgot to start vim using sudo.
 cmap w!! w !sudo tee > /dev/null %
 
+" open git commit prompt in insert mode
+autocmd FileType gitcommit exec 'au VimEnter * startinsert'
 
 " ###################################
 " ######     Plugins Zone    ########
