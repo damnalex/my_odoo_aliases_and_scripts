@@ -347,7 +347,6 @@ build_runbot() {
         11)
             createdb -T CLEAN_ODOO_V11 $new_db_name
             cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V11/* $ODOO_STORAGE/filestore/$new_db_name/
-            psql_seg_fault_fixer $new_db_name
             ;;
         12)
             createdb -T CLEAN_ODOO_V12 $new_db_name
@@ -501,11 +500,6 @@ ptvsd3-so() {
     eval ptvsd3 $(_so_builder $@)
 }
 alias debo="ptvsd3-so"
-
-psql_seg_fault_fixer() {
-    local db_name=$1
-    pg_dump $db_name > $HOME/tmp/tmp.sql && dropdb $db_name && createdb $db_name && psql $db_name -q < $HOME/tmp/tmp.sql && echo "you can restart $db_name now, have fun ! :D"
-}
 
 ##############################################
 ###############  tmp aliases #################
