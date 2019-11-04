@@ -4,7 +4,7 @@ UPDATE ir_config_parameter SET value = '2042-01-01 00:00:00' WHERE key = 'databa
 UPDATE ir_config_parameter SET value = 'd3ac3a44-6718-4762-8ae6-45b4d4cecd7f' WHERE key = 'database.uuid';  -- change de value if there is multiple databases to neuter
 INSERT INTO ir_mail_server(active,name,smtp_host,smtp_port,smtp_encryption) VALUES (true,'mailcatcher','localhost',1025,false);
 UPDATE res_users SET password=login;
-DELETE FROM ir_attachment WHERE name like '%assets_%';
+DELETE FROM ir_attachment WHERE name like '/web/content/%assets_%';
 
 INSERT INTO ir_config_parameter(key, value)
 VALUES ('iap.endpoint', 'https://iap-sandbox.odoo.com')
@@ -26,12 +26,23 @@ $$;
 
 DO $$
     BEGIN
-        UPDATE
-            res_company
-        SET
-            yodlee_access_token = NULL,
-            yodlee_user_password = NULL,
-            yodlee_user_access_token = NULL;
+        UPDATE delivery_carrier set active='f';
+    EXCEPTION
+        WHEN undefined_table OR undefined_column THEN
+    END;
+$$;
+
+DO $$
+    BEGIN
+        UPDATE payment_acquirer set environment='test';
+    EXCEPTION
+        WHEN undefined_table OR undefined_column THEN
+    END;
+$$;
+
+DO $$
+    BEGIN
+        UPDATE payment_acquirer SET stripe_secret_key = 'dummy', stripe_publishable_key = 'dummy' WHERE provider='stripe';
     EXCEPTION
         WHEN undefined_table OR undefined_column THEN
     END;
@@ -50,15 +61,12 @@ $$;
 
 DO $$
     BEGIN
-        UPDATE delivery_carrier set active='f';
-    EXCEPTION
-        WHEN undefined_table OR undefined_column THEN
-    END;
-$$;
-
-DO $$
-    BEGIN
-        UPDATE payment_acquirer set environment='test';
+        UPDATE
+            res_company
+        SET
+            yodlee_access_token = NULL,
+            yodlee_user_password = NULL,
+            yodlee_user_access_token = NULL;
     EXCEPTION
         WHEN undefined_table OR undefined_column THEN
     END;
