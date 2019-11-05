@@ -25,7 +25,7 @@ bindkey -v
 if [ ! -f ~/.inputrc ]; then
     echo "set editing-mode vi" > ~/.inputrc
 else
-    if ! grep -q "set editing-mode vi" ~/.inputrc ; then
+    if ! grep -q "set editing-mode vi" ~/.inputrc; then
         echo "set editing-mode vi" >> ~/.inputrc
     fi
 fi
