@@ -53,7 +53,6 @@ eza() {
             return
             ;;
     esac
-
     local search_param=" "
     if [[ $2 == "" ]]; then
         vim $AP/$file_to_load || exit
@@ -74,6 +73,7 @@ alias l="ls -lAh"
 history_count() {
     history -n | cut -d' ' -f1 | sort | uniq -c | trim | sort -gr | less
 }
+
 trim() {
     awk '{$1=$1};1'
 }

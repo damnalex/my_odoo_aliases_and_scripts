@@ -112,7 +112,6 @@ goso() {
 #start odoo
 so() {
     _so_checker $@ || return 1
-
     eval $(_so_builder $@)
     echo $(_so_builder $@)
 }
