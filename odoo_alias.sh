@@ -197,6 +197,12 @@ sou() {
 }
 
 oes() {
+    if [[ $1 == "start" ]]; then
+        local version=$(_db_version $(list_db_like "%$2")) 2> /dev/null
+        if [[ $version != "" ]]; then
+            go_venv $version
+        fi
+    fi
     #start odoo support
     eval $ST/oe-support.py $@
     (clear_pyc &)
