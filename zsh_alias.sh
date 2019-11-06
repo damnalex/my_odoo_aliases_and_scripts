@@ -54,8 +54,13 @@ eza() {
             ;;
     esac
 
-    e $AP/$file_to_load &&
-        source $AP/alias_loader.sh
+    local search_param=" "
+    if [[ $2 == "" ]]; then
+        vim $AP/$file_to_load
+    else
+        vim -c "/$@[2,-1]" $AP/$file_to_load
+    fi
+    source $AP/alias_loader.sh
 }
 
 ###################################
