@@ -55,9 +55,9 @@ eza() {
     esac
     local search_param=" "
     if [[ $2 == "" ]]; then
-        vim $AP/$file_to_load || exit
+        vim $AP/$file_to_load || return
     else
-        vim -c "/$2(" $AP/$file_to_load || exit
+        vim -c "/$2(" $AP/$file_to_load || return
     fi
     source $AP/alias_loader.sh
 }
