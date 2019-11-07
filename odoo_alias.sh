@@ -196,7 +196,16 @@ sou() {
 }
 
 oes() {
-    if [[ $1 == "start" ]]; then
+    if [[ $1 == "fetch" ]] && ! [[ "$*" == *'--no-start'* ]]; then
+        # running first a fetch without starting the db
+        # then running a separate start to automagically
+        # use the right virtual-env, even when the db version
+        # is not known beforehand
+        eval oes $@ --no-start
+        eval oes start $@[2,-1]
+        return
+    fi
+    if [[ $1 == "start" ]] || [[ $1 == "restore" ]]; then
         local version=$(_db_version $(list_db_like "%$2")) 2> /dev/null
         if [[ $version != "" ]]; then
             go_venv $version
