@@ -130,6 +130,7 @@ def odoo_repos_checkout(version):
     for repo_name, repo in zip(repos, _repos(repos)):
         print("checkouting %s to %s" % (repo_name, version))
         repo.git.checkout(version)
+        repo.git.clean('-xdf')
 
 
 def main():
