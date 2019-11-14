@@ -24,10 +24,11 @@ RELEVANT_BRANCHES += ["10.0", "11.0", "12.0", "13.0"]
 
 
 def _repos(repos_names):
-    """ returns a generator listing the repos of repos_names
+    """ list the repos of repos_names
     """
     repos_paths = ("~/src/%s" % r for r in repos_names)
-    return (git.Repo(rp) for rp in repos_paths)
+    for rp in repos_paths:
+        yield git.Repo(rp)
 
 
 def _nbr_commits_ahead_and_behind(repo):
