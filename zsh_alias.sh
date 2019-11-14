@@ -58,7 +58,7 @@ eza() {
     if [[ $2 == "" ]]; then
         vim $AP/$file_to_load || return
     else
-        vim -c "/$2(" $AP/$file_to_load || return
+        vim -c "/.*$2.*(" $AP/$file_to_load || return
     fi
     source $AP/alias_loader.sh
 }
