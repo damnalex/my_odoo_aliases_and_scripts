@@ -2,7 +2,7 @@
 repo for all my scripts and aliases for my Odoo dev/support machine
 
 setup:
-1. source alias_loader.sh
+see setup/README.md
 
 
 disclaimer :
