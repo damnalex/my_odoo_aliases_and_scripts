@@ -2,12 +2,13 @@
 ########################  PATHS  ##########################
 ###########################################################
 
+export AP=$(dirname $0)
+
 export SRC="$HOME/src"
 export ODOO="$SRC/odoo"
 export ENTERPRISE="$SRC/enterprise"
 export INTERNAL="$SRC/internal"
 export ST="$SRC/support-tools"
-export AP=$(dirname $0)
 export SRC_MULTI="$HOME/multi_src"
 
 if [ "$OSTYPE" = "darwin18.0" ]; then
@@ -28,6 +29,11 @@ else
     if ! grep -q "set editing-mode vi" ~/.inputrc; then
         echo "set editing-mode vi" >> ~/.inputrc
     fi
+fi
+
+# setup .zshrc
+if ! grep -q "source $0" ~/.zshrc; then
+    echo "source $0" >> ~/.zshrc
 fi
 
 source $AP/zsh_alias.sh

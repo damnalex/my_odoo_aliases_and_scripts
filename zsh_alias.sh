@@ -6,7 +6,8 @@ alias e="vim"
 
 reload_zshrc() {
     # don't modify this one from eza to avoid headaches
-    source ~/.zshrc && deactivate > /dev/null 2>&1
+    source ~/.zshrc
+    deactivate > /dev/null 2>&1
 }
 
 eza() {
