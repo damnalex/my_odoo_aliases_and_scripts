@@ -44,7 +44,7 @@ def _nbr_commits_ahead_and_behind(repo):
         nbr_commit_ahead = count_commits(repo, branch_name, ahead=True)
         nbr_commit_behind = count_commits(repo, branch_name, ahead=False)
     except git.exc.GitCommandError as ge:
-        # test all the remotes for this branch, return for the first one matching
+        # test all the remotes for this branch, break for the first one matching
         found_valide_remote = False
         for remote in repo.remotes:
             try:
@@ -108,7 +108,22 @@ def odoo_repos_pull(version=None):
     for repo_name, repo in zip(repos, _repos(repos)):
         origin = repo.remotes.origin
         print("Pulling %s" % repo_name)
-        origin.pull()
+        try:
+            origin.pull()
+        except git.exc.GitCommandError as ge:
+            # test all the remotes for this branch, break for the first one matching
+            found_valid_remote = False
+            for remote in repo.remotes:
+                try:
+                    remote.pull()
+                except git.exc.GitCommandError:
+                    pass
+                else:
+                    found_valid_remote = True
+                    break
+            if not found_valid_remote:
+                # did not find any remote matching, reraising original error
+                raise ge
 
 
 def _get_version_from_db(dbname):
