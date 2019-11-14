@@ -26,6 +26,18 @@ set smarttab
 " Allow saving of files as sudo when I forgot to start vim using sudo.
 cmap w!! w !sudo tee > /dev/null %
 
+" Fuzzy finding
+set path+=**
+set wildmenu
+
+" netrw stuffs
+let g:netrw_banner=0        "disables anoying banner
+let g:netrw_browse_split=4  " open in prior window
+let g:netrw_altv=1          " open split to the right
+let g:netrw_liststyle=3     " tree view
+let g:netrw_list_hide=netrw_gitignore#Hide()
+let g:netrw_list_hide.=',\(^\|\s\s\)\zs\.\S\+'
+
 " ###################################
 " ######     Plugins Zone    ########
 " ###################################
