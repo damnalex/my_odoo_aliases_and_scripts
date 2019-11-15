@@ -54,12 +54,14 @@ eza() {
             return
             ;;
     esac
-    local search_param=" "
+    local current_dir=$(pwd)
+    cd $AP
     if [[ $2 == "" ]]; then
         vim $AP/$file_to_load || return
     else
         vim -c "/.*$2.*(" $AP/$file_to_load || return
     fi
+    cd "$current_dir"
     source $AP/alias_loader.sh
 }
 
