@@ -291,8 +291,10 @@ update_multiverse_branch() {
     local version=$1
     local repos=("odoo" "enterprise" "design-themes")
     for rep in $repos; do {
-        echo ${rep}
-        git -C $SRC_MULTI/${version}/${rep} pull --rebase
+        if [[ "$version" != "8.0" ]] || [[ "$rep" != "enterprise" ]]; then
+            echo ${rep}
+            git -C $SRC_MULTI/${version}/${rep} pull --rebase
+        fi
     }; done
 }
 
