@@ -65,9 +65,10 @@ go_update_and_clean() {
 }
 
 go_update_and_clean_all_branches() {
+    # parallelize git operations on different repos
+    git -C $INTERNAL pull --rebase &
+    update_all_multiverse_branches &
     git_odoo pull --all
-    git -C $INTERNAL pull --rebase
-    update_all_multiverse_branches
     clear_all_pyc
 }
 
@@ -296,10 +297,20 @@ update_multiverse_branch() {
 }
 
 update_all_multiverse_branches() {
-    local version
+    local pid_array=( )
     for version in $(cat $SRC_MULTI/version_list.txt); do {
         echo $version
-        eval update_multiverse_branch $version
+        # execute update in the background
+        update_multiverse_branch "$version" > /dev/null &
+        # record all background tasks
+        local pid=$!
+        pid_array=( "${pid_array[@]}" "$pid")
+    }; done
+    # wait for all background tasks to finish
+    for pidn in $pid_array; do {
+        while kill -0 "$pidn" 2> /dev/null; do {
+            sleep 0.2
+        }; done
     }; done
     run 6 echo "###########################################"
     echo "all done !!!!"
@@ -443,7 +454,6 @@ pl() {
     if [ $# -eq 1 ]; then
         where_clause="where t1.datname like '%$1%'"
     fi
-    local db_name
     for db_name in $(psql -tAqX -d postgres -c "SELECT t1.datname AS db_name FROM pg_database t1 $where_clause ORDER BY LOWER(t1.datname);"); do
         local db_version=$(_db_version $db_name 2> /dev/null)
         if [ "$db_version" != "" ]; then #ignore non-odoo DBs
