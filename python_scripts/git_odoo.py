@@ -109,6 +109,7 @@ def odoo_repos_pull(version=None):
     for repo_name, repo in zip(repos, _repos(repos)):
         origin = repo.remotes.origin
         print("Pulling %s" % repo_name)
+        repo.git.stash()
         try:
             origin.pull()
         except git.exc.GitCommandError as ge:
