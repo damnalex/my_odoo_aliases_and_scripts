@@ -36,7 +36,10 @@ let g:netrw_browse_split=4  " open in prior window
 let g:netrw_altv=1          " open split to the right
 let g:netrw_liststyle=3     " tree view
 let g:netrw_list_hide=netrw_gitignore#Hide()
-let g:netrw_list_hide.=',\(^\|\s\s\)\zs\.\S\+'
+" let g:netrw_list_hide.=',\(^\|\s\s\)\zs\.\S\+'    " hide dotfiles
+
+" sometime my pinky finger is tired
+imap jj <Esc>
 
 " ###################################
 " ######     Plugins Zone    ########
