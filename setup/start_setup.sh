@@ -15,17 +15,16 @@ echo "starting odoo setup"
 run 10 echo "############################################"
 mkdir -p "$SRC"
 cd $SRC
-# clone everything
+# build odoo universe
 git clone git@github.com:odoo/support-tools.git
 git clone git@github.com:odoo/odoo.git
+git -C $ODOO remote add git@github.com:odoo-dev/odoo.git
 git clone git@github.com:odoo/enterprise.git
+git -C $ENTERPRISE remote add git@github.com:odoo-dev/enterprise.git
 git clone git@github.com:odoo/design-themes.git
+git -C $SRC/design-themes remote add git@github.com:odoo-dev/design-themes.git
 git clone git@github.com:odoo/internal.git
 git clone git@github.com:odoo/documentation-user.git
-# add remotes
-git -C $ODOO remote add git@github.com:odoo-dev/odoo.git
-git -C $ENTERPRISE remote add git@github.com:odoo-dev/enterprise.git
-git -C $SRC/design-themes remote add git@github.com:odoo-dev/design-themes.git
 # build multiverse
 mkdir -p "$SRC_MULTI"
 cd $SRC_MULTI
@@ -45,4 +44,8 @@ build_odoo_virtualenv 12.0
 build_multiverse_branch 11.0
 build_odoo_virtualenv 11.0
 # TODO install wkhtmltopdf
+
+# setup editors
+sh $AP/editors/vim/apply_vimrc.sh
+sh $AP/editors/vscode/apply_settings.sh
 
