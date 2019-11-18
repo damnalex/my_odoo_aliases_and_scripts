@@ -40,6 +40,26 @@ _eza() {
     if [[ COMP_CWORD -eq 1 ]]; then
         COMPREPLY=($(compgen -W "zsh odoo loader drop git typo compl vim" -- "${COMP_WORD[1]}"))
     fi
+    if [[ COMP_CWORD -eq 2 ]]; then
+        local function_names=" "
+        case ${COMP_WORDS[1]} in
+            zsh)
+                function_names=$(grep ".*() {" $AP/zsh_alias.sh | sed 's/() {*//' | tr '\n' ' ')
+                ;;
+            loader)
+                function_names=$(grep ".*() {" $AP/alias_loader.sh | sed 's/() {*//' | tr '\n' ' ')
+                ;;
+            odoo)
+                function_names=$(grep ".*() {" $AP/odoo_alias.sh | sed 's/() {*//' | tr '\n' ' ')
+                ;;
+            compl)
+                function_names=$(grep ".*() {" $AP/completion.sh | grep -v "function_names" | sed 's/() {*//' | tr '\n' ' ')
+                ;;
+            *)
+                ;;
+        esac
+        COMPREPLY=($(compgen -W "$function_names" -- "${COMP_WORD[COMP_CWORD]}"))
+    fi
 }
 complete -o default -F _eza eza
 

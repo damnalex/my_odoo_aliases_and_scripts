@@ -16,7 +16,8 @@ clear_all_pyc() {
 
 #git
 alias git_odoo="$AP/python_scripts/git_odoo.py"
-go() { #switch branch for all odoo repos
+go() {
+    #switch branch for all odoo repos
     echo "cleaning the junk"
     clear_pyc
     if [[ $# -gt 1 ]]; then
