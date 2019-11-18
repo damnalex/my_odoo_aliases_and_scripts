@@ -58,7 +58,6 @@ complete -o default -F _complete_db_name_on_first_param dropodoo
 complete -o default -F _complete_db_name_on_first_param lu
 complete -o default -F _complete_db_name_on_first_param psql
 complete -o default -F _complete_db_name_on_first_param pgcli
-complete -o default -F _complete_db_name_on_first_param psql_seg_fault_fixer
 complete -o default -F _complete_db_name_on_first_param build_local_saas_db
 complete -o default -F _complete_db_name_on_first_param start_local_saas_db
 
