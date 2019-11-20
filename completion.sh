@@ -38,7 +38,7 @@ _complete_branch_name_on_repo_A() {
 
 _eza() {
     if [[ COMP_CWORD -eq 1 ]]; then
-        COMPREPLY=($(compgen -W "zsh odoo loader drop git typo compl vim" -- "${COMP_WORD[1]}"))
+        COMPREPLY=($(compgen -W "zsh odoo loader drop git typo compl vim tig" -- "${COMP_WORD[1]}"))
     fi
     if [[ COMP_CWORD -eq 2 ]]; then
         local function_names=" "

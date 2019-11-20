@@ -42,6 +42,10 @@ eza() {
             #default
             file_to_load="odoo_alias.sh"
             ;;
+        tig)
+            ezatig
+            return
+            ;;
         *)
             echo "zsh_alias.sh --> eza zsh"
             echo "alias_loader.sh --> eza loader"
@@ -51,6 +55,7 @@ eza() {
             echo "typo.py --> eza typo"
             echo "completion.sh --> eza compl"
             echo ".vimrc --> eza vim"
+            echo "repo info --> eza tig"
             return
             ;;
     esac
