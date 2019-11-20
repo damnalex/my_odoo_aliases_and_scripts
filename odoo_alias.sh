@@ -68,9 +68,17 @@ go_update_and_clean() {
 go_update_and_clean_all_branches() {
     # parallelize git operations on different repos
     git -C $INTERNAL pull --rebase &
+    local inter_pid=$!
     update_all_multiverse_branches &
-    git_odoo pull --all
+    local multiv_pid=$!
+    git_odoo pull --all &
+    local univers_pid=$!
+    wait_for_pid $inter_pid
+    wait_for_pid $multiv_pid
+    wait_for_pid $univers_pid
     clear_all_pyc
+    run 10 echo "#############################"
+    echo "updated all branches of multiverse and universe"
 }
 
 go_fetch() {
@@ -311,12 +319,10 @@ update_all_multiverse_branches() {
     }; done
     # wait for all background tasks to finish
     for pidn in $pid_array; do {
-        while kill -0 "$pidn" 2> /dev/null; do {
-            sleep 0.2
-        }; done
+        wait_for_pid "$pidn"
     }; done
-    run 6 echo "###########################################"
-    echo "all done !!!!"
+    echo "###########################################"
+    echo "mutliverse branches are up to date"
 }
 
 build_odoo_virtualenv() {

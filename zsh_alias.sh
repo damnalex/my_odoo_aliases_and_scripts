@@ -142,6 +142,12 @@ sort_and_remove_duplicate() {
     local file=$1
     echo "$(cat $file | sort | uniq)" > $file
 }
+
+wait_for_pid() {
+    # wait for the process of pid $1 to finish
+    while kill -0 "$1" 2> /dev/null; do sleep 0.2; done
+}
+
 #########################################
 ######## system specific stuffs #########
 #########################################
