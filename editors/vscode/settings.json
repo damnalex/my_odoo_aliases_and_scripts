@@ -19,12 +19,6 @@
             120
         ],
     },
-    "workbench.colorCustomizations": {
-        "editorRuler.foreground": "#3d3d3d88",
-        "statusBar.background": "#005f5f",
-        "statusBar.noFolderBackground": "#005f5f",
-        "statusBar.debuggingBackground": "#005f5f"
-    },
 
     "python.pythonPath": "/usr/local/bin/python3",
 
@@ -67,6 +61,5 @@
     "workbench.iconTheme": "material-icon-theme",
     "terminal.integrated.rendererType": "dom",
     "editor.lineNumbers": "relative",
-    "vim.statusBarColorControl": true,
     "vim.visualstar": true,
 }
