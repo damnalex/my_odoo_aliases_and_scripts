@@ -9,7 +9,7 @@ _complete_with_B_on_index_A() {
         eval $funct $3 $4 $5 $6 $7 $8 $9
         # this is very ugly, but the completion is doing weird stuff with $@[x,-1]
         # if I need more param, i'll just add more stuff here
-        # this also mean that a completion command called by _complete_with_B_on_index_A cannot call it back.
+        # this also means that a completion command called by _complete_with_B_on_index_A cannot call it back.
     fi
 }
 
