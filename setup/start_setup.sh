@@ -1,10 +1,14 @@
-# install homebrew
-/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-# desktop apps
-curl -s 'https://api.macapps.link/en/firefox-chrome-torbrowser-bettertouchtool-vscode-iterm-transmission-spectacle-spotify-vlc-thunderbird-adium' | sh
-# install ohmyzsh
-brew install zsh zsh-completions
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+if [[ "$1" == "base" ]]; then
+    # install homebrew
+    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    # desktop apps
+    curl -s 'https://api.macapps.link/en/firefox-chrome-torbrowser-bettertouchtool-vscode-iterm-transmission-spectacle-spotify-vlc-thunderbird-adium' | sh
+    # install ohmyzsh
+    brew install zsh zsh-completions
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+
+    return
+fi
 
 # source the scripts in this repo
 source ../alias_loader.sh
