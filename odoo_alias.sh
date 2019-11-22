@@ -206,7 +206,7 @@ sou() {
 }
 
 oes() {
-    if [[ $1 == "fetch" ]] && ! [[ "$*" == *'--no-start'* ]]; then
+    if [[ $1 == "fetch" ]] && ! [[ $* == *'--no-start'* ]]; then
         # running first a fetch without starting the db
         # then running a separate start to automagically
         # use the right virtual-env, even when the db version
@@ -300,7 +300,7 @@ update_multiverse_branch() {
     local version=$1
     local repos=("odoo" "enterprise" "design-themes")
     for rep in $repos; do {
-        if [[ "$version" != "8.0" ]] || [[ "$rep" != "enterprise" ]]; then
+        if [[ $version != "8.0" ]] || [[ $rep != "enterprise" ]]; then
             echo ${rep}
             git -C $SRC_MULTI/${version}/${rep} pull --rebase
         fi
@@ -308,14 +308,14 @@ update_multiverse_branch() {
 }
 
 update_all_multiverse_branches() {
-    local pid_array=( )
+    local pid_array=()
     for version in $(cat $SRC_MULTI/version_list.txt); do {
         echo $version
         # execute update in the background
         update_multiverse_branch "$version" > /dev/null &
         # record all background tasks
         local pid=$!
-        pid_array=( "${pid_array[@]}" "$pid")
+        pid_array=("${pid_array[@]}" "$pid")
     }; done
     # wait for all background tasks to finish
     for pidn in $pid_array; do {

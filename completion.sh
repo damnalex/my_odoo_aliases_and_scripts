@@ -55,8 +55,8 @@ _eza() {
             compl)
                 function_names=$(grep ".*() {" $AP/completion.sh | grep -v "function_names" | sed 's/() {*//' | tr '\n' ' ')
                 ;;
-            *)
-                ;;
+            *) ;;
+
         esac
         COMPREPLY=($(compgen -W "$function_names" -- "${COMP_WORD[COMP_CWORD]}"))
     fi

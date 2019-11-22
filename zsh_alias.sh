@@ -70,7 +70,7 @@ eza() {
     source $AP/alias_loader.sh
 }
 
-ezatig(){
+ezatig() {
     local current_dir=$(pwd)
     cd $AP
     tig

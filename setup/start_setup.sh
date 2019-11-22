@@ -1,4 +1,4 @@
-if [[ "$1" == "base" ]]; then
+if [[ $1 == "base" ]]; then
     # install homebrew
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
     # desktop apps
@@ -52,4 +52,3 @@ build_odoo_virtualenv 11.0
 # setup editors
 sh $AP/editors/vim/apply_vimrc.sh
 sh $AP/editors/vscode/apply_settings.sh
-
