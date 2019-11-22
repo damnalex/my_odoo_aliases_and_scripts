@@ -58,7 +58,6 @@
     "files.associations": {
         "*.xml": "html"
     },
-    // "vim.disableExtension": true,
     "git.autofetch": true,
     "telemetry.enableTelemetry": false,
     "workbench.editor.highlightModifiedTabs": true,
