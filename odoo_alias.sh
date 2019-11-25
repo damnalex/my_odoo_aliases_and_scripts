@@ -76,6 +76,7 @@ go_update_and_clean_all_branches() {
     wait_for_pid $inter_pid
     wait_for_pid $multiv_pid
     wait_for_pid $univers_pid
+    go_prune_all
     clear_all_pyc
     run 10 echo "#############################"
     echo "updated all branches of multiverse and universe"
@@ -87,6 +88,28 @@ go_fetch() {
 (go_fetch > /dev/null 2>&1 &)
 # this is to fetch everytime a terminal is loaded, or sourced, so it happens often
 # & is especially important here
+
+go_prune_all() {
+    local pid_array=()
+    # prune universe
+    local repos=("$ODOO" "$ENTERPRISE" "$SRC/design-themes" "$INTERNAL" "$ST")
+    for repo in $repos; do {
+        git -C "$repo" gc --prune=now &
+        pid_array=("${pid_array[@]}" "$!")
+    }; done
+    # prune multiverse
+    repos=("odoo" "enterprise" "design-themes")
+    for repo in $repos; do {
+        git -C "$SRC_MULTI/master/$repo" worktree prune &
+        pid_array=("${pid_array[@]}" "$!")
+    }; done
+    # wait for all background pruning to finish
+    for pidn in $pid_array; do {
+        wait_for_pid "$pidn"
+    }; done
+    echo "----"
+    echo "All repos have been pruned"
+}
 
 git_branch_version() {
     git -C $1 symbolic-ref --short HEAD
