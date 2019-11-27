@@ -56,6 +56,7 @@ _go_multi() {
 go_update_and_clean() {
     if [ $# -eq 1 ]; then
         git_odoo pull --version $1
+        go_venv $1
     else
         git_odoo pull
     fi
@@ -359,6 +360,10 @@ build_odoo_virtualenv() {
     local start_dir=$(pwd)
     cd $SRC_MULTI/$version || return 1
     deactivate || echo "no virtualenv activated"
+    if [ -d "o_${version}" ]; then
+        echo "virtualenv already exist, rebuilding"
+        rm -rf "o_${version}"
+    fi
     virtualenv -p $(which $python_inter) "o_${version}" &&
         go_venv $version &&
         pip install -r $SRC_MULTI/$version/odoo/requirements.txt

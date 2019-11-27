@@ -4,3 +4,4 @@ ptvsd
 requests
 simplejson
 tqdm
+black
