@@ -13,6 +13,13 @@ set ignorecase
 set smartcase
 set incsearch
 set hlsearch
+" show subsequent search results in the middle of the screen
+:nnoremap n nzz
+:nnoremap N Nzz
+:nnoremap * *zz
+:nnoremap # #zz
+:nnoremap g* g*zz
+:nnoremap g# g#zz
 
 " tab stuff
 filetype indent plugin on
