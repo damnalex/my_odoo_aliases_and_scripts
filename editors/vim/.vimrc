@@ -7,6 +7,7 @@ set relativenumber
 set cursorline
 syntax on
 set nowrap
+set scrolloff=5
 
 " search stuff
 set ignorecase
