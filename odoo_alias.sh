@@ -507,6 +507,7 @@ plike() {
 }
 
 lu() {
+    psql -d $1 -c "SELECT login FROM res_users where active = true ORDER BY id LIMIT 1;" -tAqX | pbcopy
     psql -d $1 -c "SELECT id, login FROM res_users where active = true ORDER BY id;" -q
 }
 
