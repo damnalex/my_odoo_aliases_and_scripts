@@ -19,14 +19,14 @@ import psycopg2
 import git
 
 relevant_saas_versions = ["14", "15", "11.3", "12.3"]
-RELEVANT_BRANCHES = ["saas-%s" % s for s in relevant_saas_versions]
+RELEVANT_BRANCHES = [f"saas-{s}" for s in relevant_saas_versions]
 RELEVANT_BRANCHES += ["10.0", "11.0", "12.0", "13.0"]
 
 
 def _repos(repos_names):
     """ list the repos of repos_names
     """
-    repos_paths = ("~/src/%s" % r for r in repos_names)
+    repos_paths = (f"~/src/{r}" for r in repos_names)
     for rp in repos_paths:
         yield git.Repo(rp)
 
@@ -77,8 +77,8 @@ def list_all_repos_info():
             nbr_ahead, nbr_behind = _nbr_commits_ahead_and_behind(repo)
         except git.exc.GitCommandError:
             nbr_ahead, nbr_behind = "N/A", "N/A"
-        print("current %s branch" % (repo_name))
-        print("  %s\t\t↓ %s ↑ %s" % (repo.active_branch.name, nbr_behind, nbr_ahead))
+        print(f"current {repo_name} branch")
+        print(f"  {repo.active_branch.name}\t\t↓ {nbr_behind} ↑ {nbr_ahead}")
         if repo.index.diff(None):
             print("  !!! With Local changes !!!")
 
@@ -90,7 +90,7 @@ def fetch_all_repos_info():
     repos = ["odoo", "enterprise", "design-themes", "internal", "support-tools"]
     for repo_name, repo in zip(repos, _repos(repos)):
         for remote in repo.remotes:
-            print("Fetching %s: %s" % (repo_name, remote.name))
+            print(f"Fetching {repo_name}: {repo.name}")
             remote.fetch()
 
 
@@ -108,7 +108,7 @@ def odoo_repos_pull(version=None):
     repos = ["odoo", "enterprise", "design-themes"]
     for repo_name, repo in zip(repos, _repos(repos)):
         origin = repo.remotes.origin
-        print("Pulling %s" % repo_name)
+        print(f"Pulling {repo_name}")
         repo.git.stash()
         try:
             origin.pull()
@@ -131,7 +131,7 @@ def odoo_repos_pull(version=None):
 def _get_version_from_db(dbname):
     """ get the odoo version of the given DB
     """
-    with psycopg2.connect("dbname='%s'" % dbname) as conn:
+    with psycopg2.connect(f"dbname='{dbname}'") as conn:
         with conn.cursor() as cr:
             query = "SELECT replace((regexp_matches(latest_version, '^\d+\.0|^saas~\d+\.\d+|saas~\d+'))[1], '~', '-') FROM ir_module_module WHERE name='base'"
             cr.execute(query)
@@ -145,7 +145,7 @@ def odoo_repos_checkout(version):
     if version == "8.0":
         repos.remove("enterprise")
     for repo_name, repo in zip(repos, _repos(repos)):
-        print("checkouting %s to %s" % (repo_name, version))
+        print(f"checkouting {repo_name} to {version}")
         repo.git.checkout(version)
         repo.git.clean("-xdf")
 
