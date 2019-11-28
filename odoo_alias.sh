@@ -481,10 +481,6 @@ list_local_saas() {
 alias lls='list_local_saas'
 
 #psql aliases
-poe() {
-    pgcli --auto-vertical-output oe_support_$1
-}
-
 pl() {
     #echo "select t1.datname as db_name, pg_size_pretty(pg_database_size(t1.datname)) as db_size from pg_database t1 order by t1.datname;" | psql postgres
     local where_clause="where t1.datname not like 'CLEAN_ODOO%' "
@@ -512,10 +508,6 @@ plike() {
 
 lu() {
     psql -d $1 -c "SELECT id, login FROM res_users where active = true ORDER BY id;" -q
-}
-
-luoe() {
-    lu oe_support_$1
 }
 
 list_db_like() {
