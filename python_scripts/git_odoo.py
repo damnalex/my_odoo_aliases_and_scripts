@@ -30,9 +30,16 @@ def _repos(repos_names):
     for rp in repos_paths:
         yield git.Repo(rp)
 
+class DetachedHeadError(Exception):
+    pass
 
 def _nbr_commits_ahead_and_behind(repo):
-    branch_name = repo.active_branch.name
+    try:
+        branch_name = repo.active_branch.name
+    except TypeError as e:
+        if str(e).startswith("HEAD is a detached symbolic reference"):
+            raise DetachedHeadError
+        raise
 
     def count_commits(repo, branch_name, remote_name="origin", ahead=True):
         s = "{remote}/{branch}..{branch}" if ahead else "{branch}..{remote}/{branch}"
@@ -73,12 +80,15 @@ def list_all_repos_info():
     """
     repos = ["odoo", "enterprise", "design-themes", "internal", "support-tools"]
     for repo_name, repo in zip(repos, _repos(repos)):
+        print(f"current {repo_name} branch")
         try:
             nbr_ahead, nbr_behind = _nbr_commits_ahead_and_behind(repo)
         except git.exc.GitCommandError:
             nbr_ahead, nbr_behind = "N/A", "N/A"
-        print(f"current {repo_name} branch")
-        print(f"  {repo.active_branch.name}\t\t↓ {nbr_behind} ↑ {nbr_ahead}")
+        except DetachedHeadError:
+            print(f"  HEAD --> {repo.head.commit}")
+        else:
+            print(f"  {repo.active_branch.name}\t\t↓ {nbr_behind} ↑ {nbr_ahead}")
         if repo.index.diff(None):
             print("  !!! With Local changes !!!")
 
