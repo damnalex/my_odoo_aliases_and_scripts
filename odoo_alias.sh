@@ -77,10 +77,11 @@ go_update_and_clean_all_branches() {
     wait_for_pid $inter_pid
     wait_for_pid $multiv_pid
     wait_for_pid $univers_pid
+    echo "all branches have been pulled"
     go_prune_all
     clear_all_pyc
-    run 10 echo "#############################"
-    echo "updated all branches of multiverse and universe"
+    run 5 echo "#############################"
+    echo "updated and cleaned all branches of multiverse and universe"
 }
 
 go_fetch() {
