@@ -376,6 +376,14 @@ build_odoo_virtualenv() {
     echo "virtualenv o_${version} is ready"
 }
 
+rebuild_main_virtualenvs() {
+    # usefull when I add something to other_requirements.txt
+    local main_versions=("11.0" "12.0" "13.0")
+    for version in $main_versions; do {
+        build_odoo_virtualenv $version
+    }; done
+}
+
 go_venv() {
     deactivate 2> /dev/null
     if [[ $# -eq 1 ]]; then
