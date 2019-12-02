@@ -156,6 +156,7 @@ def odoo_repos_checkout(version):
         repos.remove("enterprise")
     for repo_name, repo in zip(repos, _repos(repos)):
         print(f"checkouting {repo_name} to {version}")
+        repo.git.stash()
         repo.git.checkout(version)
         repo.git.clean("-xdf")
 
