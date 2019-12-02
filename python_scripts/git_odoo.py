@@ -84,7 +84,7 @@ def list_all_repos_info():
         try:
             nbr_ahead, nbr_behind = _nbr_commits_ahead_and_behind(repo)
         except git.exc.GitCommandError:
-            nbr_ahead, nbr_behind = "N/A", "N/A"
+            print(f"  {repo.active_branch.name}")
         except DetachedHeadError:
             print(f"  HEAD --> {repo.head.commit}")
         else:
