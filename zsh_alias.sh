@@ -77,6 +77,9 @@ ezatig() {
     cd "$current_dir"
 }
 
+# git for the $AP repo
+alias geza="git -C $AP"
+
 ###################################
 #########   Misc Stuff  ###########
 ###################################
