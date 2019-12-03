@@ -146,6 +146,11 @@ goso() {
 
 #start odoo
 so() {
+    if [[ $1 = "--help" ]]; then
+        so fakeDBname 678 --help | less
+        # fakeDBname & 678 don't mean anything here
+        return 0
+    fi
     _so_checker $@ || return 1
     eval $(_so_builder $@)
     echo $(_so_builder $@)
