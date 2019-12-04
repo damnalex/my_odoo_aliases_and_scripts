@@ -161,7 +161,7 @@ wait_for_pid() {
 #########################################
 
 if [ "$OSTYPE" = "darwin18.0" ]; then
-    # macos
+    # macos specific stuffs
     export LC_ALL=en_US.UTF-8
     export LANG=en_US.UTF-8
     export PATH="/usr/local/sbin:$PATH"
@@ -173,44 +173,6 @@ if [ "$OSTYPE" = "darwin18.0" ]; then
     alias netdata_stop="brew services stop netdata"
 
     # end of macos stuffs
-else
-    # linux
-
-    maj() {
-        sudo apt-get update &&
-            sudo apt-get upgrade -y &&
-            sudo apt-get autoclean &&
-            sudo apt-get autoremove -y
-    }
-
-    fullmaj() {
-        sudo apt-get update &&
-            sudo apt-get upgrade -y &&
-            sudo apt-get dist-upgrade -y &&
-            sudo apt-get autoclean &&
-            sudo apt-get autoremove -y
-    }
-
-    alias cya='systemctl suspend -i'
-
-    clear_ram() {
-        echo "This is going to take a while ..." &&
-            echo "Droppping cache" &&
-            sudo su -c "echo 3 > /proc/sys/vm/drop_caches" root &&
-            echo "Cache dropped" &&
-            echo "turning swap off" &&
-            sudo swapoff -a &&
-            echo "turning swap back on" &&
-            sudo swapon -a &&
-            echo "Aaaaaand... done!"
-    }
-
-    noweb() {
-        sg no_web $@[1,-1]
-    }
-    alias ni='noweb'
-
-    # end of linux stuff
 fi
 
 ##############################################
