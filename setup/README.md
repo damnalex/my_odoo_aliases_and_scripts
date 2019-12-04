@@ -4,4 +4,4 @@ this is a work in progress
 
 run `./start_setup.sh base`
 check that zsh is the running shell
-then `./start_setup.sh`
+then `./start_setup.sh step2`
