@@ -287,6 +287,11 @@ dropodoo() {
         echo "to override protection, modify protection file at $AP/drop_protected_dbs.txt"
         return 1
     fi
+    if [[ $db_name_1 =~ '^oe_support_*' ]]; then
+        echo "Dropping the DB ${db_name_1} using oe-support"
+        oes cleanup ${db_name_1:11}
+        return 1
+    fi
     if [ $# -eq 1 ]; then
         psql -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$db_name_1';" -q > /dev/null
         remove_from_meta $db_name_1 2> /dev/null
