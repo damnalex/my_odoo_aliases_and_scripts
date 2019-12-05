@@ -160,7 +160,7 @@ wait_for_pid() {
 ######## system specific stuffs #########
 #########################################
 
-if [ "$OSTYPE" = "darwin18.0" ]; then
+if [ "$OSTYPE" = "darwin19.0" ]; then
     # macos specific stuffs
     export LC_ALL=en_US.UTF-8
     export LANG=en_US.UTF-8

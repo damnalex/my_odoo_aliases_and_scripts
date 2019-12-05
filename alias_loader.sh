@@ -11,7 +11,7 @@ export INTERNAL="$SRC/internal"
 export ST="$SRC/support-tools"
 export SRC_MULTI="$HOME/multi_src"
 
-if [ "$OSTYPE" = "darwin18.0" ]; then
+if [ "$OSTYPE" = "darwin19.0" ]; then
     export ODOO_STORAGE="$HOME/Library/Application Support/Odoo"
 else
     export ODOO_STORAGE="$HOME/.local/Odoo"
