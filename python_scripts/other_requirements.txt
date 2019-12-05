@@ -7,3 +7,4 @@ tqdm
 black
 phonenumbers
 pyopenssl
+ipython
