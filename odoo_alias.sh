@@ -560,7 +560,7 @@ ptvsd2() {
 
 ptvsd2-so() {
     _so_checker $@ || return 1
-    eval ptvsd2 $(_so_builder $@)
+    eval ptvsd2 $(_so_builder $@ --limit-time-real=1000 --limit-time-cpu=600)
 }
 alias debo2="ptvsd2-so"
 
@@ -570,7 +570,7 @@ ptvsd3() {
 
 ptvsd3-so() {
     _so_checker $@ || return 1
-    eval ptvsd3 $(_so_builder $@)
+    eval ptvsd3 $(_so_builder $@ --limit-time-real=1000 --limit-time-cpu=600)
 }
 alias debo="ptvsd3-so"
 
