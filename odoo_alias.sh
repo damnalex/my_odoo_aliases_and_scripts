@@ -334,11 +334,16 @@ build_multiverse_branch() {
 update_multiverse_branch() {
     local version=$1
     local repos=("odoo" "enterprise" "design-themes")
+    local pid_array=()
     for rep in $repos; do {
         if [[ $version != "8.0" ]] || [[ $rep != "enterprise" ]]; then
             echo ${rep}
-            git -C $SRC_MULTI/${version}/${rep} pull --rebase
+            git -C $SRC_MULTI/${version}/${rep} pull --rebase &
+            pid_array=("${pid_array[@]}" "$!")
         fi
+    }; done
+    for pidn in $pid_array; do {
+        wait_for_pid "$pidn"
     }; done
 }
 
@@ -349,8 +354,7 @@ update_all_multiverse_branches() {
         # execute update in the background
         update_multiverse_branch "$version" > /dev/null &
         # record all background tasks
-        local pid=$!
-        pid_array=("${pid_array[@]}" "$pid")
+        pid_array=("${pid_array[@]}" "$!")
     }; done
     # wait for all background tasks to finish
     for pidn in $pid_array; do {
