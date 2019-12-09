@@ -7,4 +7,11 @@ tqdm
 black
 phonenumbers
 pyopenssl
+firebase_admin
+pyldap
+pyserial
+pyusb
+qrcode
+dbfread
+ebaysdk
 ipython
