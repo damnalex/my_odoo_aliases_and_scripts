@@ -160,7 +160,6 @@ def odoo_repos_checkout(version):
         print(f"checkouting {repo_name} to {version}")
         repo.git.stash()
         repo.git.checkout(version)
-        repo.git.clean("-xdf")
 
 
 def main():
