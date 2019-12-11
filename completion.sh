@@ -70,6 +70,8 @@ complete -o default -F _so so
 complete -o default -F _so soi
 complete -o default -F _so sou
 complete -o default -F _so goso
+complete -o default -F _so ptvsd3-so
+complete -o default -F _so ptvsd2-so
 
 complete -o default -F _complete_db_name_on_first_param godb
 complete -o default -F _complete_db_name_on_first_param clean_database
