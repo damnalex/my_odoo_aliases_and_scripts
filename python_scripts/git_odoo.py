@@ -90,7 +90,9 @@ def list_all_repos_info():
         except DetachedHeadError:
             print(f"  HEAD --> {repo.head.commit}")
         else:
-            print(f"  {repo.active_branch.name}\t\t↓ {nbr_behind} ↑ {nbr_ahead}")
+            nb_tabul = 3 if len(repo.active_branch.name) < 6 else 2
+            tabuls = "\t"*nb_tabul
+            print(f"  {repo.active_branch.name}{tabuls}↓ {nbr_behind} ↑ {nbr_ahead}")
         if repo.index.diff(None):
             print("  !!! With Local changes !!!")
 
