@@ -62,4 +62,14 @@
     "terminal.integrated.rendererType": "dom",
     "editor.lineNumbers": "relative",
     "vim.visualstar": true,
+    "vim.insertModeKeyBindings": [
+        {
+            "before": ["j", "j"],
+            "after": ["<Esc>"],
+        },
+        {
+            "before": ["k", "k"],
+            "after": ["<Esc>"],
+        },
+    ],
 }
