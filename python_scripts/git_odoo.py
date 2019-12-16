@@ -104,7 +104,7 @@ def fetch_all_repos_info():
     repos = ["odoo", "enterprise", "design-themes", "internal", "support-tools"]
     for repo_name, repo in zip(repos, _repos(repos)):
         for remote in repo.remotes:
-            print(f"Fetching {repo_name}: {repo.name}")
+            print(f"Fetching {repo_name}: {remote}")
             remote.fetch()
 
 
