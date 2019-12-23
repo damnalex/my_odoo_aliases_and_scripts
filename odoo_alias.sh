@@ -411,6 +411,12 @@ go_venv() {
 }
 alias gov="go_venv"
 
+go_venv_current() {
+    # use the virtualenv for the currently checked out odoo branch
+    gov $(git_branch_version $ODOO)
+}
+alias govcur="go_venv_current"
+
 build_runbot() {
     # build a runbot like DB
     local version=$1
