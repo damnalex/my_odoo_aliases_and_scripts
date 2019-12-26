@@ -40,7 +40,6 @@
     "terminal.integrated.fontFamily": "'Monaco','Operator mono large','Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
     "window.zoomLevel": 1,
     "terminal.integrated.scrollback": 10000,
-    "workbench.activityBar.visible": true,
 
     "python.linting.pycodestyleEnabled": true,
     "python.linting.pycodestyleArgs": [
@@ -48,7 +47,6 @@
     ],
     "disableLigatures.mode": "Line",
     "editor.cursorBlinking": "expand",
-    "editor.cursorSmoothCaretAnimation": true,
     "files.associations": {
         "*.xml": "html"
     },
@@ -60,7 +58,6 @@
     "git-graph.dateType": "Commit Date",
     "workbench.iconTheme": "material-icon-theme",
     "terminal.integrated.rendererType": "dom",
-    "editor.lineNumbers": "relative",
     "vim.visualstar": true,
     "vim.insertModeKeyBindings": [
         {
@@ -72,4 +69,15 @@
             "after": ["<Esc>"],
         },
     ],
+    "editor.renderWhitespace": "all",
+    "editor.accessibilitySupport": "off",
+    "editor.dragAndDrop": false,
+    "editor.renderLineHighlight": "all",
+    "editor.smoothScrolling": true,
+    "editor.cursorSmoothCaretAnimation": true,
+    "editor.cursorSurroundingLines": 4,
+    "editor.minimap.renderCharacters": false,
+    "workbench.settings.useSplitJSON": true,
+    "zenMode.fullScreen": false,
+    "debug.toolBarLocation": "docked",
 }
