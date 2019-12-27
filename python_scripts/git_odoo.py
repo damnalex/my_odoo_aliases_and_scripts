@@ -105,7 +105,12 @@ def fetch_all_repos_info():
     for repo_name, repo in zip(repos, _repos(repos)):
         for remote in repo.remotes:
             print(f"Fetching {repo_name}: {remote}")
-            remote.fetch()
+            try:
+                remote.fetch()
+            except git.exc.GitCommandError as ge:
+                print(f"Could not fetch from {remote}/{repo_name}")
+                print(f"Error : {ge}")
+                print("------------------")
 
 
 def odoo_repos_pull(version=None):
@@ -138,8 +143,10 @@ def odoo_repos_pull(version=None):
                     found_valid_remote = True
                     break
             if not found_valid_remote:
-                # did not find any remote matching, reraising original error
-                raise ge
+                # did not find any remote matching, showing original error
+                print(f"Could not pull from repo {repo_name}")
+                print(f"Error : {ge}")
+                print("------------------")
 
 
 def _get_version_from_db(dbname):
