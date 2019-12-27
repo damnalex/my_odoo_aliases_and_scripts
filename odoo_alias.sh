@@ -179,9 +179,9 @@ _so_checker() {
             _db_version $db_name
             echo "repo version is :"
             git_branch_version $ODOO
-            echo "continue anyway ? (Y/n): "
+            echo "continue anyway ? (y/N): "
             read answer
-            if [ "$answer" = "Y" ]; then
+            if [ "$answer" = "y" ]; then
                 echo "I hope you know what you're doing ..."
             else
                 echo "Yeah, that's probably safer :D "
@@ -592,6 +592,16 @@ ptvsd3-so() {
     eval ptvsd3 $(_so_builder $@ --limit-time-real=1000 --limit-time-cpu=600)
 }
 alias debo="ptvsd3-so"
+
+
+export POSTGRES_LOC="$HOME/Library/Application Support/Postgres/var-11"
+pgbadger_compute(){
+pgbadger -o pgbadger_output.html  "$POSTGRES_LOC/postgresql.log" && open pgbadger_output.html
+}
+
+pgbadger_clean(){
+echo "" > "$POSTGRES_LOC/postgresql.log"
+}
 
 ##############################################
 ###############  tmp aliases #################
