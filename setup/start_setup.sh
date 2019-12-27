@@ -19,7 +19,7 @@ if [[ $1 == "base" ]]; then
     return
 fi
 
-if [[ $1 = "step2" ]]; then
+if [[ $1 == "step2" ]]; then
     # source the scripts in this repo
     echo "Loading the aliases"
     echo "###################"
@@ -88,6 +88,4 @@ if [[ $1 = "step2" ]]; then
     return
 fi
 
-
 echo "No valid parameter provided, see README.md"
-

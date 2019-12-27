@@ -23,7 +23,17 @@ import git
 # RELEVANT_BRANCHES += ["10.0", "11.0", "12.0", "13.0"]
 
 # optimize for smaller checkout between versions on git_odoo pull --all
-RELEVANT_BRANCHES = ["10.0", "saas-14", "saas-15", "11.0", "saas-11.3", "12.0", "saas-12.3", "13.0"]
+RELEVANT_BRANCHES = [
+    "10.0",
+    "saas-14",
+    "saas-15",
+    "11.0",
+    "saas-11.3",
+    "12.0",
+    "saas-12.3",
+    "13.0",
+]
+
 
 def _repos(repos_names):
     """ list the repos of repos_names
@@ -32,8 +42,10 @@ def _repos(repos_names):
     for rp in repos_paths:
         yield git.Repo(rp)
 
+
 class DetachedHeadError(Exception):
     pass
+
 
 def _nbr_commits_ahead_and_behind(repo):
     try:
@@ -91,7 +103,7 @@ def list_all_repos_info():
             print(f"  HEAD --> {repo.head.commit}")
         else:
             nb_tabul = 3 if len(repo.active_branch.name) < 6 else 2
-            tabuls = "\t"*nb_tabul
+            tabuls = "\t" * nb_tabul
             print(f"  {repo.active_branch.name}{tabuls}↓ {nbr_behind} ↑ {nbr_ahead}")
         if repo.index.diff(None):
             print("  !!! With Local changes !!!")

@@ -147,7 +147,7 @@ goso() {
 
 #start odoo
 so() {
-    if [[ $1 = "--help" ]]; then
+    if [[ $1 == "--help" ]]; then
         so fakeDBname 678 --help | less
         # fakeDBname & 678 don't mean anything here
         return 0
