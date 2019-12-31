@@ -48,6 +48,8 @@ let g:netrw_list_hide=netrw_gitignore#Hide()
 
 " sometime my pinky finger is tired
 imap jj <Esc>
+imap kk <Esc>
+" (or I forget to leave insert mode before moving around)
 
 " ###################################
 " ######     Plugins Zone    ########
