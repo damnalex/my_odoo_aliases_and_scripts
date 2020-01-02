@@ -82,7 +82,7 @@ go_update_and_clean_all_branches() {
     clear_all_pyc
     run 5 echo "#############################"
     echo "updated and cleaned all branches of multiverse and universe"
-    gov $(git_branch_version $ODOO)
+    go_venv_current
 }
 
 go_fetch() {
