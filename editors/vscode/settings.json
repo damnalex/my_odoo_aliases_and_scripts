@@ -7,16 +7,23 @@
           {
             "scope": "comment",
             "settings": {
-              "fontStyle": "italic"
-            }
-          }
+              "fontStyle": "italic",
+            },
+          },
+          {
+            "scope": "string.quoted.docstring.multi.python",
+            "settings": {
+                "foreground": "#88846fff",
+                "fontStyle": "italic",
+            },
+          },
         ]
     },
 
     "[python]": {
         "editor.rulers": [
             79,
-            120
+            120,
         ],
     },
 
@@ -25,7 +32,7 @@
     "editor.fontSize": 12,
     "extensions.ignoreRecommendations": false,
     "gitlens.advanced.messages": {
-        "suppressShowKeyBindingsNotice": true
+        "suppressShowKeyBindingsNotice": true,
     },
 
     "files.exclude": {
@@ -48,7 +55,7 @@
     "disableLigatures.mode": "Line",
     "editor.cursorBlinking": "expand",
     "files.associations": {
-        "*.xml": "html"
+        "*.xml": "html",
     },
     "git.autofetch": true,
     "telemetry.enableTelemetry": false,
@@ -80,4 +87,5 @@
     "workbench.settings.useSplitJSON": true,
     "zenMode.fullScreen": false,
     "debug.toolBarLocation": "docked",
+    "editor.minimap.enabled": true,
 }
