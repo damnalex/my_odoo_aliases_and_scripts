@@ -65,6 +65,9 @@ complete -o default -F _eza eza
 
 _so() {
     _complete_db_name_on_first_param
+    if [[ COMP_CWORD -eq 2 ]]; then
+        COMPREPLY=($(compgen -W "8569 8069 8888" -- "${COMP_WORDS[COMP_CWORD]}"))
+    fi
 }
 complete -o default -F _so so
 complete -o default -F _so soi
