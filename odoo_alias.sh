@@ -594,14 +594,13 @@ ptvsd3-so() {
 }
 alias debo="ptvsd3-so"
 
-
 export POSTGRES_LOC="$HOME/Library/Application Support/Postgres/var-11"
 pgbadger_compute() {
-pgbadger -o pgbadger_output.html  "$POSTGRES_LOC/postgresql.log" && open pgbadger_output.html
+    pgbadger -o pgbadger_output.html "$POSTGRES_LOC/postgresql.log" && open pgbadger_output.html
 }
 
 pgbadger_clean() {
-echo "" > "$POSTGRES_LOC/postgresql.log"
+    echo "" > "$POSTGRES_LOC/postgresql.log"
 }
 
 ##############################################
