@@ -1,91 +1,106 @@
 {
+    // general style
     "workbench.colorTheme": "Monokai",
+    "workbench.iconTheme": "material-icon-theme",
     "editor.fontFamily": "'Operator Mono Lig','Operator Mono','Fira Code','Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
-    "editor.fontLigatures" : true,
+    "terminal.integrated.fontFamily": "'Monaco','Operator mono large','Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
+    "editor.fontLigatures": true,
+    "editor.fontSize": 12,
+    "window.zoomLevel": 1,
+    "editor.cursorBlinking": "expand",
+    "workbench.editor.highlightModifiedTabs": true,
+    "terminal.integrated.rendererType": "dom",
+    "editor.renderWhitespace": "all",
+    "editor.renderLineHighlight": "all",
+    "editor.smoothScrolling": true,
+    "editor.cursorSmoothCaretAnimation": true,
+    "editor.minimap.renderCharacters": false,
+    "zenMode.fullScreen": false,
+    "debug.toolBarLocation": "docked",
+    "editor.minimap.enabled": true,
+    "editor.cursorSurroundingLines": 4,
+    // special styles
     "editor.tokenColorCustomizations": {
         "textMateRules": [
-          {
-            "scope": "comment",
-            "settings": {
-              "fontStyle": "italic",
+            {
+                "scope": "comment",
+                "settings": {
+                    "fontStyle": "italic",
+                },
             },
-          },
-          {
-            "scope": "string.quoted.docstring.multi.python",
-            "settings": {
-                "foreground": "#88846fff",
-                "fontStyle": "italic",
+            {
+                "scope": "string.quoted.docstring.multi.python",
+                "settings": {
+                    "foreground": "#88846fff", //monokai comment color
+                    "fontStyle": "italic",
+                },
             },
-          },
         ]
     },
-
-    "[python]": {
-        "editor.rulers": [
-            79,
-            120,
-        ],
-    },
-
-    "python.pythonPath": "/usr/local/bin/python3",
-
-    "editor.fontSize": 12,
-    "extensions.ignoreRecommendations": false,
-    "gitlens.advanced.messages": {
-        "suppressShowKeyBindingsNotice": true,
-    },
-
+    // general settings
     "files.exclude": {
         "**/.git": true,
         "**/.svn": true,
         "**/.hg": true,
         "**/CVS": true,
         "**/.DS_Store": true,
-        "**/*.pyc": {"when": "$(basename).py"},
+        "**/*.pyc": {
+            "when": "$(basename).py"
+        },
         "**/__pycache__": true,
     },
-    "terminal.integrated.fontFamily": "'Monaco','Operator mono large','Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
-    "window.zoomLevel": 1,
+    "files.associations": {
+        "*.xml": "html",
+    },
     "terminal.integrated.scrollback": 10000,
-
+    "git.autofetch": true,
+    "git.autofetchPeriod": 300,
+    "telemetry.enableTelemetry": false,
+    "editor.accessibilitySupport": "off",
+    "editor.dragAndDrop": false,
+    "workbench.settings.useSplitJSON": true,
+    // language specific settings
+    "[python]": {
+        "editor.rulers": [
+            79,
+            120,
+        ],
+    },
+    "python.pythonPath": "/usr/local/bin/python3",
     "python.linting.pycodestyleEnabled": true,
     "python.linting.pycodestyleArgs": [
         "--ignore=E501,E301,E302,E126,E123,E127,E128,E265,E305,W605",
     ],
-    "disableLigatures.mode": "Line",
-    "editor.cursorBlinking": "expand",
-    "files.associations": {
-        "*.xml": "html",
+    // extension settings
+    "extensions.ignoreRecommendations": false,
+    "gitlens.advanced.messages": {
+        "suppressShowKeyBindingsNotice": true,
     },
-    "git.autofetch": true,
-    "telemetry.enableTelemetry": false,
-    "workbench.editor.highlightModifiedTabs": true,
+    "disableLigatures.mode": "Cursor",
     "git-graph.commitDetailsViewLocation": "Docked to Bottom",
     "git-graph.dateFormat": "Relative",
     "git-graph.dateType": "Commit Date",
-    "workbench.iconTheme": "material-icon-theme",
-    "terminal.integrated.rendererType": "dom",
     "vim.visualstar": true,
     "vim.insertModeKeyBindings": [
         {
-            "before": ["j", "j"],
-            "after": ["<Esc>"],
+            "before": [
+                "j",
+                "j"
+            ],
+            "after": [
+                "<Esc>"
+            ],
         },
         {
-            "before": ["k", "k"],
-            "after": ["<Esc>"],
+            "before": [
+                "k",
+                "k"
+            ],
+            "after": [
+                "<Esc>"
+            ],
         },
     ],
-    "editor.renderWhitespace": "all",
-    "editor.accessibilitySupport": "off",
-    "editor.dragAndDrop": false,
-    "editor.renderLineHighlight": "all",
-    "editor.smoothScrolling": true,
-    "editor.cursorSmoothCaretAnimation": true,
-    "editor.cursorSurroundingLines": 4,
-    "editor.minimap.renderCharacters": false,
-    "workbench.settings.useSplitJSON": true,
-    "zenMode.fullScreen": false,
-    "debug.toolBarLocation": "docked",
-    "editor.minimap.enabled": true,
+    //end of settings
+    "dummy.setting": "Anything under this line should be moved to another section.",
 }
