@@ -5,9 +5,13 @@ set ruler
 set number
 set relativenumber
 set cursorline
-syntax on
+syntax enable
 set nowrap
 set scrolloff=5
+set lazyredraw
+
+" sound stuff
+set noerrorbells
 
 " search stuff
 set ignorecase
@@ -15,12 +19,12 @@ set smartcase
 set incsearch
 set hlsearch
 " show subsequent search results in the middle of the screen
-:nnoremap n nzz
-:nnoremap N Nzz
-:nnoremap * *zz
-:nnoremap # #zz
-:nnoremap g* g*zz
-:nnoremap g# g#zz
+nnoremap n nzz
+nnoremap N Nzz
+nnoremap * *zz
+nnoremap # #zz
+nnoremap g* g*zz
+nnoremap g# g#zz
 
 " tab stuff
 filetype indent plugin on
@@ -51,6 +55,30 @@ imap jj <Esc>
 imap kk <Esc>
 " (or I forget to leave insert mode before moving around)
 
+" things from 'dougblack.io/words/a-good-vimrc.html'
+" -------------------------------------------------
+" remap leader. by default it is a '\'
+let mapleader=","
+" turn off search highlight
+nnoremap <leader><space> :nohlsearch<CR>
+" highlight last inserted text
+nnoremap gV `[v`]
+
+" things from 'https://nvie.com/posts/how-i-boosted-my-vim/'
+" ---------------------------------------------------------
+set hidden      " hide buffers instead of closing them.
+                " This way I am not forced to write to write or discard
+                " changes before :e for :find
+                " If I try to close vim from the other buffers, I am simply
+                " brought back to the non saved buffer (after an error
+                " message)
+" Easy window navigation
+map <C-h> <C-w>h
+map <C-j> <C-w>j
+map <C-k> <C-w>k
+map <C-l> <C-w>l
+
+
 " ###################################
 " ######     Plugins Zone    ########
 " ###################################
@@ -72,6 +100,9 @@ Plug 'nathanaelkane/vim-indent-guides'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'tpope/vim-fugitive'
 call plug#end()
+" run :source ~/.vimrc  to reload vimrc
+" run :PlugInstall to install declared plugins
+" run :PlugClean to uninstall undeclared plugins
 
 " plugin config
 " comfortable-motion
