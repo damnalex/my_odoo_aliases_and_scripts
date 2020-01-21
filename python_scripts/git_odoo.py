@@ -18,15 +18,12 @@ from docopt import docopt
 import psycopg2
 import git
 
-# relevant_saas_versions = ["14", "15", "11.3", "12.3"]
+# relevant_saas_versions = ["11.3", "12.3"]
 # RELEVANT_BRANCHES = [f"saas-{s}" for s in relevant_saas_versions]
-# RELEVANT_BRANCHES += ["10.0", "11.0", "12.0", "13.0"]
+# RELEVANT_BRANCHES += ["11.0", "12.0", "13.0"]
 
 # optimize for smaller checkout between versions on git_odoo pull --all
 RELEVANT_BRANCHES = [
-    "10.0",
-    "saas-14",
-    "saas-15",
     "11.0",
     "saas-11.3",
     "12.0",

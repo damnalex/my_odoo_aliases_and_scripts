@@ -299,7 +299,7 @@ dropodoo() {
         rm -rf $ODOO_STORAGE/filestore/$db_name_1
         dropdb $db_name_1 || return 1
         echo "$db_name_1 has been dropped"
-        return
+        return 1
     fi
 
     # drop multiple DB at the same time
@@ -352,7 +352,7 @@ update_all_multiverse_branches() {
     local pid_array=()
     for version in $(cat $SRC_MULTI/version_list.txt); do {
         echo $version
-        # execute update in the background
+        # execute update of individual branches in the background
         update_multiverse_branch "$version" > /dev/null &
         # record all background tasks
         pid_array=("${pid_array[@]}" "$!")
@@ -416,7 +416,7 @@ go_venv_current() {
     gov $(git_branch_version $ODOO)
 }
 alias govcur="go_venv_current"
-govcur
+govcur # use the right virtual env on terminal startup and reload
 
 build_runbot() {
     # build a runbot like DB
