@@ -24,7 +24,7 @@ export GPG_TTY=$(tty)
 autoload bashcompinit
 bashcompinit
 
-# activate vi mode
+# activate vi mode in the terminal
 bindkey -v
 if [ ! -f ~/.inputrc ]; then
     echo "set editing-mode vi" > ~/.inputrc
@@ -39,6 +39,7 @@ if ! grep -q "source $0" ~/.zshrc; then
     echo "source $0" >> ~/.zshrc
 fi
 
+# load all the other files in the $AP folder
 source $AP/zsh_alias.sh
 source $AP/odoo_alias.sh
 source $AP/typo.sh

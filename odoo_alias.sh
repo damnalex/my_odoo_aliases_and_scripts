@@ -6,15 +6,17 @@ export PYTHONPATH="${PYTHONPATH}:$SRC/odoo"
 ###########################################################
 
 clear_pyc() {
+    # remove compiled python files from the main source folder
     find $SRC -name '*.pyc' -delete
 }
 
 clear_all_pyc() {
+    # like clear_pyc, but also cleanes the files in the multiverse folder
     clear_pyc
     find $SRC_MULTI -name '*.pyc' -delete
 }
 
-#git
+# git stuffs
 alias git_odoo="$AP/python_scripts/git_odoo.py"
 go() {
     #switch branch for all odoo repos
@@ -32,6 +34,7 @@ go() {
 }
 
 _go_multi() {
+    #switch to specific branch/commit for each repo seperatly
     if [[ $# -ge 2 ]]; then
         echo "checkouting community repo to $1"
         git -C $ODOO checkout $1
@@ -54,6 +57,7 @@ _go_multi() {
 }
 
 go_update_and_clean() {
+    # git pull on all the repos of the main source folder
     if [ $# -eq 1 ]; then
         git_odoo pull --version $1
         go_venv $1
@@ -67,6 +71,7 @@ go_update_and_clean() {
 }
 
 go_update_and_clean_all_branches() {
+    #like go_update_and_clean, but does the multiverse, and internal too
     # parallelize git operations on different repos
     git -C $INTERNAL pull --rebase &
     local inter_pid=$!
@@ -86,6 +91,7 @@ go_update_and_clean_all_branches() {
 }
 
 go_fetch() {
+    #git fetch on all the repos of the main source folder
     git_odoo fetch
 }
 (go_fetch > /dev/null 2>&1 &)
@@ -93,6 +99,7 @@ go_fetch() {
 # & is especially important here
 
 go_prune_all() {
+    # git prune on all the repos of the the universe, multiverse, and on internal and support tools
     local pid_array=()
     # prune universe
     local repos=("$ODOO" "$ENTERPRISE" "$SRC/design-themes" "$INTERNAL" "$ST")
@@ -115,16 +122,18 @@ go_prune_all() {
 }
 
 git_branch_version() {
+    # get the name of the branch of a given repo
     git -C $1 symbolic-ref --short HEAD
 }
 
 golist() {
+    # list all the main source folder repos, theire currently checked out branches and theire status
     git_odoo list
     (go_fetch > /dev/null 2>&1 &)
 }
 
 godb() {
-    #switch repos branch to the version of the given DB
+    # switch repos branch to the version of the given DB
     local db_name=$1
     if psql -lqt | cut -d \| -f 1 | grep -qw $db_name; then #check if the database already exists
         git_odoo checkout --dbname $db_name
@@ -135,6 +144,7 @@ godb() {
 }
 
 _db_version() {
+    # get the version on an odoo DB 
     psql -tAqX -d $1 -c "SELECT replace((regexp_matches(latest_version, '^\d+\.0|^saas~\d+\.\d+|saas~\d+'))[1], '~', '-') FROM ir_module_module WHERE name='base';"
 }
 
@@ -145,8 +155,8 @@ goso() {
         eval so $@
 }
 
-#start odoo
 so() {
+    # start odoo
     if [[ $1 == "--help" ]]; then
         so fakeDBname 678 --help | less
         # fakeDBname & 678 don't mean anything here
@@ -158,6 +168,9 @@ so() {
 }
 
 _so_checker() {
+    # check that the params given to 'so' are correct,
+    # check that I am not trying to start a protected DB,
+    # check that I am sure to want to start a DB with the wrong branch checked out (only check $ODOO)
     local db_name=$1
     if [ $# -lt 1 ]; then
         echo "At least give me a name :( "
@@ -192,6 +205,7 @@ _so_checker() {
 }
 
 _so_builder() {
+    # build the command to start odoo
     local db_name=$1
     if [ $# -lt 2 ]; then
         _so_builder $db_name 8069
@@ -218,6 +232,7 @@ _so_builder() {
 }
 
 soiu() {
+    # update ($1 == u) or install ($1 == i) modules $4-... on DB $2
     local modules_install_arg="-$1 $3"
     for module in $@[4,-1]; do
         modules_install_arg="${modules_install_arg},$module"
@@ -227,16 +242,19 @@ soiu() {
 }
 
 soi() {
+    # install modules $3-... on DB $1
     echo "installing modules on db $1"
     soiu i $1 $@[2,-1]
 }
 
 sou() {
+    # update modules $3-... on DB $1
     echo "ugrading modules on db $1"
     soiu u $1 $@[2,-1]
 }
 
 oes() {
+    # start oe-support, with some smartness
     if [[ $1 == "fetch" ]] && ! [[ $* == *'--no-start'* ]]; then
         # running first a fetch without starting the db
         # then running a separate start to automagically
@@ -260,15 +278,18 @@ source $ST/scripts/completion/oe-support-completion.sh
 complete -o default -F _oe-support oes
 
 clean_database() {
+    # start clean_database.py, dumbly
     eval $ST/clean_database.py $@
 }
 
 neuter_db() {
+    # neutre a DB without using oe-support
     local db_name=$1
     psql $db_name < $AP/support_scripts/neuter_db.sql
 }
 
 odoosh_ssh() {
+    # start odoosh.py, dumbly
     local url=$1
     eval $ST/odoosh/odoosh.py $url
 }
@@ -276,8 +297,8 @@ odoosh_ssh() {
 alias psql_odoo="$AP/python_scripts/psql_odoo.py"
 
 dropodoo() {
+    # drop the given DBs and remove its filestore, also removes it from meta if it was a local saas db
     local db_name_1=$1
-    # drop the db, also removes it from meta if it was a local saas db
     if [ $# -lt 1 ]; then
         echo "requires the name(s) of the DB(s) to drop"
         echo "dropodoo DB_Name [Other_DB_name* ...]"
@@ -310,6 +331,7 @@ dropodoo() {
 }
 
 droplike() {
+    # drop the DBs with the given patern (sql style patern)
     local dbs_list=$(list_db_like $1 | tr '\n' ' ')
     if [ -z $dbs_list ]; then
         echo "no DB matching the given pattern were found"
@@ -319,6 +341,7 @@ droplike() {
 }
 
 build_multiverse_branch() {
+    # create a new mutliverse branche in $SRC_MULTI
     local version=$1
     # building branch
     local repos=("odoo" "enterprise" "design-themes")
@@ -333,6 +356,7 @@ build_multiverse_branch() {
 }
 
 update_multiverse_branch() {
+    # git pull the repos of the given mutliverse branche
     local version=$1
     local repos=("odoo" "enterprise" "design-themes")
     local pid_array=()
@@ -349,6 +373,7 @@ update_multiverse_branch() {
 }
 
 update_all_multiverse_branches() {
+    # git pull the repos of all the multivers branches
     local pid_array=()
     for version in $(cat $SRC_MULTI/version_list.txt); do {
         echo $version
@@ -366,6 +391,8 @@ update_all_multiverse_branches() {
 }
 
 build_odoo_virtualenv() {
+    # (re)create a new virtual env, using the corresponding multiverse branch as a reference
+    # stores the virtual env in the multiverse branche, under the o_XXX folder
     local version=$1
     local python_inter
     if [[ $# -gt 1 ]]; then
@@ -392,6 +419,7 @@ build_odoo_virtualenv() {
 }
 
 rebuild_main_virtualenvs() {
+    # recreate the main virtual envs
     # usefull when I add something to other_requirements.txt
     local main_versions=("11.0" "12.0" "13.0")
     for version in $main_versions; do {
@@ -400,6 +428,7 @@ rebuild_main_virtualenvs() {
 }
 
 go_venv() {
+    # use the virtual env of the given odoo version
     deactivate 2> /dev/null
     if [[ $# -eq 1 ]]; then
         local version=$1
@@ -420,6 +449,7 @@ govcur # use the right virtual env on terminal startup and reload
 
 build_runbot() {
     # build a runbot like DB
+    # TODO: rebuild the runbots and make them immortal
     local version=$1
     local new_db_name=$2
     dropodoo $new_db_name 2> /dev/null
@@ -458,6 +488,7 @@ alias runbot="build_runbot"
 #local-saas
 
 build_local_saas_db() {
+    # create or modify a DB to make it run as if it was a DB on the saas
     local db_name=$1
     godb $db_name
     if [ -f $ODOO/odoo-bin ]; then
@@ -472,10 +503,12 @@ build_local_saas_db() {
 alias bloc='build_local_saas_db'
 
 remove_from_meta() {
+    # remove a db from the local metabase
     echo "DELETE FROM databases WHERE name = '$1'" | psql meta > /dev/null
 }
 
 start_local_saas_db() {
+    # start a local db as if it was on the saas, need to run build_local_saas_db first
     local db_name=$1
     godb $db_name
     local_saas_config_files_set &&
@@ -489,6 +522,7 @@ start_local_saas_db() {
 alias sloc='start_local_saas_db'
 
 local_saas_config_files_set() {
+    # modify the source code of internal to allow me to run db with start_local_saas_db
     sed -i "" "s|OAUTH_BASE_URL = 'http://accounts.127.0.0.1.xip.io:8369'|OAUTH_BASE_URL = 'https://accounts.odoo.com' #tempcomment|" $INTERNAL/default/saas_worker/const.py
     sed -i "" "s|if not has_role('trial'):|if not has_role('trial') and False: #tempcomment|" $INTERNAL/default/saas_worker/controllers/support.py
     # this following line only usefull on the mac until I find time to find the cause of the inconsistency
@@ -496,6 +530,7 @@ local_saas_config_files_set() {
 }
 
 local_saas_config_files_unset() {
+    # fix what was done with local_saas_config_files_set
     sed -i "" "s|OAUTH_BASE_URL = 'https://accounts.odoo.com' #tempcomment|OAUTH_BASE_URL = 'http://accounts.127.0.0.1.xip.io:8369'|" $INTERNAL/default/saas_worker/const.py
     sed -i "" "s|if not has_role('trial') and False: #tempcomment|if not has_role('trial'):|" $INTERNAL/default/saas_worker/controllers/support.py
     # this following line only usefull on the mac until I find time to find the cause of the inconsistency
@@ -503,6 +538,7 @@ local_saas_config_files_unset() {
 }
 
 list_local_saas() {
+    # list the DB that were SAASifyied
     echo "Below, the list of local saas DBs"
     psql -d meta -c "SELECT name, id FROM databases ORDER BY id;" -q
     echo "to start --> start_local_saas_db db-name"
@@ -513,6 +549,7 @@ alias lls='list_local_saas'
 
 #psql aliases
 pl() {
+    # list odoo DBs
     #echo "select t1.datname as db_name, pg_size_pretty(pg_database_size(t1.datname)) as db_size from pg_database t1 order by t1.datname;" | psql postgres
     local where_clause="where t1.datname not like 'CLEAN_ODOO%' "
     if [ $# -eq 1 ]; then
@@ -528,26 +565,31 @@ pl() {
 }
 
 ploe() {
+    # like pl, but just for the oe_support_XXX DBs
     # the grep is not necessary, but it makes the base name of the DBs more readable
     pl oe_support_ | grep oe_support_
 }
 
 plike() {
+    # psql $1 but with an incomplete name, in a sql like style (useless since the autocompletion of psql, I think)
     psql $(list_db_like $1) ||
         echo "\n\n\nlooks like there was multiple result for $1, try something more precise"
 }
 
 lu() {
+    # list the users of DB $1 and copy the username of the admin in the clipboard
     psql -d $1 -c "SELECT login FROM res_users where active = true ORDER BY id LIMIT 1;" -tAqX | pbcopy
     psql -d $1 -c "SELECT id, login FROM res_users where active = true ORDER BY id;" -q
 }
 
 list_db_like() {
+    # list the DBs with a name that match the pattern (sql like style)
     psql -tAqX -d postgres -c "SELECT t1.datname AS db_name FROM pg_database t1 WHERE t1.datname like '$1' ORDER BY LOWER(t1.datname);"
 }
 alias ldl="list_db_like"
 
 db_age() {
+    # tels the age of a given DB
     local db_name=$1
     local query="SELECT datname, (pg_stat_file('base/'||oid ||'/PG_VERSION')).modification FROM pg_database WHERE datname LIKE '$db_name'"
     psql -c "$query" -d postgres
@@ -555,14 +597,16 @@ db_age() {
 
 #port killer
 listport() {
+    # show all process working on port $1
     lsof -i tcp:$1
 }
 killport() {
+    # kill the process working on port $1 (if there are multiple ones, kill only the first one)
     listport $1 | sed -n '2p' | awk '{print $2}' | xargs kill -9
 }
 
 #start python scripts with the vscode python debugger
-# note that the debbuger is on the called scrpt,
+# note that the debbuger is on the called script,
 # if that script calls another one, that one is not "debugged"
 # so it doesn't work with oe-support.
 # doesn't work with alias calling python scripts
@@ -596,10 +640,12 @@ alias debo="ptvsd3-so"
 
 export POSTGRES_LOC="$HOME/Library/Application Support/Postgres/var-11"
 pgbadger_compute() {
+    # create the pgbadger result from $POSTGRES_LOC into pgbdager_output.html
     pgbadger -o pgbadger_output.html "$POSTGRES_LOC/postgresql.log" && open pgbadger_output.html
 }
 
 pgbadger_clean() {
+    # empty the postgresql logs
     echo "" > "$POSTGRES_LOC/postgresql.log"
 }
 

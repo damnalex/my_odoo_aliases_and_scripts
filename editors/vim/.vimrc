@@ -1,23 +1,23 @@
 set nocompatible
 
 " visual stuff
-set ruler
-set number
+set ruler  "Show the line and column number of the cursor position at the bottom right corner
+set number  "Show the line numbers
 set relativenumber
-set cursorline
-syntax enable
-set nowrap
-set scrolloff=5
-set lazyredraw
+set cursorline  "underline the current line, helps find the cursor
+syntax enable  "enable syntaxe highlight
+set nowrap  "don't wrap long lines
+set scrolloff=5  "don't let the cursor be at the very top or very bottom of the screen, helps have enough code context at all time
+set lazyredraw  "don't redraw the screen during macros --> makes them a slightly bit faster I guess ?
 
 " sound stuff
-set noerrorbells
+set noerrorbells  "no dings, the ding is bad and useless
 
 " search stuff
 set ignorecase
 set smartcase
-set incsearch
-set hlsearch
+set incsearch  "show the search results as I type
+set hlsearch  "underline the search results
 " show subsequent search results in the middle of the screen
 nnoremap n nzz
 nnoremap N Nzz
@@ -39,10 +39,12 @@ set smarttab
 cmap w!! w !sudo tee > /dev/null %
 
 " Fuzzy finding
-set path+=**
+set path+=**  "only works well if vim was opened for the root of the relevant folder structure
+
+" better command line completion
 set wildmenu
 
-" netrw stuffs
+" netrw stuffs --> that's for when I do :Explore
 let g:netrw_banner=0        "disables anoying banner
 let g:netrw_browse_split=4  " open in prior window
 let g:netrw_altv=1          " open split to the right

@@ -1,5 +1,5 @@
 #################################################################################################
-# a collection of recurring typo and short cut created quickly created via the new_typo command #
+###### a collection of recurring typo created quickly created via the new_typo command ##########
 #################################################################################################
 
 alias 'gti'='git'

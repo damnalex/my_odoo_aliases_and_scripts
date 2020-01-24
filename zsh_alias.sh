@@ -11,7 +11,7 @@ reload_zshrc() {
 }
 
 eza() {
-    # edit and reload alias
+    # edit and reload alias and various scripts
     local file_to_load=" "
     case $1 in
         zsh)
@@ -59,6 +59,7 @@ eza() {
             return
             ;;
     esac
+    # change the current directory while editing the files to have a better experience with my vim config
     local current_dir=$(pwd)
     cd $AP
     if [[ $2 == "" ]]; then
@@ -67,10 +68,12 @@ eza() {
         vim -c "/.*$2.*(" $AP/$file_to_load || return
     fi
     cd "$current_dir"
+    # editing is done, applying changes
     source $AP/alias_loader.sh
 }
 
 ezatig() {
+    # tig the $AP folder from anywhere
     local current_dir=$(pwd)
     cd $AP
     tig
@@ -87,12 +90,13 @@ alias geza="git -C $AP"
 alias c='clear'
 alias l="ls -lAh"
 
-#history analytics
 history_count() {
+    #history analytics
     history -n | cut -d' ' -f1 | sort | uniq -c | trim | sort -gr | less
 }
 
 trim() {
+    # remove leading and trailling white spaces
     awk '{$1=$1};1'
 }
 
@@ -124,6 +128,7 @@ find_file_with_all() {
 }
 
 run() {
+    # run a command $1 times back to back
     # source https://www.shellhacks.com/linux-repeat-command-n-times-bash-loop/
     number=$1
     shift
@@ -133,12 +138,13 @@ run() {
 }
 
 git_fame() {
+    # show the number of lines attributed to each contributor in file $1, or for all files in folder if no file is provided
     local file_to_analyse=$1
     git ls-tree -r -z --name-only HEAD -- ${file_to_analyse} | xargs -0 -n1 git blame --line-porcelain HEAD | grep "^author " | sort | uniq -c | sort -nr
 }
 
-# make git_fame callable as "git fame" (as if it was a standard git comand)
 git() {
+    # make git_fame callable as "git fame" (as if it was a standard git comand)
     if [[ $1 == "fame" ]]; then
         git_fame $2
     else
@@ -147,6 +153,9 @@ git() {
 }
 
 sort_and_remove_duplicate() {
+    # don't use this for very big files as it puts the whole file in memory
+    # a more memory efficient alternative would be to use a tmp file, but
+    # it was the intended goal of this method to not use a tmp file.
     local file=$1
     echo "$(cat $file | sort | uniq)" > $file
 }
@@ -180,6 +189,7 @@ fi
 ##############################################
 
 new_typo() {
+    # add a new typo to the typo alias file
     local typo=$1
     local correct_command=$2
     echo "alias '$typo'='$correct_command'" >> $AP/typo.sh
@@ -187,6 +197,8 @@ new_typo() {
 }
 
 commit_typos() {
+    # automtic git commit of the changes of the typo file
+    # if there was anything else that was staged, it is commited too (get rekt)
     git -C $AP add $AP/typo.sh
     git -C $AP commit -m "[AUTOMATIC] update typos file"
 }
@@ -196,12 +208,15 @@ commit_typos() {
 ##############################################
 
 new_lib_in_other_python_requirements() {
+    # add a new required lib to my personal requirements.txt file
     local library=$1
     echo "$library" >> $AP/python_scripts/other_requirements.txt
     sort_and_remove_duplicate $AP/python_scripts/other_requirements.txt
 }
 
 commit_new_lib_in_other_python_requirements() {
+    # automtic git commit of the changes of my requirements.txt file
+    # if there was anything else that was staged, it is commited too (get rekt)
     git -C $AP add $AP/python_scripts/other_requirements.txt
     git -C $AP commit -m "[AUTOMATIC] update other_requirements.txt"
 }
@@ -211,6 +226,7 @@ commit_new_lib_in_other_python_requirements() {
 ##############################################
 
 ap_format_files() {
+    # do some automatic style formating for the .py and .sh files of the $AP folder
     python3 -m black $AP
     shfmt -l -i 4 -s -ci -sr -w $AP
 }
