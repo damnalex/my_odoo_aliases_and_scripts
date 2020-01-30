@@ -396,9 +396,9 @@ build_odoo_virtualenv() {
     local version=$1
     local python_inter
     if [[ $# -gt 1 ]]; then
-        python_inter=$2
+        python_inter="-p$(which $2)"
     else
-        python_inter="python3"
+        python_inter=""
     fi
     local start_dir=$(pwd)
     cd $SRC_MULTI/$version || return 1
@@ -407,7 +407,8 @@ build_odoo_virtualenv() {
         echo "virtualenv already exist, rebuilding"
         rm -rf "o_${version}"
     fi
-    virtualenv -p $(which $python_inter) "o_${version}" &&
+    # virtualenv -p $(which $python_inter) "o_${version}" &&
+    virtualenv "$python_inter" "o_${version}" &&
         go_venv $version &&
         pip install -r $SRC_MULTI/$version/odoo/requirements.txt
     pip install -r $ST/requirements.txt
@@ -421,7 +422,7 @@ build_odoo_virtualenv() {
 rebuild_main_virtualenvs() {
     # recreate the main virtual envs
     # usefull when I add something to other_requirements.txt
-    local main_versions=("11.0" "12.0" "13.0")
+    local main_versions=("11.0" "12.0" "13.0" "saas-12.3")
     for version in $main_versions; do {
         build_odoo_virtualenv $version
     }; done
