@@ -7,11 +7,12 @@
 [alias]
 	co = checkout
 	st = status --short
-	hist = log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short
 	ci = commit
 	a = add
+    hist = log --graph --all --date=short --pretty=format:'%C(dim white)%h%Creset%C(auto)%d%Creset %s %C(blue)<%an> %C(dim green)(%cd)%Creset%n'
 [commit]
     verbose = true 
+	gpgSign = true
 [filter "lfs"]
     clean = git-lfs clean -- %f
     smudge = git-lfs smudge -- %f
@@ -19,3 +20,5 @@
     required = true
 [checkout]
     defaultRemote = origin
+[gpg]
+	program = gpg
