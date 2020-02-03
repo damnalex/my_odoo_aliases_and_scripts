@@ -294,7 +294,6 @@ odoosh_ssh() {
     eval $ST/odoosh/odoosh.py $url
 }
 
-alias psql_odoo="$AP/python_scripts/psql_odoo.py"
 
 dropodoo() {
     # drop the given DBs and remove its filestore, also removes it from meta if it was a local saas db
