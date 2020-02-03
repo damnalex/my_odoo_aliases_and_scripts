@@ -293,7 +293,7 @@ odoosh_ssh() {
     local url=$1
     eval $ST/odoosh/odoosh.py $url
 }
-
+alias odoosh='odoosh_ssh'
 
 dropodoo() {
     # drop the given DBs and remove its filestore, also removes it from meta if it was a local saas db
