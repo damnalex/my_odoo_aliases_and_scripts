@@ -277,6 +277,31 @@ oes() {
 source $ST/scripts/completion/oe-support-completion.sh
 complete -o default -F _oe-support oes
 
+bring_back_masterbeta_to_master() {
+    # tool to bring back the master-beta branch of oes
+    # to the same "code state" as master, so there is no need
+    # to force push to test new things easily
+    local current_working_dir=$(pwd)
+    cd $ST
+    # create temporary folder and make sure it is clean (maybe the foilder already exists)
+    mkdir /tmp/tempfolderforoesupportrepo
+    rm -rf /tmp/tempfolderforoesupportrepo/*
+    # copy everything except the dotfiles, dotfolders, and __pycache__ from the master branche
+    git switch master
+    cp -r * /tmp/tempfolderforoesupportrepo
+    rm -rf /tmp/tempfolderforoesupportrepo/__pycache__
+    # empty the code of the master-beta branch
+    git switch master-beta
+    rm -rf *
+    # apply the master branch code onto master-beta
+    cp -r /tmp/tempfolderforoesupportrepo/* .
+    git add .
+    git commit -m "[bringing back to master]"
+
+    # go back to my starting point
+    cd $current_working_dir
+}
+
 clean_database() {
     # start clean_database.py, dumbly
     eval $ST/clean_database.py $@
