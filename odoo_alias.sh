@@ -313,12 +313,12 @@ neuter_db() {
     psql $db_name < $AP/support_scripts/neuter_db.sql
 }
 
-odoosh_ssh() {
+odoosh() {
     # start odoosh.py, dumbly
     local url=$1
     eval $ST/odoosh/odoosh.py $url
 }
-alias odoosh='odoosh_ssh'
+alias odoosh_ssh='odoosh'
 
 dropodoo() {
     # drop the given DBs and remove its filestore, also removes it from meta if it was a local saas db
