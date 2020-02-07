@@ -290,13 +290,15 @@ bring_back_masterbeta_to_master() {
     git switch master
     cp -r * /tmp/tempfolderforoesupportrepo
     rm -rf /tmp/tempfolderforoesupportrepo/__pycache__
+    # get the curret commit hash to document the new commit
+    local master_hash=$(git rev-parse --short HEAD)
     # empty the code of the master-beta branch
     git switch master-beta
     rm -rf *
     # apply the master branch code onto master-beta
     cp -r /tmp/tempfolderforoesupportrepo/* .
     git add .
-    git commit -m "[bringing back to master]"
+    git commit -m "[bringing back to master] $master_hash"
 
     # go back to my starting point
     cd $current_working_dir
