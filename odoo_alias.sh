@@ -144,7 +144,7 @@ godb() {
 }
 
 _db_version() {
-    # get the version on an odoo DB 
+    # get the version on an odoo DB
     psql -tAqX -d $1 -c "SELECT replace((regexp_matches(latest_version, '^\d+\.0|^saas~\d+\.\d+|saas~\d+'))[1], '~', '-') FROM ir_module_module WHERE name='base';"
 }
 
@@ -283,7 +283,7 @@ bring_back_masterbeta_to_master() {
     # to force push to test new things easily
     local current_working_dir=$(pwd)
     cd $ST
-    # create temporary folder and make sure it is clean (maybe the foilder already exists)
+    # create temporary folder and make sure it is clean (maybe the folder already exists)
     mkdir /tmp/tempfolderforoesupportrepo
     rm -rf /tmp/tempfolderforoesupportrepo/*
     # copy everything except the dotfiles, dotfolders, and __pycache__ from the master branche
@@ -683,4 +683,3 @@ pgbadger_clean() {
 alias todayilearned="e ~/Documents/meetings_notes/today_I_leanred_backlog.txt"
 alias thingsToChangeInOESupport="e ~/Documents/things_to_change_in_oe-support.txt"
 alias loempia_law="e ~/Documents/meetings_notes/IAmTheLaw/apps_the_rules.txt"
-

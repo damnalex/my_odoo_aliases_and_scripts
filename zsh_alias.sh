@@ -143,13 +143,13 @@ git_fame() {
     git ls-tree -r -z --name-only HEAD -- ${file_to_analyse} | xargs -0 -n1 git blame --line-porcelain HEAD | grep "^author " | sort | uniq -c | sort -nr
 }
 
-git() {
-    # make git_fame callable as "git fame" (as if it was a standard git comand)
-    if [[ $1 == "fame" ]]; then
-        git_fame $2
-    else
-        command git "$@"
-    fi
+git_rebase_and_merge_X_on_Y() {
+    # apply the content of branch X onto branch Y
+    # does not modify branch X
+    git checkout -b tmp_branch_random_name $1 &&
+        git rebase $2 &&
+        git rebase $2 tmp_branch_random_name &&
+        git branch -D tmp_branch_random_name
 }
 
 sort_and_remove_duplicate() {
