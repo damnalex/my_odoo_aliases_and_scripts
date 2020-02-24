@@ -35,8 +35,6 @@ RELEVANT_BRANCHES = [
 def _repos(repos_names):
     """ Generator of repo objects for repos_names repos.
     """
-    # repos_paths = (f"~/src/{r}" for r in repos_names)
-    # for rp in repos_paths:
     for rn in repos_names:
         # assuming repos_names is either a list of full paths
         # or folders in ~/src
