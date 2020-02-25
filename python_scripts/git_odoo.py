@@ -33,11 +33,14 @@ RELEVANT_BRANCHES = [
 
 
 def _repos(repos_names):
-    """ list the repos of repos_names
+    """ Generator of repo objects for repos_names repos.
     """
-    repos_paths = (f"~/src/{r}" for r in repos_names)
-    for rp in repos_paths:
-        yield git.Repo(rp)
+    for rn in repos_names:
+        # assuming repos_names is either a list of full paths
+        # or folders in ~/src
+        if '/' not in rn:
+            rn = f"~/src/{r}"
+        yield git.Repo(rn)
 
 
 class DetachedHeadError(Exception):
@@ -161,11 +164,11 @@ def odoo_repos_pull(version=None):
 def _get_version_from_db(dbname):
     """ get the odoo version of the given DB
     """
-    with psycopg2.connect(f"dbname='{dbname}'") as conn:
-        with conn.cursor() as cr:
-            query = "SELECT replace((regexp_matches(latest_version, '^\d+\.0|^saas~\d+\.\d+|saas~\d+'))[1], '~', '-') FROM ir_module_module WHERE name='base'"
-            cr.execute(query)
-            return cr.fetchone()[0]
+    with psycopg2.connect(f"dbname='{dbname}'") as conn,
+         conn.cursor() as cr:
+        query = "SELECT replace((regexp_matches(latest_version, '^\d+\.0|^saas~\d+\.\d+|saas~\d+'))[1], '~', '-') FROM ir_module_module WHERE name='base'"
+        cr.execute(query)
+        return cr.fetchone()[0]
 
 
 def odoo_repos_checkout(version):
