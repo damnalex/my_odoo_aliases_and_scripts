@@ -59,6 +59,7 @@
     "editor.accessibilitySupport": "off",
     "editor.dragAndDrop": false,
     "workbench.settings.useSplitJSON": true,
+    "files.defaultLanguage": "${activeEditorLanguage}",
     // language specific settings
     "[python]": {
         "editor.rulers": [
