@@ -62,28 +62,21 @@ def _nbr_commits_ahead_and_behind(repo):
         nbr_commit = sum(1 for _ in repo.iter_commits(s))
         return nbr_commit
 
-    try:
-        nbr_commit_ahead = count_commits(repo, branch_name, ahead=True)
-        nbr_commit_behind = count_commits(repo, branch_name, ahead=False)
-    except git.exc.GitCommandError as ge:
-        # test all the remotes for this branch, break for the first one matching
-        found_valide_remote = False
-        for remote in repo.remotes:
-            try:
-                nbr_commit_ahead = count_commits(
-                    repo, branch_name, remote_name=remote.name, ahead=True
-                )
-                nbr_commit_behind = count_commits(
-                    repo, branch_name, remote_name=remote.name, ahead=False
-                )
-            except git.exc.GitCommandError:
-                pass
-            else:
-                found_valide_remote = True
-                break
-        if not found_valide_remote:
-            # did not find any remote matching, reraising original error
-            raise ge
+    git_error = []
+    remotes_names = ["origin"] + [rem.name for rem in repo.remotes if rem.name != "origin"]
+    # test all the remotes for this branch (starting with origin),
+    # break for the first one matching
+    for remote_name in remotes_names:
+        try:
+            nbr_commit_ahead = count_commits(repo, branch_name, remote_name, ahead=True)
+            nbr_commit_behind = count_commits(repo, branch_name, remote_name, ahead=False)
+        except git.exc.GitCommandError as ge:
+            git_error.append(ge)
+        else:
+            break
+    else:
+        # did not find any remote matching, reraising original error
+        raise git_error[0]
 
     return (nbr_commit_ahead, nbr_commit_behind)
 
@@ -92,7 +85,7 @@ def list_all_repos_info():
     """ display the available information regarding the community, enterprise,
     design themes, internal and support-tools current branch
     """
-    repos = ["odoo", "enterprise", "design-themes", "internal", "support-tools"]
+    repos = ["odoo", "enterprise", "design-themes", "internal", "paas", "support-tools"]
     for repo_name, repo in zip(repos, _repos(repos)):
         print(f"current {repo_name} branch")
         try:
@@ -113,7 +106,7 @@ def fetch_all_repos_info():
     """ updates the available information regarding the community, enterprise,
     design themes, internal and support-tools repos
     """
-    repos = ["odoo", "enterprise", "design-themes", "internal", "support-tools"]
+    repos = ["odoo", "enterprise", "design-themes", "internal", "paas", "support-tools"]
     for repo_name, repo in zip(repos, _repos(repos)):
         for remote in repo.remotes:
             print(f"Fetching {repo_name}: {remote}")
@@ -136,30 +129,26 @@ def odoo_repos_pull(version=None):
         return
     if version:
         odoo_repos_checkout(version)
-    repos = ["odoo", "enterprise", "design-themes"]
+    repos = ["odoo", "enterprise", "design-themes", "internal", "paas"]
     for repo_name, repo in zip(repos, _repos(repos)):
-        origin = repo.remotes.origin
         print(f"Pulling {repo_name}")
         repo.git.stash()
-        try:
-            origin.pull()
-        except git.exc.GitCommandError as ge:
-            # test all the remotes for this branch, break for the first one matching
-            found_valid_remote = False
-            for remote in repo.remotes:
-                try:
-                    remote.pull()
-                except git.exc.GitCommandError:
-                    pass
-                else:
-                    found_valid_remote = True
-                    break
-            if not found_valid_remote:
-                # did not find any remote matching, showing original error
-                print(f"Could not pull from repo {repo_name}")
-                print(f"Error : {ge}")
-                print("------------------")
-
+        remotes = [repo.remotes.origin] + [rem for rem in repo.remotes if rem != repo.remotes.origin]
+        # test all the remotes for this branch (starting with origin),
+        # break for the first one matching
+        git_errors = []
+        for remote in remotes:
+            try:
+                remote.pull()
+            except git.exc.GitCommandError as ge:
+                git_errors.append(ge)
+            else:
+                break
+        else:
+            # did not find any remote matching, showing original error
+            print(f"Could not pull from repo {repo_name}")
+            print(f"Error : {git_errors[0]}")
+            print("------------------")
 
 def _get_version_from_db(dbname):
     """ get the odoo version of the given DB

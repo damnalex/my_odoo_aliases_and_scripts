@@ -57,7 +57,7 @@ _go_multi() {
 }
 
 go_update_and_clean() {
-    # git pull on all the repos of the main source folder
+    # git pull on all the repos of the main source folder (except for support-tools)
     if [ $# -eq 1 ]; then
         git_odoo pull --version $1
         go_venv $1
@@ -71,15 +71,12 @@ go_update_and_clean() {
 }
 
 go_update_and_clean_all_branches() {
-    #like go_update_and_clean, but does the multiverse, and internal too
+    #like go_update_and_clean, but does the multiverse too
     # parallelize git operations on different repos
-    git -C $INTERNAL pull --rebase &
-    local inter_pid=$!
     update_all_multiverse_branches &
     local multiv_pid=$!
     git_odoo pull --all &
     local univers_pid=$!
-    wait_for_pid $inter_pid
     wait_for_pid $multiv_pid
     wait_for_pid $univers_pid
     echo "all branches have been pulled"
@@ -101,8 +98,8 @@ go_fetch() {
 go_prune_all() {
     # git prune on all the repos of the the universe, multiverse, and on internal and support tools
     local pid_array=()
-    # prune universe
-    local repos=("$ODOO" "$ENTERPRISE" "$SRC/design-themes" "$INTERNAL" "$ST")
+    # prune universe, internal and paas
+    local repos=("$ODOO" "$ENTERPRISE" "$SRC/design-themes" "$INTERNAL" "$SRC/paas" "$ST")
     for repo in $repos; do {
         git -C "$repo" gc --prune=now &
         pid_array=("${pid_array[@]}" "$!")
