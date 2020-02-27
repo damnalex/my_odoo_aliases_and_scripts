@@ -321,27 +321,27 @@ alias odoosh_ssh='odoosh'
 
 dropodoo() {
     # drop the given DBs and remove its filestore, also removes it from meta if it was a local saas db
-    local db_name_1=$1
     if [ $# -lt 1 ]; then
         echo "requires the name(s) of the DB(s) to drop"
         echo "dropodoo DB_Name [Other_DB_name* ...]"
         return 1
     fi
-    if [[ $db_name_1 =~ $(echo ^\($(paste -sd'|' $AP/drop_protected_dbs.txt)\)$) ]]; then
-        echo "db $db_name_1 is drop protected --> aborting"
-        echo "to override protection, modify protection file at $AP/drop_protected_dbs.txt"
-        return 1
-    fi
-    if [[ $db_name_1 =~ '^oe_support_*' ]]; then
-        echo "Dropping the DB ${db_name_1} using oe-support"
-        oes cleanup ${db_name_1:11}
-        return 1
-    fi
     if [ $# -eq 1 ]; then
-        psql -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$db_name_1';" -q > /dev/null
+        local db_name_1=$1
+        if [[ $db_name_1 =~ $(echo ^\($(paste -sd'|' $AP/drop_protected_dbs.txt)\)$) ]]; then
+            echo "db $db_name_1 is drop protected --> aborting"
+            echo "to override protection, modify protection file at $AP/drop_protected_dbs.txt"
+            return 1
+        fi
         remove_from_meta $db_name_1 2> /dev/null
-        rm -rf $ODOO_STORAGE/filestore/$db_name_1
-        dropdb $db_name_1 || return 1
+        if [[ $db_name_1 =~ '^oe_support_*' ]]; then
+            echo "Dropping the DB ${db_name_1} using oe-support"
+            oes cleanup ${db_name_1:11}
+        else
+            psql -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$db_name_1';" -q > /dev/null
+            dropdb $db_name_1
+            rm -rf $ODOO_STORAGE/filestore/$db_name_1
+        fi
         echo "$db_name_1 has been dropped"
         return 1
     fi
