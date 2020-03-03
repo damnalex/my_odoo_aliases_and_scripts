@@ -192,15 +192,12 @@ new_typo() {
     # add a new typo to the typo alias file
     local typo=$1
     local correct_command=$2
-    echo "alias '$typo'='$correct_command'" >> $AP/typo.sh
+    echo "alias '$typo'='$correct_command'" >> $AP/python_scripts/typo.sh
     reload_zshrc
-}
+    run 10 echo "--------------------------"
+    echo "THIS IS DEPRECATED, EDIT TYPO.PY"
+    run 10 echo "--------------------------"
 
-commit_typos() {
-    # automtic git commit of the changes of the typo file
-    # if there was anything else that was staged, it is commited too (get rekt)
-    git -C $AP add $AP/typo.sh
-    git -C $AP commit -m "[AUTOMATIC] update typos file"
 }
 
 ##############################################

@@ -42,5 +42,8 @@ fi
 # load all the other files in the $AP folder
 source $AP/zsh_alias.sh
 source $AP/odoo_alias.sh
-source $AP/typo.sh
 source $AP/completion.sh
+#load the typo generator
+eval "$($AP/python_scripts/typo.py)"
+# deprecated file
+source $AP/python_scripts/typo.sh
