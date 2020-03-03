@@ -69,7 +69,7 @@ nnoremap gV `[v`]
 " things from 'https://nvie.com/posts/how-i-boosted-my-vim/'
 " ---------------------------------------------------------
 set hidden      " hide buffers instead of closing them.
-                " This way I am not forced to write to write or discard
+                " This way I am not forced to write or discard
                 " changes before :e for :find
                 " If I try to close vim from the other buffers, I am simply
                 " brought back to the non saved buffer (after an error

@@ -679,3 +679,5 @@ pgbadger_clean() {
 alias todayilearned="e ~/Documents/meetings_notes/today_I_leanred_backlog.txt"
 alias thingsToChangeInOESupport="e ~/Documents/things_to_change_in_oe-support.txt"
 alias loempia_law="e ~/Documents/meetings_notes/IAmTheLaw/apps_the_rules.txt"
+alias training_git_the_things_to_say='e ~/Documents/Things_to_teach_during_the_git_training.txt'
+
