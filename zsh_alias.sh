@@ -30,7 +30,7 @@ eza() {
             file_to_load="drop_protected_dbs.txt"
             ;;
         typo)
-            file_to_load="typo.sh"
+            file_to_load="python_scripts/typo.py"
             ;;
         compl)
             file_to_load="completion.sh"
