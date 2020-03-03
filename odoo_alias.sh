@@ -468,7 +468,6 @@ go_venv_current() {
     gov $(git_branch_version $ODOO)
 }
 alias govcur="go_venv_current"
-govcur # use the right virtual env on terminal startup and reload
 
 build_runbot() {
     # build a runbot like DB
