@@ -29,6 +29,15 @@ class UserAbort(Exception):
     pass
 
 
+def _get_branch_name(path):
+    # return the name of the current branch of repo :path
+    # _repos expects multiple path entries in an itterable
+    # giving one in a list
+    repo_generator = _repos([path])
+    repo = list(repo_generator)[0]
+    return repo.active_branch.name
+
+
 def so_checker(*args):
     if len(args) == 0:
         raise Invalid_params("""
@@ -48,7 +57,7 @@ def so_checker(*args):
         # db doesn't exist.
         pass
     else:
-        checked_out_branch = list(_repos([env['ODOO']]))[0].active_branch.name
+        checked_out_branch = _get_branch_name(env['ODOO'])
         if db_version != checked_out_branch:
             print(f"""
             version mismatch
