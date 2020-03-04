@@ -43,7 +43,5 @@ fi
 source $AP/zsh_alias.sh
 source $AP/odoo_alias.sh
 source $AP/completion.sh
-#load the typo generator
+# load the typo generator
 eval "$($AP/python_scripts/typo.py)"
-# deprecated file
-source $AP/python_scripts/typo.sh

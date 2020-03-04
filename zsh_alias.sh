@@ -189,15 +189,8 @@ fi
 ##############################################
 
 new_typo() {
-    # add a new typo to the typo alias file
-    local typo=$1
-    local correct_command=$2
-    echo "alias '$typo'='$correct_command'" >> $AP/python_scripts/typo.sh
-    reload_zshrc
-    run 10 echo "--------------------------"
-    echo "THIS IS DEPRECATED, EDIT TYPO.PY"
-    run 10 echo "--------------------------"
-
+    # open the typo definition file
+    eza typo
 }
 
 ##############################################
