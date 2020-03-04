@@ -21,4 +21,3 @@ typos_dict = {
 for good, typos in typos_dict.items():
     for typo in typos:
         print(f"alias '{typo}'='{good}';")
-

@@ -38,7 +38,7 @@ def _repos(repos_names):
     for rn in repos_names:
         # assuming repos_names is either a list of full paths
         # or folders in ~/src
-        if '/' not in rn:
+        if "/" not in rn:
             rn = f"~/src/{rn}"
         yield git.Repo(rn)
 
@@ -63,13 +63,17 @@ def _nbr_commits_ahead_and_behind(repo):
         return nbr_commit
 
     git_error = []
-    remotes_names = ["origin"] + [rem.name for rem in repo.remotes if rem.name != "origin"]
+    remotes_names = ["origin"] + [
+        rem.name for rem in repo.remotes if rem.name != "origin"
+    ]
     # test all the remotes for this branch (starting with origin),
     # break for the first one matching
     for remote_name in remotes_names:
         try:
             nbr_commit_ahead = count_commits(repo, branch_name, remote_name, ahead=True)
-            nbr_commit_behind = count_commits(repo, branch_name, remote_name, ahead=False)
+            nbr_commit_behind = count_commits(
+                repo, branch_name, remote_name, ahead=False
+            )
         except git.exc.GitCommandError as ge:
             git_error.append(ge)
         else:
@@ -133,7 +137,9 @@ def odoo_repos_pull(version=None):
     for repo_name, repo in zip(repos, _repos(repos)):
         print(f"Pulling {repo_name}")
         repo.git.stash()
-        remotes = [repo.remotes.origin] + [rem for rem in repo.remotes if rem != repo.remotes.origin]
+        remotes = [repo.remotes.origin] + [
+            rem for rem in repo.remotes if rem != repo.remotes.origin
+        ]
         # test all the remotes for this branch (starting with origin),
         # break for the first one matching
         git_errors = []
@@ -150,11 +156,11 @@ def odoo_repos_pull(version=None):
             print(f"Error : {git_errors[0]}")
             print("------------------")
 
+
 def _get_version_from_db(dbname):
     """ get the odoo version of the given DB
     """
-    with psycopg2.connect(f"dbname='{dbname}'") as conn, \
-         conn.cursor() as cr:
+    with psycopg2.connect(f"dbname='{dbname}'") as conn, conn.cursor() as cr:
         query = "SELECT replace((regexp_matches(latest_version, '^\d+\.0|^saas~\d+\.\d+|saas~\d+'))[1], '~', '-') FROM ir_module_module WHERE name='base'"
         cr.execute(query)
         return cr.fetchone()[0]
