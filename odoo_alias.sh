@@ -158,47 +158,47 @@ so() {
         # fakeDBname & 678 don't mean anything here
         return 0
     fi
-    _so_checker $@ || return 1
+    so_checker $@ || return 1
     eval $(_so_builder $@)
     echo $(_so_builder $@)
 }
 
-_so_checker() {
-    # check that the params given to 'so' are correct,
-    # check that I am not trying to start a protected DB,
-    # check that I am sure to want to start a DB with the wrong branch checked out (only check $ODOO)
-    local db_name=$1
-    if [ $# -lt 1 ]; then
-        echo "At least give me a name :( "
-        echo "so dbname [port] [other_parameters]"
-        echo "note : port is mandatory if you want to add other parameters"
-        return 1
-    fi
-
-    if [[ $db_name == CLEAN_ODOO* ]]; then
-        echo "Don't play with that one ! "
-        echo "$db_name is a protected database"
-        return 1
-    fi
-
-    if psql -lqt | cut -d \| -f 1 | grep -qw $db_name; then #check if the database already exists
-        if [ $(_db_version $db_name) != $(git_branch_version $ODOO) ]; then
-            echo "version mismatch"
-            echo "db version is :"
-            _db_version $db_name
-            echo "repo version is :"
-            git_branch_version $ODOO
-            echo "continue anyway ? (y/N): "
-            read answer
-            if [ "$answer" = "y" ]; then
-                echo "I hope you know what you're doing ..."
-            else
-                echo "Yeah, that's probably safer :D "
-                return 1
-            fi
-        fi
-    fi
-}
+# _so_checker() {
+#     # check that the params given to 'so' are correct,
+#     # check that I am not trying to start a protected DB,
+#     # check that I am sure to want to start a DB with the wrong branch checked out (only check $ODOO)
+#     local db_name=$1
+#     if [ $# -lt 1 ]; then
+#         echo "At least give me a name :( "
+#         echo "so dbname [port] [other_parameters]"
+#         echo "note : port is mandatory if you want to add other parameters"
+#         return 1
+#     fi
+#
+#     if [[ $db_name == CLEAN_ODOO* ]]; then
+#         echo "Don't play with that one ! "
+#         echo "$db_name is a protected database"
+#         return 1
+#     fi
+#
+#     if psql -lqt | cut -d \| -f 1 | grep -qw $db_name; then #check if the database already exists
+#         if [ $(_db_version $db_name) != $(git_branch_version $ODOO) ]; then
+#             echo "version mismatch"
+#             echo "db version is :"
+#             _db_version $db_name
+#             echo "repo version is :"
+#             git_branch_version $ODOO
+#             echo "continue anyway ? (y/N): "
+#             read answer
+#             if [ "$answer" = "y" ]; then
+#                 echo "I hope you know what you're doing ..."
+#             else
+#                 echo "Yeah, that's probably safer :D "
+#                 return 1
+#             fi
+#         fi
+#     fi
+# }
 
 _so_builder() {
     # build the command to start odoo
@@ -637,7 +637,7 @@ ptvsd2() {
 }
 
 ptvsd2-so() {
-    _so_checker $@ || return 1
+    so_checker $@ || return 1
     if [ $# -lt 2 ]; then
         echo "The port number is a mandatory parameter"
         return 1
@@ -651,7 +651,7 @@ ptvsd3() {
 }
 
 ptvsd3-so() {
-    _so_checker $@ || return 1
+    so_checker $@ || return 1
     if [ $# -lt 2 ]; then
         echo "The port number is a mandatory parameter"
         return 1
