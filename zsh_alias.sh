@@ -23,6 +23,9 @@ eza() {
         odoo)
             file_to_load="odoo_alias.sh"
             ;;
+        odoopy)
+            file_to_load="python_scripts/odoo_alias.py"
+            ;;
         git)
             file_to_load="python_scripts/git_odoo.py"
             ;;
@@ -50,6 +53,7 @@ eza() {
             echo "zsh_alias.sh --> eza zsh"
             echo "alias_loader.sh --> eza loader"
             echo "odoo_alias.sh --> eza odoo   or   eza"
+            echo "odoo_alias.py --> eza odoopy"
             echo "drop_protected_dbs.txt --> eza drop"
             echo "git_odoo.py --> eza git"
             echo "typo.py --> eza typo"

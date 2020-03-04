@@ -42,6 +42,8 @@ fi
 # load all the other files in the $AP folder
 source $AP/zsh_alias.sh
 source $AP/odoo_alias.sh
+# load python based aliases
+eval "$($AP/python_scripts/python_alias_exporter.py)"
 source $AP/completion.sh
 # load the typo generator
 eval "$($AP/python_scripts/typo.py)"
