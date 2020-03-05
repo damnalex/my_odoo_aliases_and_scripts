@@ -159,8 +159,8 @@ so() {
         return 0
     fi
     so_checker $@ || return 1
-    eval $(_so_builder $@)
-    echo $(_so_builder $@)
+    eval $(so_builder $@)
+    echo $(so_builder $@)
 }
 
 # _so_checker() {
@@ -200,32 +200,32 @@ so() {
 #     fi
 # }
 
-_so_builder() {
-    # build the command to start odoo
-    local db_name=$1
-    if [ $# -lt 2 ]; then
-        _so_builder $db_name 8069
-        return
-    fi
-    odoo_bin="$ODOO/odoo-bin"
-    odoo_py="$ODOO/odoo.py"
-    path_community="--addons-path=$ODOO/addons"
-    path_enterprise="--addons-path=$ENTERPRISE,$ODOO/addons,$SRC/design-themes"
-    params_normal="--db-filter=^$db_name$ -d $db_name --xmlrpc-port=$2"
-    if [ -f $ODOO/odoo-bin ]; then
-        #version 10 or above
-        echo $odoo_bin $path_enterprise $params_normal $@[3,-1]
-    else
-        #version 9 or below
-        if [ $(git_branch_version $ODOO) = "8.0" ]; then
-            # V8
-            echo $odoo_py $path_community $params_normal $@[3,-1]
-        else
-            # V9 (probably)
-            echo $odoo_py $path_enterprise $params_normal $@[3,-1]
-        fi
-    fi
-}
+# _so_builder() {
+#     # build the command to start odoo
+#     local db_name=$1
+#     if [ $# -lt 2 ]; then
+#         _so_builder $db_name 8069
+#         return
+#     fi
+#     odoo_bin="$ODOO/odoo-bin"
+#     odoo_py="$ODOO/odoo.py"
+#     path_community="--addons-path=$ODOO/addons"
+#     path_enterprise="--addons-path=$ENTERPRISE,$ODOO/addons,$SRC/design-themes"
+#     params_normal="--db-filter=^$db_name$ -d $db_name --xmlrpc-port=$2"
+#     if [ -f $ODOO/odoo-bin ]; then
+#         #version 10 or above
+#         echo $odoo_bin $path_enterprise $params_normal $@[3,-1]
+#     else
+#         #version 9 or below
+#         if [ $(git_branch_version $ODOO) = "8.0" ]; then
+#             # V8
+#             echo $odoo_py $path_community $params_normal $@[3,-1]
+#         else
+#             # V9 (probably)
+#             echo $odoo_py $path_enterprise $params_normal $@[3,-1]
+#         fi
+#     fi
+# }
 
 soiu() {
     # update ($1 == u) or install ($1 == i) modules $4-... on DB $2
@@ -642,7 +642,7 @@ ptvsd2-so() {
         echo "The port number is a mandatory parameter"
         return 1
     fi
-    eval ptvsd2 $(_so_builder $@ --limit-time-real=1000 --limit-time-cpu=600)
+    eval ptvsd2 $(so_builder $@ --limit-time-real=1000 --limit-time-cpu=600)
 }
 alias debo2="ptvsd2-so"
 
@@ -656,7 +656,7 @@ ptvsd3-so() {
         echo "The port number is a mandatory parameter"
         return 1
     fi
-    eval ptvsd3 $(_so_builder $@ --limit-time-real=1000 --limit-time-cpu=600)
+    eval ptvsd3 $(so_builder $@ --limit-time-real=1000 --limit-time-cpu=600)
 }
 alias debo="ptvsd3-so"
 

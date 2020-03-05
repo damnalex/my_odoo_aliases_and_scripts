@@ -37,8 +37,19 @@ def _get_branch_name(path):
     repo = list(repo_generator)[0]
     return repo.active_branch.name
 
+def _check_file_exists(path):
+    # returns True if the file :path exists, Flase otherwize
+    try:
+        with open(path) as f:
+            return True
+    except IOError:
+        return False
+
 
 def so_checker(*args):
+    # check that the params given to 'so' are correct,
+    # check that I am not trying to start a protected DB,
+    # check that I am sure to want to start a DB with the wrong branch checked out (only check $ODOO)
     if len(args) == 0:
         raise Invalid_params("""
         At least give me a name :(
@@ -69,6 +80,32 @@ def so_checker(*args):
                 print("I hope you know what you're doing...")
             else:
                 raise UserAbort("Yeah, that's probably safer :D")
+
+
+def so_builder(*args):
+    # build the command to start odoo
+    db_name = args[0]
+    if len(args) < 2:
+        cmd = so_builder(db_name, 8069)
+        return cmd
+    port_number = args[1]
+    ODOO_BIN_PATH = f"{env['ODOO']}/odoo-bin"
+    ODOO_PY_PATH = f"{env['ODOO']}/odoo.py"
+    PATH_COMMUNITY = f"--addons-path={env['ODOO']}/addons"
+    PATH_ENTERPRISE = f"--addons-path={env['ENTERPRISE']},{env['ODOO']}/addons,{env['SRC']}/design-themes"
+    PARAMS_NORMAL = f"--db-filter=^{db_name}$ -d {db_name} --xmlrpc-port={port_number}"
+    additional_params = " ".join(args[2:])
+    if _check_file_exists(ODOO_BIN_PATH):
+        # version 10 or above
+        cmd = f"{ODOO_BIN_PATH} {PATH_ENTERPRISE} {PARAMS_NORMAL} {additional_params}"
+    else:
+        # version 9 or below
+        if _get_version_from_db(env['ODOO']) == "8.0":
+            cmd = f"{ODOO_PY_PATH} {PATH_COMMUNITY} {PARAMS_NORMAL} {additional_params}"
+        else:
+            cmd = f"{ODOO_PY_PATH} {PATH_ENTERPRISE} {PARAMS_NORMAL} {additional_params}"
+    print(cmd)
+    return cmd
 
 
 # ^^^^^^^^^^^ aliasable functions above this line ^^^^^^^^^
