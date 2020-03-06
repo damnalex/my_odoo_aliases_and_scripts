@@ -2,12 +2,12 @@
 import sys
 import os
 import psycopg2
+from collections import namedtuple
 
 from git_odoo import _repos, _get_version_from_db
 
 # environment variables
-env = dict()
-env_vars = [
+env = [
     "AP",
     "SRC",
     "ODOO",
@@ -17,16 +17,27 @@ env_vars = [
     "SRC_MULTI",
     "ODOO_STORAGE",
 ]
-for env_var in env_vars:
-    env[env_var] = os.getenv(env_var)
+env = {e: os.getenv(e) for e in env}
+EnvTuple = namedtuple("Env", " ".join(env.keys()))
+env = EnvTuple(**env)
+# env.XXX now stores the environment variable XXX
 
-# the params of the public functions are positional, and string only
+#####################################
+#   Custom classes and exceptions   #
+#####################################
+
+
 class Invalid_params(Exception):
     pass
 
 
 class UserAbort(Exception):
     pass
+
+
+##########################
+#    Helper functions    #
+##########################
 
 
 def _get_branch_name(path):
@@ -37,8 +48,9 @@ def _get_branch_name(path):
     repo = list(repo_generator)[0]
     return repo.active_branch.name
 
+
 def _check_file_exists(path):
-    # returns True if the file :path exists, Flase otherwize
+    # returns True if the file :path exists, False otherwize
     try:
         with open(path) as f:
             return True
@@ -46,35 +58,47 @@ def _check_file_exists(path):
         return False
 
 
+########################################################################
+#               Put "Public" functions bellow this bloc                #
+#  The params of the public functions are positional, and string only  #
+########################################################################
+
+
 def so_checker(*args):
     # check that the params given to 'so' are correct,
     # check that I am not trying to start a protected DB,
     # check that I am sure to want to start a DB with the wrong branch checked out (only check $ODOO)
     if len(args) == 0:
-        raise Invalid_params("""
-        At least give me a name :(
-        so dbname [port] [other_parameters]
-        note: port is mandatory if you want to add other parameters
-        """)
+        raise Invalid_params(
+            """
+            At least give me a name :(
+            so dbname [port] [other_parameters]
+            note: port is mandatory if you want to add other parameters
+            """
+        )
     db_name = args[0]
     if db_name.startswith("CLEAN_ODOO"):
-        raise Invalid_params(f"""
-        Don't play with that one!
-        {db_name} is a protected database.
-        """)
+        raise Invalid_params(
+            f"""
+            Don't play with that one!
+            {db_name} is a protected database.
+            """
+        )
     try:
         db_version = _get_version_from_db(db_name)
     except psycopg2.OperationalError:
         # db doesn't exist.
         pass
     else:
-        checked_out_branch = _get_branch_name(env['ODOO'])
+        checked_out_branch = _get_branch_name(env.ODOO)
         if db_version != checked_out_branch:
-            print(f"""
-            version mismatch
-            DB version is: {db_version}
-            repo version is: {checked_out_branch}
-            """)
+            print(
+                f"""
+                version mismatch
+                DB version is: {db_version}
+                repo version is: {checked_out_branch}
+                """
+            )
             ans = input("continue anyway? (y/N):").lower()
             if ans == "y":
                 print("I hope you know what you're doing...")
@@ -89,10 +113,12 @@ def so_builder(*args):
         cmd = so_builder(db_name, 8069)
         return cmd
     port_number = args[1]
-    ODOO_BIN_PATH = f"{env['ODOO']}/odoo-bin"
-    ODOO_PY_PATH = f"{env['ODOO']}/odoo.py"
-    PATH_COMMUNITY = f"--addons-path={env['ODOO']}/addons"
-    PATH_ENTERPRISE = f"--addons-path={env['ENTERPRISE']},{env['ODOO']}/addons,{env['SRC']}/design-themes"
+    ODOO_BIN_PATH = f"{env.ODOO}/odoo-bin"
+    ODOO_PY_PATH = f"{env.ODOO}/odoo.py"
+    PATH_COMMUNITY = f"--addons-path={env.ODOO}/addons"
+    PATH_ENTERPRISE = (
+        f"--addons-path={env.ENTERPRISE},{env.ODOO}/addons,{env.SRC}/design-themes"
+    )
     PARAMS_NORMAL = f"--db-filter=^{db_name}$ -d {db_name} --xmlrpc-port={port_number}"
     additional_params = " ".join(args[2:])
     if _check_file_exists(ODOO_BIN_PATH):
@@ -100,10 +126,12 @@ def so_builder(*args):
         cmd = f"{ODOO_BIN_PATH} {PATH_ENTERPRISE} {PARAMS_NORMAL} {additional_params}"
     else:
         # version 9 or below
-        if _get_version_from_db(env['ODOO']) == "8.0":
+        if _get_version_from_db(env.ODOO) == "8.0":
             cmd = f"{ODOO_PY_PATH} {PATH_COMMUNITY} {PARAMS_NORMAL} {additional_params}"
         else:
-            cmd = f"{ODOO_PY_PATH} {PATH_ENTERPRISE} {PARAMS_NORMAL} {additional_params}"
+            cmd = (
+                f"{ODOO_PY_PATH} {PATH_ENTERPRISE} {PARAMS_NORMAL} {additional_params}"
+            )
     print(cmd)
     return cmd
 
@@ -118,4 +146,3 @@ if __name__ == "__main__":
         eval(f"{method_name}({method_params})")
     else:
         print("Missing arguments, require at least the function name")
-
