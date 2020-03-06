@@ -57,6 +57,11 @@ def _check_file_exists(path):
     except IOError:
         return False
 
+def _dd(multiline_string):
+    # wrapper for textwrap.dedent
+    from textwrap import dedent
+    return dedent(multiline_string)
+
 
 ########################################################################
 #               Put "Public" functions bellow this bloc                #
@@ -70,19 +75,17 @@ def so_checker(*args):
     # check that I am sure to want to start a DB with the wrong branch checked out (only check $ODOO)
     if len(args) == 0:
         raise Invalid_params(
-            """
+            _dd("""\
             At least give me a name :(
             so dbname [port] [other_parameters]
-            note: port is mandatory if you want to add other parameters
-            """
+            note: port is mandatory if you want to add other parameters""")
         )
     db_name = args[0]
     if db_name.startswith("CLEAN_ODOO"):
         raise Invalid_params(
-            f"""
+            _dd(f"""\
             Don't play with that one!
-            {db_name} is a protected database.
-            """
+            {db_name} is a protected database.""")
         )
     try:
         db_version = _get_version_from_db(db_name)
@@ -93,11 +96,10 @@ def so_checker(*args):
         checked_out_branch = _get_branch_name(env.ODOO)
         if db_version != checked_out_branch:
             print(
-                f"""
+                _dd(f"""\
                 version mismatch
                 DB version is: {db_version}
-                repo version is: {checked_out_branch}
-                """
+                repo version is: {checked_out_branch}""")
             )
             ans = input("continue anyway? (y/N):").lower()
             if ans == "y":
