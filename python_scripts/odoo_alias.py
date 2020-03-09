@@ -188,6 +188,9 @@ if __name__ == "__main__":
         method_name = sys.argv[1]
         method_params = sys.argv[2:]
         method_params = ", ".join(f"'{param}'" for param in method_params)
-        eval(f"{method_name}({method_params})")
+        try:
+            eval(f"{method_name}({method_params})")
+        except (Invalid_params, UserAbort) as nice_e:
+            print(nice_e)
     else:
         print("Missing arguments, require at least the function name")
