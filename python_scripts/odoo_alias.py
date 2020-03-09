@@ -143,6 +143,7 @@ def _so_builder(*args):
     print(cmd)
     return cmd
 
+
 def so(*args):
     # start an odoo db
     if len(args) and args[0] == "--help":
@@ -151,8 +152,34 @@ def so(*args):
     _so_checker(*args)
     cmd = _so_builder(*args)
     cmd = [word for word in cmd.split(" ") if word]
-    print(cmd)
     subprocess.run(cmd)
+
+
+def _soiu(dbname, mode, *apps):
+    assert mode in ("install", "upgrade")
+    mode = "-i" if mode == "install" else "-u"
+    if isinstance(apps, str):
+        # only 1 app to upgrade/install
+        apps = [apps]
+    apps = ",".join(apps)
+    so(dbname, 1234, mode, apps, "--stop-after-init")
+
+
+def soi(*args):
+    # install modules args[1:] on DB args[0]
+    assert len(args) >= 2
+    dbname = args[0]
+    apps = args[1:]
+    _soiu(dbname, "install", *apps)
+
+
+def sou(*args):
+    # upgrade modules args[1:] on DB args[0]
+    assert len(args) >= 2
+    dbname = args[0]
+    apps = args[1:]
+    _soiu(dbname, "upgrade", *apps)
+
 
 # ^^^^^^^^^^^ aliasable functions above this line ^^^^^^^^^
 

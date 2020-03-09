@@ -227,27 +227,27 @@ goso() {
 #     fi
 # }
 
-soiu() {
-    # update ($1 == u) or install ($1 == i) modules $4-... on DB $2
-    local modules_install_arg="-$1 $3"
-    for module in $@[4,-1]; do
-        modules_install_arg="${modules_install_arg},$module"
-    done
-    echo "so $2 1234 $modules_install_arg --stop-after-init"
-    eval so $2 1234 $modules_install_arg --stop-after-init
-}
-
-soi() {
-    # install modules $3-... on DB $1
-    echo "installing modules on db $1"
-    soiu i $1 $@[2,-1]
-}
-
-sou() {
-    # update modules $3-... on DB $1
-    echo "ugrading modules on db $1"
-    soiu u $1 $@[2,-1]
-}
+# soiu() {
+#     # update ($1 == u) or install ($1 == i) modules $4-... on DB $2
+#     local modules_install_arg="-$1 $3"
+#     for module in $@[4,-1]; do
+#         modules_install_arg="${modules_install_arg},$module"
+#     done
+#     echo "so $2 1234 $modules_install_arg --stop-after-init"
+#     eval so $2 1234 $modules_install_arg --stop-after-init
+# }
+#
+# soi() {
+#     # install modules $3-... on DB $1
+#     echo "installing modules on db $1"
+#     soiu i $1 $@[2,-1]
+# }
+#
+# sou() {
+#     # update modules $3-... on DB $1
+#     echo "ugrading modules on db $1"
+#     soiu u $1 $@[2,-1]
+# }
 
 oes() {
     # start oe-support, with some smartness
