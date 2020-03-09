@@ -3,6 +3,7 @@ import sys
 import os
 import psycopg2
 from collections import namedtuple
+import subprocess
 
 from git_odoo import _repos, _get_version_from_db
 
@@ -66,12 +67,12 @@ def _dd(multiline_string):
 
 
 ########################################################################
-#               Put "Public" functions bellow this bloc                #
+#                Put "main" functions bellow this bloc                 #
 #  The params of the public functions are positional, and string only  #
 ########################################################################
 
 
-def so_checker(*args):
+def _so_checker(*args):
     # check that the params given to 'so' are correct,
     # check that I am not trying to start a protected DB,
     # check that I am sure to want to start a DB with the wrong branch checked out (only check $ODOO)
@@ -113,11 +114,11 @@ def so_checker(*args):
                 raise UserAbort("Yeah, that's probably safer :D")
 
 
-def so_builder(*args):
+def _so_builder(*args):
     # build the command to start odoo
     db_name = args[0]
     if len(args) < 2:
-        cmd = so_builder(db_name, 8069)
+        cmd = _so_builder(db_name, 8069)
         return cmd
     port_number = args[1]
     ODOO_BIN_PATH = f"{env.ODOO}/odoo-bin"
@@ -142,6 +143,16 @@ def so_builder(*args):
     print(cmd)
     return cmd
 
+def so(*args):
+    # start an odoo db
+    if len(args) and args[0] == "--help":
+        so("fakeDBname", 678, "--help")
+        # fakeDBname & 678 don't mean anything here
+    _so_checker(*args)
+    cmd = _so_builder(*args)
+    cmd = [word for word in cmd.split(" ") if word]
+    print(cmd)
+    subprocess.run(cmd)
 
 # ^^^^^^^^^^^ aliasable functions above this line ^^^^^^^^^
 

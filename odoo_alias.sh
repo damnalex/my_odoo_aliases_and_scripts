@@ -151,17 +151,17 @@ goso() {
         eval so $@
 }
 
-so() {
-    # start odoo
-    if [[ $1 == "--help" ]]; then
-        so fakeDBname 678 --help | less
-        # fakeDBname & 678 don't mean anything here
-        return 0
-    fi
-    so_checker $@ || return 1
-    eval $(so_builder $@)
-    echo $(so_builder $@)
-}
+# so() {
+#     # start odoo
+#     if [[ $1 == "--help" ]]; then
+#         so fakeDBname 678 --help | less
+#         # fakeDBname & 678 don't mean anything here
+#         return 0
+#     fi
+#     so_checker $@ || return 1
+#     eval $(so_builder $@)
+#     echo $(so_builder $@)
+# }
 
 # _so_checker() {
 #     # check that the params given to 'so' are correct,
