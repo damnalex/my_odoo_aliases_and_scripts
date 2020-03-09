@@ -7,61 +7,61 @@ alias e="vim"
 reload_zshrc() {
     # don't modify this one from eza to avoid headaches
     source ~/.zshrc
-    deactivate > /dev/null 2>&1
+    deactivate >/dev/null 2>&1
 }
 
 eza() {
     # edit and reload alias and various scripts
     local file_to_load=" "
     case $1 in
-        zsh)
-            file_to_load="zsh_alias.sh"
-            ;;
-        loader)
-            file_to_load="alias_loader.sh"
-            ;;
-        odoo)
-            file_to_load="odoo_alias.sh"
-            ;;
-        odoopy)
-            file_to_load="python_scripts/odoo_alias.py"
-            ;;
-        git)
-            file_to_load="python_scripts/git_odoo.py"
-            ;;
-        drop)
-            file_to_load="drop_protected_dbs.txt"
-            ;;
-        typo)
-            file_to_load="python_scripts/typo.py"
-            ;;
-        compl)
-            file_to_load="completion.sh"
-            ;;
-        vim)
-            file_to_load="editors/vim/.vimrc"
-            ;;
-        "")
-            #default
-            file_to_load="odoo_alias.sh"
-            ;;
-        tig)
-            ezatig
-            return
-            ;;
-        *)
-            echo "zsh_alias.sh --> eza zsh"
-            echo "alias_loader.sh --> eza loader"
-            echo "odoo_alias.sh --> eza odoo   or   eza"
-            echo "odoo_alias.py --> eza odoopy"
-            echo "drop_protected_dbs.txt --> eza drop"
-            echo "git_odoo.py --> eza git"
-            echo "typo.py --> eza typo"
-            echo "completion.sh --> eza compl"
-            echo ".vimrc --> eza vim"
-            echo "repo info --> eza tig"
-            return
-            ;;
+    zsh)
+        file_to_load="zsh_alias.sh"
+        ;;
+    loader)
+        file_to_load="alias_loader.sh"
+        ;;
+    odoo)
+        file_to_load="odoo_alias.sh"
+        ;;
+    odoopy)
+        file_to_load="python_scripts/odoo_alias.py"
+        ;;
+    git)
+        file_to_load="python_scripts/git_odoo.py"
+        ;;
+    drop)
+        file_to_load="drop_protected_dbs.txt"
+        ;;
+    typo)
+        file_to_load="python_scripts/typo.py"
+        ;;
+    compl)
+        file_to_load="completion.sh"
+        ;;
+    vim)
+        file_to_load="editors/vim/.vimrc"
+        ;;
+    "")
+        #default
+        file_to_load="odoo_alias.sh"
+        ;;
+    tig)
+        ezatig
+        return
+        ;;
+    *)
+        echo "zsh_alias.sh --> eza zsh"
+        echo "alias_loader.sh --> eza loader"
+        echo "odoo_alias.sh --> eza odoo   or   eza"
+        echo "odoo_alias.py --> eza odoopy"
+        echo "drop_protected_dbs.txt --> eza drop"
+        echo "git_odoo.py --> eza git"
+        echo "typo.py --> eza typo"
+        echo "completion.sh --> eza compl"
+        echo ".vimrc --> eza vim"
+        echo "repo info --> eza tig"
+        return
+        ;;
     esac
     # change the current directory while editing the files to have a better experience with my vim config
     local current_dir=$(pwd)
@@ -162,12 +162,12 @@ sort_and_remove_duplicate() {
     # a more memory efficient alternative would be to use a tmp file, but
     # it was the intended goal of this method to not use a tmp file.
     local file=$1
-    echo "$(cat $file | sort | uniq)" > $file
+    echo "$(cat $file | sort | uniq)" >$file
 }
 
 wait_for_pid() {
     # wait for the process of pid $1 to finish
-    while kill -0 "$1" 2> /dev/null; do sleep 0.2; done
+    while kill -0 "$1" 2>/dev/null; do sleep 0.2; done
 }
 
 #########################################
@@ -205,7 +205,7 @@ new_typo() {
 new_lib_in_other_python_requirements() {
     # add a new required lib to my personal requirements.txt file
     local library=$1
-    echo "$library" >> $AP/python_scripts/other_requirements.txt
+    echo "$library" >>$AP/python_scripts/other_requirements.txt
     sort_and_remove_duplicate $AP/python_scripts/other_requirements.txt
 }
 
@@ -223,5 +223,6 @@ commit_new_lib_in_other_python_requirements() {
 ap_format_files() {
     # do some automatic style formating for the .py and .sh files of the $AP folder
     python3 -m black $AP
-    shfmt -l -i 4 -s -ci -sr -w $AP
+    # shfmt -l -i 4 -s -ci -sr -w $AP
+    shfmt -l -i 4 -w $AP
 }

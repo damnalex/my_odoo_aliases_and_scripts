@@ -90,7 +90,7 @@ go_fetch() {
     #git fetch on all the repos of the main source folder
     git_odoo fetch
 }
-(go_fetch > /dev/null 2>&1 &)
+(go_fetch >/dev/null 2>&1 &)
 # this is to fetch everytime a terminal is loaded, or sourced, so it happens often
 # & is especially important here
 
@@ -125,7 +125,7 @@ git_branch_version() {
 golist() {
     # list all the main source folder repos, theire currently checked out branches and theire status
     git_odoo list
-    (go_fetch > /dev/null 2>&1 &)
+    (go_fetch >/dev/null 2>&1 &)
 }
 
 godb() {
@@ -261,7 +261,7 @@ oes() {
         return
     fi
     if [[ $1 == "start" ]] || [[ $1 == "restore" ]]; then
-        local version=$(_db_version $(list_db_like "%$2")) 2> /dev/null
+        local version=$(_db_version $(list_db_like "%$2")) 2>/dev/null
         if [[ $version != "" ]]; then
             go_venv $version
         fi
@@ -308,7 +308,7 @@ clean_database() {
 neuter_db() {
     # neutre a DB without using oe-support
     local db_name=$1
-    psql $db_name < $AP/support_scripts/neuter_db.sql
+    psql $db_name <$AP/support_scripts/neuter_db.sql
 }
 
 odoosh() {
@@ -332,12 +332,12 @@ dropodoo() {
             echo "to override protection, modify protection file at $AP/drop_protected_dbs.txt"
             return 1
         fi
-        remove_from_meta $db_name_1 2> /dev/null
+        remove_from_meta $db_name_1 2>/dev/null
         if [[ $db_name_1 =~ '^oe_support_*' ]]; then
             echo "Dropping the DB ${db_name_1} using oe-support"
             oes cleanup ${db_name_1:11}
         else
-            psql -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$db_name_1';" -q > /dev/null
+            psql -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$db_name_1';" -q >/dev/null
             dropdb $db_name_1
             rm -rf $ODOO_STORAGE/filestore/$db_name_1
         fi
@@ -373,7 +373,7 @@ build_multiverse_branch() {
         git -C $SRC_MULTI/master/${rep} worktree add $SRC_MULTI/${version}/${rep} ${version}
     }; done
     # adding branch to list of known branches
-    echo ${version} >> $SRC_MULTI/version_list.txt &&
+    echo ${version} >>$SRC_MULTI/version_list.txt &&
         sort_and_remove_duplicate $SRC_MULTI/version_list.txt
 }
 
@@ -400,7 +400,7 @@ update_all_multiverse_branches() {
     for version in $(cat $SRC_MULTI/version_list.txt); do {
         echo $version
         # execute update of individual branches in the background
-        update_multiverse_branch "$version" > /dev/null &
+        update_multiverse_branch "$version" >/dev/null &
         # record all background tasks
         pid_array=("${pid_array[@]}" "$!")
     }; done
@@ -452,7 +452,7 @@ rebuild_main_virtualenvs() {
 
 go_venv() {
     # use the virtual env of the given odoo version
-    deactivate 2> /dev/null
+    deactivate 2>/dev/null
     if [[ $# -eq 1 ]]; then
         local version=$1
         source $SRC_MULTI/$version/o_$version/bin/activate &&
@@ -474,34 +474,34 @@ build_runbot() {
     # TODO: rebuild the runbots and make them immortal
     local version=$1
     local new_db_name=$2
-    dropodoo $new_db_name 2> /dev/null
+    dropodoo $new_db_name 2>/dev/null
     mkdir $ODOO_STORAGE/filestore/$new_db_name/
     case $version in
-        8)
-            createdb -T CLEAN_ODOO_V8 $new_db_name
-            cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V8/* $ODOO_STORAGE/filestore/$new_db_name/
-            ;;
-        9)
-            createdb -T CLEAN_ODOO_V9 $new_db_name
-            cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V9/* $ODOO_STORAGE/filestore/$new_db_name/
-            ;;
-        10)
-            createdb -T CLEAN_ODOO_V10 $new_db_name
-            cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V10/* $ODOO_STORAGE/filestore/$new_db_name/
-            ;;
-        11)
-            createdb -T CLEAN_ODOO_V11 $new_db_name
-            cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V11/* $ODOO_STORAGE/filestore/$new_db_name/
-            ;;
-        12)
-            createdb -T CLEAN_ODOO_V12 $new_db_name
-            cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V12/* $ODOO_STORAGE/filestore/$new_db_name/
-            ;;
-        *)
-            echo "no match for version ${version}"
-            echo "list of valid version:\n9\n10\n11\n12"
-            return 1
-            ;;
+    8)
+        createdb -T CLEAN_ODOO_V8 $new_db_name
+        cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V8/* $ODOO_STORAGE/filestore/$new_db_name/
+        ;;
+    9)
+        createdb -T CLEAN_ODOO_V9 $new_db_name
+        cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V9/* $ODOO_STORAGE/filestore/$new_db_name/
+        ;;
+    10)
+        createdb -T CLEAN_ODOO_V10 $new_db_name
+        cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V10/* $ODOO_STORAGE/filestore/$new_db_name/
+        ;;
+    11)
+        createdb -T CLEAN_ODOO_V11 $new_db_name
+        cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V11/* $ODOO_STORAGE/filestore/$new_db_name/
+        ;;
+    12)
+        createdb -T CLEAN_ODOO_V12 $new_db_name
+        cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V12/* $ODOO_STORAGE/filestore/$new_db_name/
+        ;;
+    *)
+        echo "no match for version ${version}"
+        echo "list of valid version:\n9\n10\n11\n12"
+        return 1
+        ;;
     esac
     echo 'built'
 }
@@ -526,7 +526,7 @@ alias bloc='build_local_saas_db'
 
 remove_from_meta() {
     # remove a db from the local metabase
-    echo "DELETE FROM databases WHERE name = '$1'" | psql meta > /dev/null
+    echo "DELETE FROM databases WHERE name = '$1'" | psql meta >/dev/null
 }
 
 start_local_saas_db() {
@@ -578,9 +578,9 @@ pl() {
         where_clause="where t1.datname like '%$1%'"
     fi
     for db_name in $(psql -tAqX -d postgres -c "SELECT t1.datname AS db_name FROM pg_database t1 $where_clause ORDER BY LOWER(t1.datname);"); do
-        local db_version=$(_db_version $db_name 2> /dev/null)
+        local db_version=$(_db_version $db_name 2>/dev/null)
         if [ "$db_version" != "" ]; then #ignore non-odoo DBs
-            local db_size=$(psql -tAqX -d $db_name -c "SELECT pg_size_pretty(pg_database_size('$db_name'));" 2> /dev/null)
+            local db_size=$(psql -tAqX -d $db_name -c "SELECT pg_size_pretty(pg_database_size('$db_name'));" 2>/dev/null)
             echo "$db_version:    \t $db_name \t($db_size)"
         fi
     done
@@ -668,7 +668,7 @@ pgbadger_compute() {
 
 pgbadger_clean() {
     # empty the postgresql logs
-    echo "" > "$POSTGRES_LOC/postgresql.log"
+    echo "" >"$POSTGRES_LOC/postgresql.log"
 }
 
 ##############################################
