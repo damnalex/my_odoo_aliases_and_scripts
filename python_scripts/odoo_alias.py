@@ -2,7 +2,7 @@
 import sys
 import os
 import psycopg2
-from collections import namedtuple
+import collections
 import subprocess
 
 from git_odoo import _repos, _get_version_from_db
@@ -19,7 +19,7 @@ env = [
     "ODOO_STORAGE",
 ]
 env = {e: os.getenv(e) for e in env}
-EnvTuple = namedtuple("Env", " ".join(env.keys()))
+EnvTuple = collections.namedtuple("Env", " ".join(env.keys()))
 env = EnvTuple(**env)
 # env.XXX now stores the environment variable XXX
 
