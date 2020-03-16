@@ -89,6 +89,7 @@ alias geza="git -C $AP"
 
 alias c='clear'
 alias l="ls -lAh"
+alias tree="tree -C"
 
 history_count() {
     #history analytics
