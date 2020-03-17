@@ -148,6 +148,10 @@ git_fame() {
     git ls-tree -r -z --name-only HEAD -- ${file_to_analyse} | xargs -0 -n1 git blame --line-porcelain HEAD | grep "^author " | sort | uniq -c | sort -nr
 }
 
+git_last_X_hashes() {
+    git log --pretty=format:"%H" | head -n $1
+}
+
 git_rebase_and_merge_X_on_Y() {
     # apply the content of branch X onto branch Y
     # does not modify branch X
