@@ -72,12 +72,8 @@ go_update_and_clean() {
 go_update_and_clean_all_branches() {
     #like go_update_and_clean, but does the multiverse too
     # parallelize git operations on different repos
-    update_all_multiverse_branches &
-    local multiv_pid=$!
-    git_odoo pull --all &
-    local univers_pid=$!
-    wait_for_pid $multiv_pid
-    wait_for_pid $univers_pid
+    update_all_multiverse_branches
+    git_odoo pull --all
     echo "all branches have been pulled"
     go_prune_all
     clear_all_pyc
@@ -96,23 +92,17 @@ go_fetch() {
 
 go_prune_all() {
     # git prune on all the repos of the the universe, multiverse, and on internal and support tools
-    local pid_array=()
     # prune universe, internal and paas
     local repos=("$ODOO" "$ENTERPRISE" "$SRC/design-themes" "$INTERNAL" "$SRC/paas" "$ST")
     for repo in $repos; do {
-        git -C "$repo" gc --prune=now &
-        pid_array=("${pid_array[@]}" "$!")
+        git -C "$repo" gc --prune=now
     }; done
     # prune multiverse
     repos=("odoo" "enterprise" "design-themes")
     for repo in $repos; do {
-        git -C "$SRC_MULTI/master/$repo" worktree prune &
-        pid_array=("${pid_array[@]}" "$!")
+        git -C "$SRC_MULTI/master/$repo" worktree prune
     }; done
     # wait for all background pruning to finish
-    for pidn in $pid_array; do {
-        wait_for_pid "$pidn"
-    }; done
     echo "----"
     echo "All repos have been pruned"
 }
@@ -381,32 +371,19 @@ update_multiverse_branch() {
     # git pull the repos of the given mutliverse branche
     local version=$1
     local repos=("odoo" "enterprise" "design-themes")
-    local pid_array=()
     for rep in $repos; do {
         if [[ $version != "8.0" ]] || [[ $rep != "enterprise" ]]; then
             echo ${rep}
-            git -C $SRC_MULTI/${version}/${rep} pull --rebase &
-            pid_array=("${pid_array[@]}" "$!")
+            git -C $SRC_MULTI/${version}/${rep} pull --rebase
         fi
-    }; done
-    for pidn in $pid_array; do {
-        wait_for_pid "$pidn"
     }; done
 }
 
 update_all_multiverse_branches() {
     # git pull the repos of all the multivers branches
-    local pid_array=()
     for version in $(cat $SRC_MULTI/version_list.txt); do {
         echo $version
-        # execute update of individual branches in the background
-        update_multiverse_branch "$version" >/dev/null &
-        # record all background tasks
-        pid_array=("${pid_array[@]}" "$!")
-    }; done
-    # wait for all background tasks to finish
-    for pidn in $pid_array; do {
-        wait_for_pid "$pidn"
+        update_multiverse_branch "$version"
     }; done
     echo "###########################################"
     echo "mutliverse branches are up to date"
