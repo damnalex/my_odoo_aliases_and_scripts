@@ -122,18 +122,21 @@ def fetch_all_repos_info():
                 print("------------------")
 
 
-def odoo_repos_pull(version=None):
+def odoo_repos_pull(version=None, fast=False):
     """ Updates branches of the community, enterprise and design themes repos.
     If no version is provided, update the current branche.
     If :version is not a string, itterate on it and update the given branches sequentially.
     """
     if version and not isinstance(version, str):
         for v in version:
-            odoo_repos_pull(v)
+            odoo_repos_pull(v, fast)
+            fast = True  # only pull internal and paas once
         return
     if version:
         odoo_repos_checkout(version)
-    repos = ["odoo", "enterprise", "design-themes", "internal", "paas"]
+    repos = ["odoo", "enterprise", "design-themes"]
+    if not fast:
+        repos += ["internal", "paas"]
     for repo_name, repo in zip(repos, _repos(repos)):
         print(f"Pulling {repo_name}")
         repo.git.stash()
