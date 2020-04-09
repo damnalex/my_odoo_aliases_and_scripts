@@ -52,6 +52,12 @@ _eza() {
         odoo)
             function_names=$(grep ".*() {" $AP/odoo_alias.sh | sed 's/() {*//' | tr '\n' ' ')
             ;;
+        odoopy)
+            function_names=$(grep "^def .*):" $AP/python_scripts/odoo_alias.py | sed 's/def //' | sed 's/(.*)*//' | tr '\n' ' ')
+            ;;
+        git)
+            function_names=$(grep "^def .*):" $AP/python_scripts/git_odoo.py | sed 's/def //' | sed 's/(.*)*//' | tr '\n' ' ')
+            ;;
         compl)
             function_names=$(grep ".*() {" $AP/completion.sh | grep -v "function_names" | sed 's/() {*//' | tr '\n' ' ')
             ;;

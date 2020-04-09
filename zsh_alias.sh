@@ -13,37 +13,48 @@ reload_zshrc() {
 eza() {
     # edit and reload alias and various scripts
     local file_to_load=" "
+    local file_type=""
     case $1 in
     zsh)
         file_to_load="zsh_alias.sh"
+        file_type="sh"
         ;;
     loader)
         file_to_load="alias_loader.sh"
+        file_type="sh"
         ;;
     odoo)
         file_to_load="odoo_alias.sh"
+        file_type="sh"
         ;;
     odoopy)
         file_to_load="python_scripts/odoo_alias.py"
+        file_type="py"
         ;;
     git)
         file_to_load="python_scripts/git_odoo.py"
+        file_type="py"
         ;;
     drop)
         file_to_load="drop_protected_dbs.txt"
+        file_type="other"
         ;;
     typo)
         file_to_load="python_scripts/typo.py"
+        file_type="py"
         ;;
     compl)
         file_to_load="completion.sh"
+        file_type="sh"
         ;;
     vim)
         file_to_load="editors/vim/.vimrc"
+        file_type="other"
         ;;
     "")
         #default
         file_to_load="odoo_alias.sh"
+        file_type="sh"
         ;;
     tig)
         ezatig
@@ -69,7 +80,17 @@ eza() {
     if [[ $2 == "" ]]; then
         vim $AP/$file_to_load || return
     else
-        vim -c "/.*$2.*(" $AP/$file_to_load || return
+        case $file_type in
+        sh)
+            vim -c "/.*$2.*(" $AP/$file_to_load || return
+            ;;
+        py)
+            vim -c "/def $2" $AP/$file_to_load || return
+            ;;
+        other)
+            vim -c "$2" $AP/$file_to_load || return
+            ;;
+        esac
     fi
     cd "$current_dir"
     # editing is done, applying changes
