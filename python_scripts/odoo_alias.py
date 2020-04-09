@@ -136,6 +136,7 @@ def so(*args):
     if len(args) and args[0] == "--help":
         so("fakeDBname", 678, "--help")
         # fakeDBname & 678 don't mean anything here
+        return
     _so_checker(*args)
     cmd = _so_builder(*args)
     cmd = [word for word in cmd.split(" ") if word]
