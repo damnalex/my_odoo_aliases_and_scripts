@@ -143,30 +143,23 @@ def so(*args):
     subprocess.run(cmd)
 
 
-def _soiu(dbname, mode, *apps):
+def _soiu(mode, *args):
     assert mode in ("install", "upgrade")
     mode = "-i" if mode == "install" else "-u"
-    if isinstance(apps, str):
-        # only 1 app to upgrade/install
-        apps = [apps]
-    apps = ",".join(apps)
+    assert len(args) >= 2
+    dbname = args[0]
+    apps = ",".join(args[1:])
     so(dbname, 1234, mode, apps, "--stop-after-init")
 
 
 def soi(*args):
     # install modules args[1:] on DB args[0]
-    assert len(args) >= 2
-    dbname = args[0]
-    apps = args[1:]
-    _soiu(dbname, "install", *apps)
+    _soiu("install", *args)
 
 
 def sou(*args):
     # upgrade modules args[1:] on DB args[0]
-    assert len(args) >= 2
-    dbname = args[0]
-    apps = args[1:]
-    _soiu(dbname, "upgrade", *apps)
+    _soiu("upgrade", *args)
 
 
 # ^^^^^^^^^^^ aliasable functions above this line ^^^^^^^^^
