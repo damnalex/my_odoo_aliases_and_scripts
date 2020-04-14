@@ -283,9 +283,13 @@ update_multiverse_branch() {
 
 update_all_multiverse_branches() {
     # git pull the repos of all the multivers branches
+    echo "master"
+    update_multiverse_branch master
     for version in $(cat $SRC_MULTI/version_list.txt); do {
-        echo $version
-        update_multiverse_branch "$version"
+        if [[ "$version" != "master" ]]; then
+            echo $version
+            update_multiverse_branch "$version"
+        fi
     }; done
     echo "###########################################"
     echo "mutliverse branches are up to date"
