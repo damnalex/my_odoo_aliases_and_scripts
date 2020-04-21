@@ -127,6 +127,7 @@ trim() {
 }
 
 find_file_with_all() {
+    # SLOW FOR VERY BIG OR DEEP FOLDER
     # find_file_with_all [--ext <ext>] <expressions>...
     # list all the files in the current directory and its subdirectories
     # where all the expressions are present
@@ -164,6 +165,7 @@ run() {
 }
 
 git_fame() {
+    # SLOW FOR VERY BIG REPO
     # show the number of lines attributed to each contributor in file $1, or for all files in folder if no file is provided
     local file_to_analyse=$1
     git ls-tree -r -z --name-only HEAD -- ${file_to_analyse} | xargs -0 -n1 git blame --line-porcelain HEAD | grep "^author " | sort | uniq -c | sort -nr

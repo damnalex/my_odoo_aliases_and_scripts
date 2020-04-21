@@ -70,10 +70,9 @@ go_update_and_clean() {
 }
 
 go_update_and_clean_all_branches() {
-    #like go_update_and_clean, but does the multiverse too
-    # parallelize git operations on different repos
-    update_all_multiverse_branches
+    # like go_update_and_clean for all main branches, and does the multiverse too
     git_odoo pull --all
+    update_all_multiverse_branches
     echo "all branches have been pulled"
     go_prune_all
     clear_all_pyc
