@@ -58,10 +58,12 @@ def _check_file_exists(path):
     except IOError:
         return False
 
+
 def _cmd_string_to_list(cmd):
     # input: a shell command in string form
     # returns the command in a list usable by subprocess.run
     return [word for word in cmd.split(" ") if word]
+
 
 def clear_pyc(*args):
     # remove compiled python files from the main source folder
@@ -70,6 +72,7 @@ def clear_pyc(*args):
     if args and args[0] == "--all":
         cmd = f"find {env.SRC_MULTI} -name '*.pyc' -delete"
         subprocess.run(_cmd_string_to_list(cmd))
+
 
 ########################################################################
 #                Put "main" functions bellow this bloc                 #
@@ -173,9 +176,11 @@ def sou(*args):
     # upgrade modules args[1:] on DB args[0]
     _soiu("upgrade", *args)
 
+
 def go_fetch(*args):
     # git fetch on all the repos of the main source folder
     _git_odoo_app(fetch=True)
+
 
 # ^^^^^^^^^^^ aliasable functions above this line ^^^^^^^^^
 

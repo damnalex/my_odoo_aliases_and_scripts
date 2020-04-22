@@ -168,12 +168,14 @@ def _get_version_from_db(dbname):
         cr.execute(query)
         return cr.fetchone()[0]
 
+
 def _stash_and_checkout(repo, version):
     """ Stash checkout and clean a given repo
     """
     repo.git.stash()
     repo.git.checkout(version)
     repo.git.clean("-df")
+
 
 def odoo_repos_checkout(version):
     """ checkout to the :version branche of the community, enterprise and design themes repos.
@@ -191,6 +193,7 @@ def odoo_repos_checkout(version):
         print(f"checkouting {repo_name} to {version}")
         _stash_and_checkout(repo, version)
 
+
 def odoo_repos_checkout_multi(versions):
     repos = ["odoo", "enterprise", "design-themes", "internal"]
     for version, repo_name, repo in zip(versions, repos, _repos(repos)):
@@ -198,6 +201,7 @@ def odoo_repos_checkout_multi(versions):
         _stash_and_checkout(repo, version)
     if len(versions) > len(repos):
         print(f"too many params, ignoring the following {versions[len(repos):]}")
+
 
 def App(**opt):
     # opt is a docopt style dict
@@ -220,7 +224,7 @@ def App(**opt):
         version = opt.get("<version>")
         if not version:
             dbname = opt.get("--dbname")
-            version = [ _get_version_from_db(dbname) ]
+            version = [_get_version_from_db(dbname)]
         odoo_repos_checkout(version)
         return
 
@@ -229,4 +233,3 @@ if __name__ == "__main__":
     # args parsing
     opt = docopt(__doc__)
     App(**opt)
-
