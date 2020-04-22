@@ -12,7 +12,7 @@ go() {
     echo "cleaning the junk"
     clear_pyc
     if [[ $# -gt 1 ]]; then
-        _go_multi $@
+        git_odoo checkout $@
     else
         local version=$1
         git_odoo checkout $version
@@ -20,29 +20,6 @@ go() {
     fi
     echo "-------"
     golist
-}
-
-_go_multi() {
-    #switch to specific branch/commit for each repo seperatly
-    if [[ $# -ge 2 ]]; then
-        echo "checkouting community repo to $1"
-        git -C $ODOO checkout $1
-        echo "checkouting enterprise repo to $2"
-        git -C $ENTERPRISE checkout $2
-    fi
-    if [[ $# -ge 3 ]]; then
-        echo "checkouting design-themes repo to $3"
-        git -C $SRC/design-themes checkout $3
-    fi
-    if [[ $# -eq 4 ]]; then
-        echo "checkouting internal repo to $4"
-        git -C $INTERNAL checkout $4
-    fi
-    if [[ $# -gt 4 ]]; then
-        echo "too many params, ignoring the following:"
-        echo "$@[5, -1]"
-        return 1
-    fi
 }
 
 go_update_and_clean() {
