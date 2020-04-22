@@ -182,10 +182,8 @@ def odoo_repos_checkout(version):
         repo.git.clean("-df")
 
 
-def main():
-    # args parsing
-    opt = docopt(__doc__)
-
+def App(**opt):
+    # opt is a docopt style dict
     if opt.get("list"):
         list_all_repos_info()
         return
@@ -211,4 +209,8 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    # args parsing
+    opt = docopt(__doc__)
+    opt = dict(opt)
+    App(**opt)
+
