@@ -5,17 +5,6 @@ export PYTHONPATH="${PYTHONPATH}:$SRC/odoo"
 ######################  Odoo stuffs #######################
 ###########################################################
 
-clear_pyc() {
-    # remove compiled python files from the main source folder
-    find $SRC -name '*.pyc' -delete
-}
-
-clear_all_pyc() {
-    # like clear_pyc, but also cleanes the files in the multiverse folder
-    clear_pyc
-    find $SRC_MULTI -name '*.pyc' -delete
-}
-
 # git stuffs
 alias git_odoo="$AP/python_scripts/git_odoo.py"
 go() {
@@ -75,7 +64,7 @@ go_update_and_clean_all_branches() {
     update_all_multiverse_branches
     echo "all branches have been pulled"
     go_prune_all
-    clear_all_pyc
+    clear_pyc --all
     run 5 echo "#############################"
     echo "updated and cleaned all branches of multiverse and universe"
     go_venv_current
@@ -343,7 +332,7 @@ alias gov="go_venv"
 
 go_venv_current() {
     # use the virtualenv for the currently checked out odoo branch
-    gov $(git_branch_version $ODOO)
+    go_venv $(git_branch_version $ODOO)
 }
 alias govcur="go_venv_current"
 
