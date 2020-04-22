@@ -5,7 +5,7 @@ import psycopg2
 import collections
 import subprocess
 
-from git_odoo import _repos, _get_version_from_db
+from git_odoo import _repos, _get_version_from_db, App as _git_odoo_app
 
 # environment variables
 env = [
@@ -161,6 +161,9 @@ def sou(*args):
     # upgrade modules args[1:] on DB args[0]
     _soiu("upgrade", *args)
 
+def go_fetch(*args):
+    # git fetch on all the repos of the main source folder
+    _git_odoo_app(fetch=True)
 
 # ^^^^^^^^^^^ aliasable functions above this line ^^^^^^^^^
 

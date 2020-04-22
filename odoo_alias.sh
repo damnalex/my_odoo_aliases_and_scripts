@@ -81,14 +81,6 @@ go_update_and_clean_all_branches() {
     go_venv_current
 }
 
-go_fetch() {
-    #git fetch on all the repos of the main source folder
-    git_odoo fetch
-}
-(go_fetch >/dev/null 2>&1 &)
-# this is to fetch everytime a terminal is loaded, or sourced, so it happens often
-# & is especially important here
-
 go_prune_all() {
     # git prune on all the repos of the the universe, multiverse, and on internal and support tools
     # prune universe, internal and paas
@@ -116,6 +108,10 @@ golist() {
     git_odoo list
     (go_fetch >/dev/null 2>&1 &)
 }
+
+(go_fetch >/dev/null 2>&1 &)
+# this is to fetch everytime a terminal is loaded, or sourced, so it happens often
+# & is especially important here
 
 godb() {
     # switch repos branch to the version of the given DB
