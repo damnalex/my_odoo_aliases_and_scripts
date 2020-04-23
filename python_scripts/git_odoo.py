@@ -46,8 +46,10 @@ def _repos(repos_names):
 class DetachedHeadError(Exception):
     pass
 
+
 class TooManyVersions(Exception):
     pass
+
 
 def _nbr_commits_ahead_and_behind(repo):
     try:
@@ -179,15 +181,19 @@ def _stash_and_checkout(repo, version):
     repo.git.clean("-df")
 
 
-def odoo_repos_checkout(version):
-    """ checkout to the :version branche of the community, enterprise and design themes repos.
+def odoo_repos_checkout(versions):
+    """ checkout to the :versions branche of the community, enterprise and design themes repos.
+    If only one version is given, uses it for odoo, enterprise and design-themes
+    If mutliple versions are given, uses them in the order odoo, enterprise, design-themes, internal
+        If the number of versions is greater than the number of handled repos, the remaining version
+        are ignored (but a warning is shown)
     """
-    if len(version) > 1:
-        odoo_repos_checkout_multi(version)
+    if len(versions) > 1:
+        odoo_repos_checkout_multi(versions)
         return
     else:
-        version = version[0]
-
+        version = versions[0]
+    # 1 version given, use it for the main standard odoo repos
     repos = ["odoo", "enterprise", "design-themes"]
     if version == "8.0":
         repos.remove("enterprise")
@@ -200,7 +206,9 @@ def odoo_repos_checkout_multi(versions, raise_on_error=False):
     repos = ["odoo", "enterprise", "design-themes", "internal"]
     if len(versions) > len(repos):
         if raise_on_error:
-            raise TooManyVersions(f"There are too many version given ({len(versions)}). Maximum is {len(repos)}.")
+            raise TooManyVersions(
+                f"There are too many version given ({len(versions)}). Maximum is {len(repos)}."
+            )
         print(f"too many params, ignoring the following {versions[len(repos):]}")
     for version, repo_name, repo in zip(versions, repos, _repos(repos)):
         print(f"checkouting {repo_name} to {version}")
