@@ -46,6 +46,8 @@ def _repos(repos_names):
 class DetachedHeadError(Exception):
     pass
 
+class TooManyVersions(Exception):
+    pass
 
 def _nbr_commits_ahead_and_behind(repo):
     try:
@@ -194,13 +196,15 @@ def odoo_repos_checkout(version):
         _stash_and_checkout(repo, version)
 
 
-def odoo_repos_checkout_multi(versions):
+def odoo_repos_checkout_multi(versions, raise_on_error=False):
     repos = ["odoo", "enterprise", "design-themes", "internal"]
+    if len(versions) > len(repos):
+        if raise_on_error:
+            raise TooManyVersions(f"There are too many version given ({len(versions)}). Maximum is {len(repos)}.")
+        print(f"too many params, ignoring the following {versions[len(repos):]}")
     for version, repo_name, repo in zip(versions, repos, _repos(repos)):
         print(f"checkouting {repo_name} to {version}")
         _stash_and_checkout(repo, version)
-    if len(versions) > len(repos):
-        print(f"too many params, ignoring the following {versions[len(repos):]}")
 
 
 def App(**opt):
