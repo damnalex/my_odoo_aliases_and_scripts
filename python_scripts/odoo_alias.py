@@ -49,6 +49,9 @@ def _get_branch_name(path):
     repo = list(repo_generator)[0]
     return repo.active_branch.name
 
+def git_branch_version(*args):
+    assert len(args) == 1
+    print(_get_branch_name(args[0]))
 
 def _check_file_exists(path):
     # returns True if the file :path exists, False otherwize

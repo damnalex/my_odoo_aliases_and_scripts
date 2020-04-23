@@ -64,11 +64,6 @@ go_prune_all() {
     echo "All repos have been pruned"
 }
 
-git_branch_version() {
-    # get the name of the branch of a given repo
-    git -C $1 symbolic-ref --short HEAD
-}
-
 golist() {
     # list all the main source folder repos, theire currently checked out branches and theire status
     git_odoo list
