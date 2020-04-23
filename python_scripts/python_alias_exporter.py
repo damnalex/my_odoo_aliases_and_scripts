@@ -31,11 +31,10 @@ odoo_alias_functions = extract_public_functions_from_module(odoo_alias)
 
 aliases = []
 for fname in odoo_alias_functions:
-    shell_function_code = f"""
-{fname}() {{
+    shell_function_code = f"""{fname}() {{
     $AP/python_scripts/odoo_alias.py {fname} $@
 }}
-    """
+"""
     aliases.append(shell_function_code)
 
 # path to the automatically generated scripts
