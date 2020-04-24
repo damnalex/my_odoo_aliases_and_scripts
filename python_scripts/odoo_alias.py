@@ -4,6 +4,7 @@ import os
 import psycopg2
 import collections
 import subprocess
+from textwrap import dedent as _dd
 
 from git_odoo import _repos, _get_version_from_db, App as _git_odoo_app
 
@@ -51,8 +52,8 @@ def _get_branch_name(path):
 
 
 def git_branch_version(*args):
-    assert len(args) == 1
-    print(_get_branch_name(args[0]))
+    (path,) = args
+    print(_get_branch_name(path))
 
 
 def _check_file_exists(path):
@@ -91,15 +92,21 @@ def _so_checker(*args):
     # check that I am sure to want to start a DB with the wrong branch checked out (only check $ODOO)
     if len(args) == 0:
         raise Invalid_params(
-            """At least give me a name :(
-so dbname [port] [other_parameters]
-note: port is mandatory if you want to add other parameters"""
+            _dd(
+                """\
+                At least give me a name :(
+                so dbname [port] [other_parameters]
+                note: port is mandatory if you want to add other parameters"""
+            )
         )
     db_name = args[0]
     if db_name.startswith("CLEAN_ODOO"):
         raise Invalid_params(
-            f"""Don't play with that one!
-{db_name} is a protected database."""
+            _dd(
+                f"""\
+                Don't play with that one!
+                {db_name} is a protected database."""
+            )
         )
     try:
         db_version = _get_version_from_db(db_name)
@@ -110,15 +117,26 @@ note: port is mandatory if you want to add other parameters"""
         checked_out_branch = _get_branch_name(env.ODOO)
         if db_version != checked_out_branch:
             print(
-                f"""Version mismatch
-DB version is: {db_version}
-repo version is: {checked_out_branch}"""
+                _dd(
+                    f"""\
+                    Version mismatch
+                    DB version is: {db_version}
+                    repo version is: {checked_out_branch}"""
+                )
             )
             ans = input("continue anyway? (y/N):").lower()
             if ans == "y":
                 print("I hope you know what you're doing...")
             else:
                 raise UserAbort("Yeah, that's probably safer :D")
+    if len(args) >= 2:
+        try:
+            int(args[1])
+        except ValueError as ve:
+            bad_port = str(ve).split(":")[1][2:-1]
+            raise Invalid_params(
+                f"""The port number must be an integer. Provided value : {bad_port}"""
+            )
 
 
 def _so_builder(*args):
@@ -166,8 +184,7 @@ def so(*args):
 def _soiu(mode, *args):
     assert mode in ("install", "upgrade")
     mode = "-i" if mode == "install" else "-u"
-    assert len(args) >= 2
-    dbname = args[0]
+    dbname, *apps = args
     apps = ",".join(args[1:])
     so(dbname, 1234, mode, apps, "--stop-after-init")
 
