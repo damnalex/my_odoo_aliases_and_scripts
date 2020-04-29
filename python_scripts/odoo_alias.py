@@ -86,7 +86,7 @@ def clear_pyc(*args):
 ########################################################################
 
 
-def _so_checker(*args):
+def so_checker(*args):
     # check that the params given to 'so' are correct,
     # check that I am not trying to start a protected DB,
     # check that I am sure to want to start a DB with the wrong branch checked out (only check $ODOO)
@@ -139,11 +139,11 @@ def _so_checker(*args):
             )
 
 
-def _so_builder(*args):
+def so_builder(*args):
     # build the command to start odoo
     db_name = args[0]
     if len(args) < 2:
-        cmd = _so_builder(db_name, 8069)
+        cmd = so_builder(db_name, 8069)
         return cmd
     port_number = args[1]
     ODOO_BIN_PATH = f"{env.ODOO}/odoo-bin"
@@ -175,8 +175,8 @@ def so(*args):
         so("fakeDBname", 678, "--help")
         # fakeDBname & 678 don't mean anything here
         return
-    _so_checker(*args)
-    cmd = _so_builder(*args)
+    so_checker(*args)
+    cmd = so_builder(*args)
     cmd = _cmd_string_to_list(cmd)
     subprocess.run(cmd)
 
