@@ -198,6 +198,37 @@ def sou(*args):
     # upgrade modules args[1:] on DB args[0]
     _soiu("upgrade", *args)
 
+# start python scripts with the vscode python debugger
+# note that the debbuger is on the called script,
+# if that script calls another one, that one is not "debugged"
+# so it doesn't work with oe-support.
+# doesn't work with alias calling python scripts
+def ptvsd2(*args):
+    cmd = ['python2', '-m', 'ptvsd', '--host', 'localhost', '--port', 5678] + args
+    subprocess.run(cmd)
+
+def ptvsd3(*args):
+    cmd = ['python3', '-m', 'ptvsd', '--host', 'localhost', '--port', 5678] + args
+    subprocess.run(cmd)
+
+def _ptvsd_so(python_version, *args):
+    args += ['--limit-time-real=1000', '--limit-time-cpu=600']
+    so_checker(*args)
+    cmd = so_builder(*args)
+    cmd = _cmd_string_to_list(cmd)
+    if python_version == 3:
+        ptvsd3(*cmd)
+    else:
+        ptvsd2(*cmd)
+
+def ptvsd2_so(*args):
+    _ptvsd_so(2, *args)
+debo2 = ptvsd2_so
+
+def ptvsd3_so(*args):
+    _ptvsd_so(3, *args)
+debo = ptvsd3_so
+
 
 def go_fetch(*args):
     # git fetch on all the repos of the main source folder

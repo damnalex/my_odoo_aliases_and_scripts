@@ -456,39 +456,6 @@ db_age() {
     psql -c "$query" -d postgres
 }
 
-#start python scripts with the vscode python debugger
-# note that the debbuger is on the called script,
-# if that script calls another one, that one is not "debugged"
-# so it doesn't work with oe-support.
-# doesn't work with alias calling python scripts
-ptvsd2() {
-    eval python2 -m ptvsd --host localhost --port 5678 $@
-}
-
-ptvsd2-so() {
-    so_checker $@ || return 1
-    if [ $# -lt 2 ]; then
-        echo "The port number is a mandatory parameter"
-        return 1
-    fi
-    eval ptvsd2 $(so_builder $@ --limit-time-real=1000 --limit-time-cpu=600)
-}
-alias debo2="ptvsd2-so"
-
-ptvsd3() {
-    eval python3 -m ptvsd --host localhost --port 5678 $@
-}
-
-ptvsd3-so() {
-    so_checker $@ || return 1
-    if [ $# -lt 2 ]; then
-        echo "The port number is a mandatory parameter"
-        return 1
-    fi
-    eval ptvsd3 $(so_builder $@ --limit-time-real=1000 --limit-time-cpu=600)
-}
-alias debo="ptvsd3-so"
-
 export POSTGRES_LOC="$HOME/Library/Application Support/Postgres/var-11"
 pgbadger_compute() {
     # create the pgbadger result from $POSTGRES_LOC into pgbdager_output.html
