@@ -86,7 +86,7 @@ def clear_pyc(*args):
 ########################################################################
 
 
-def so_checker(*args):
+def _so_checker(*args):
     # check that the params given to 'so' are correct,
     # check that I am not trying to start a protected DB,
     # check that I am sure to want to start a DB with the wrong branch checked out (only check $ODOO)
@@ -139,11 +139,11 @@ def so_checker(*args):
             )
 
 
-def so_builder(*args):
+def _so_builder(*args):
     # build the command to start odoo
     db_name = args[0]
     if len(args) < 2:
-        cmd = so_builder(db_name, 8069)
+        cmd = _so_builder(db_name, 8069)
         return cmd
     port_number = args[1]
     ODOO_BIN_PATH = f"{env.ODOO}/odoo-bin"
@@ -175,8 +175,8 @@ def so(*args):
         so("fakeDBname", 678, "--help")
         # fakeDBname & 678 don't mean anything here
         return
-    so_checker(*args)
-    cmd = so_builder(*args)
+    _so_checker(*args)
+    cmd = _so_builder(*args)
     cmd = _cmd_string_to_list(cmd)
     subprocess.run(cmd)
 
@@ -198,35 +198,44 @@ def sou(*args):
     # upgrade modules args[1:] on DB args[0]
     _soiu("upgrade", *args)
 
+
 # start python scripts with the vscode python debugger
 # note that the debbuger is on the called script,
 # if that script calls another one, that one is not "debugged"
 # so it doesn't work with oe-support.
 # doesn't work with alias calling python scripts
 def ptvsd2(*args):
-    cmd = ['python2', '-m', 'ptvsd', '--host', 'localhost', '--port', 5678] + args
+    cmd = ["python2", "-m", "ptvsd", "--host", "localhost", "--port", 5678] + args
     subprocess.run(cmd)
+
 
 def ptvsd3(*args):
-    cmd = ['python3', '-m', 'ptvsd', '--host', 'localhost', '--port', 5678] + args
+    cmd = ["python3", "-m", "ptvsd", "--host", "localhost", "--port", 5678] + args
     subprocess.run(cmd)
 
+
 def _ptvsd_so(python_version, *args):
-    args += ['--limit-time-real=1000', '--limit-time-cpu=600']
-    so_checker(*args)
-    cmd = so_builder(*args)
+    args += ["--limit-time-real=1000", "--limit-time-cpu=600"]
+    _so_checker(*args)
+    cmd = _so_builder(*args)
     cmd = _cmd_string_to_list(cmd)
     if python_version == 3:
         ptvsd3(*cmd)
     else:
         ptvsd2(*cmd)
 
+
 def ptvsd2_so(*args):
     _ptvsd_so(2, *args)
+
+
 debo2 = ptvsd2_so
+
 
 def ptvsd3_so(*args):
     _ptvsd_so(3, *args)
+
+
 debo = ptvsd3_so
 
 
