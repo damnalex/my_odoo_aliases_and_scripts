@@ -456,16 +456,6 @@ db_age() {
     psql -c "$query" -d postgres
 }
 
-#port killer
-listport() {
-    # show all process working on port $1
-    lsof -i tcp:$1
-}
-killport() {
-    # kill the process working on port $1 (if there are multiple ones, kill only the first one)
-    listport $1 | sed -n '2p' | awk '{print $2}' | xargs kill -9
-}
-
 #start python scripts with the vscode python debugger
 # note that the debbuger is on the called script,
 # if that script calls another one, that one is not "debugged"

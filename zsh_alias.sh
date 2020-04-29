@@ -126,6 +126,16 @@ trim() {
     awk '{$1=$1};1'
 }
 
+#port killer
+listport() {
+    # show all process working on port $1
+    lsof -i tcp:$1
+}
+killport() {
+    # kill the process working on port $1 (if there are multiple ones, kill only the first one)
+    listport $1 | sed -n '2p' | awk '{print $2}' | xargs kill -9
+}
+
 find_file_with_all() {
     # SLOW FOR VERY BIG OR DEEP FOLDER
     # find_file_with_all [--ext <ext>] <expressions>...
