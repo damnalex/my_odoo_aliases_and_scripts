@@ -78,6 +78,8 @@ def clear_pyc(*args):
     if args and args[0] == "--all":
         cmd = f"find {env.SRC_MULTI} -name '*.pyc' -delete"
         subprocess.run(_cmd_string_to_list(cmd))
+    # remove the compiled files from support-tools
+    subprocess.run(["rm", "-r", f"{env.ST}/__pycache__"], stderr=subprocess.DEVNULL)
 
 
 ########################################################################
