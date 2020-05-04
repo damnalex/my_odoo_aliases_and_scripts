@@ -17,7 +17,9 @@ typos_dict = {
     "new_typo": ["new_ypo", "new_tupo", "new_ytpo"],
 }
 
+typo_alias_list = []
 # building the aliases
 for good, typos in typos_dict.items():
     for typo in typos:
-        print(f"alias '{typo}'='{good}';")
+        alias = f"""alias '{typo}'='{good}'\n"""
+        typo_alias_list.append(alias)
