@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import sys
 import os
-import psycopg2
 import collections
 import subprocess
 from textwrap import dedent as _dd
@@ -80,6 +79,9 @@ def clear_pyc(*args):
         subprocess.run(_cmd_string_to_list(cmd))
     # remove the compiled files from support-tools
     subprocess.run(["rm", "-r", f"{env.ST}/__pycache__"], stderr=subprocess.DEVNULL)
+    subprocess.run(
+        ["rm", "-r", f"{env.ST}/tools/__pycache__"], stderr=subprocess.DEVNULL
+    )
 
 
 ########################################################################
@@ -92,6 +94,8 @@ def _so_checker(*args):
     # check that the params given to 'so' are correct,
     # check that I am not trying to start a protected DB,
     # check that I am sure to want to start a DB with the wrong branch checked out (only check $ODOO)
+    import psycopg2
+
     if len(args) == 0:
         raise Invalid_params(
             _dd(
