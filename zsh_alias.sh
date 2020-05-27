@@ -194,6 +194,13 @@ git_rebase_and_merge_X_on_Y() {
         git branch -D tmp_branch_random_name
 }
 
+git_prune_branches() {
+    # remove remote branches that don't exist anymore
+    # then remove the local branches that don't exists on the repo anymore
+    git fetch --prune --all
+    git branch -vv | grep ': gone] ' | awk '{print $1}' | xargs git branch -D
+}
+
 sort_and_remove_duplicate() {
     # don't use this for very big files as it puts the whole file in memory
     # a more memory efficient alternative would be to use a tmp file, but
