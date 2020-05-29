@@ -13,7 +13,7 @@ typos_dict = {
     "oes": ["eos", "ose", "oe", "eso", "oe-support"],
     "eza": ["eaz", "za", "ez"],
     "exit": ["exiit", "exit$", "exiy", "exitt", "exirt"],
-    "clear": ["clera", "clea", "cleare", "cleazr", "clearr", "cllear", "clear$"],
+    "clear": ["clera", "clea", "cleare", "cleazr", "clearr", "cllear", "clear$", "claer"],
     "new_typo": ["new_ypo", "new_tupo", "new_ytpo"],
 }
 
