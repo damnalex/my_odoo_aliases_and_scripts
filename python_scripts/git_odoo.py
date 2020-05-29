@@ -44,7 +44,13 @@ def _repos(repos_names):
 
 
 def _try_for_all_remotes(
-    repo, F, *fargs, raise_on_exception=True, stop_on_success=True, verbose=False, **fkwargs
+    repo,
+    F,
+    *fargs,
+    raise_on_exception=True,
+    stop_on_success=True,
+    verbose=False,
+    **fkwargs,
 ):
     # execute the function :F on all remotes, until one succeeds
     # the remote is give to :F as a keyword argument, with the key `remote`
