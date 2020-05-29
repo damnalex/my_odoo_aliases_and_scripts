@@ -66,7 +66,7 @@ def _try_for_all_remotes(
     git_errors = []
     res = []
     for remote in remotes:
-        verbose and print(f"remote: {remote}")
+        print(f"remote: {remote}") if verbose else None
         fkwargs["remote"] = remote
         try:
             res += [F(*fargs, **fkwargs)]
