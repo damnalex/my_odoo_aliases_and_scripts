@@ -43,6 +43,43 @@ def _repos(repos_names):
         yield git.Repo(rn)
 
 
+def _try_for_all_remotes(
+    repo, F, *fargs, raise_on_exception=True, stop_on_success=True, **fkwargs
+):
+    # execute the function :F on all remotes, until one succeeds
+    # the remote is give to :F as a keyword argument, with the key `remote`
+    # if :raise_on_exception is True and none of the remotes succeeded,
+    # the first git error is reraised. If :raise_on_exception is False,
+    # the first git error is simply printed.
+    # if :stop_on_success is True, the process stops as soon as a succesful
+    # execution of :F happens.
+    remotes = [repo.remotes.origin] + [
+        rem for rem in repo.remotes if rem != repo.remotes.origin
+    ]
+    # storing all errors to help debugging
+    git_errors = []
+    res = []
+    for remote in remotes:
+        fkwargs["remote"] = remote
+        try:
+            res += [F(*fargs, **fkwargs)]
+        except git.exc.GitCommandError as ge:
+            git_errors.append(ge)
+            if not stop_on_success:
+                print(f"Error : {ge}")
+                print("------------------")
+        else:
+            if stop_on_success:
+                break
+    else:
+        if raise_on_exception:
+            raise git_errors[0]
+        elif git_errors:
+            print(f"Error : {git_errors[0]}")
+            print("------------------")
+    return res
+
+
 class DetachedHeadError(Exception):
     pass
 
@@ -59,39 +96,26 @@ def _nbr_commits_ahead_and_behind(repo):
             raise DetachedHeadError
         raise
 
-    def count_commits(repo, branch_name, remote_name="origin", ahead=True):
+    def count_commits(remote_name="origin", ahead=True):
         s = "{remote}/{branch}..{branch}" if ahead else "{branch}..{remote}/{branch}"
         s = s.format(remote=remote_name, branch=branch_name)
         # HACK: getting the length of a generator
         nbr_commit = sum(1 for _ in repo.iter_commits(s))
         return nbr_commit
 
-    git_error = []
-    remotes_names = ["origin"] + [
-        rem.name for rem in repo.remotes if rem.name != "origin"
-    ]
-    # test all the remotes for this branch (starting with origin),
-    # break for the first one matching
-    for remote_name in remotes_names:
-        try:
-            nbr_commit_ahead = count_commits(repo, branch_name, remote_name, ahead=True)
-            nbr_commit_behind = count_commits(
-                repo, branch_name, remote_name, ahead=False
-            )
-        except git.exc.GitCommandError as ge:
-            git_error.append(ge)
-        else:
-            break
-    else:
-        # did not find any remote matching, reraising original error
-        raise git_error[0]
+    def commits_aheads_and_behind(*args, **kwargs):
+        nbr_commit_ahead = count_commits(remote_name=kwargs["remote"].name, ahead=True)
+        nbr_commit_behind = count_commits(
+            remote_name=kwargs["remote"].name, ahead=False
+        )
+        return (nbr_commit_ahead, nbr_commit_behind)
 
-    return (nbr_commit_ahead, nbr_commit_behind)
+    return _try_for_all_remotes(repo, commits_aheads_and_behind)[0]
 
 
 def list_all_repos_info():
     """ display the available information regarding the community, enterprise,
-    design themes, internal and support-tools current branch
+    design themes, internal, paas and support-tools current branch
     """
     repos = ["odoo", "enterprise", "design-themes", "internal", "paas", "support-tools"]
     for repo_name, repo in zip(repos, _repos(repos)):
@@ -112,18 +136,17 @@ def list_all_repos_info():
 
 def fetch_all_repos_info():
     """ updates the available information regarding the community, enterprise,
-    design themes, internal and support-tools repos
+    design themes, internal, paas and support-tools repos
     """
     repos = ["odoo", "enterprise", "design-themes", "internal", "paas", "support-tools"]
+
+    def fetch(*args, **kwargs):
+        kwargs["remote"].fetch()
+
     for repo_name, repo in zip(repos, _repos(repos)):
-        for remote in repo.remotes:
-            print(f"Fetching {repo_name}: {remote}")
-            try:
-                remote.fetch()
-            except git.exc.GitCommandError as ge:
-                print(f"Could not fetch from {remote}/{repo_name}")
-                print(f"Error : {ge}")
-                print("------------------")
+        _try_for_all_remotes(
+            repo, fetch, raise_on_exception=False, stop_on_success=False
+        )
 
 
 def odoo_repos_pull(version=None, fast=False):
@@ -141,27 +164,13 @@ def odoo_repos_pull(version=None, fast=False):
     repos = ["odoo", "enterprise", "design-themes"]
     if not fast:
         repos += ["internal", "paas"]
+
+    def pull(*args, **kwargs):
+        kwargs["remote"].pull()
+
     for repo_name, repo in zip(repos, _repos(repos)):
         print(f"Pulling {repo_name}")
-        repo.git.stash()
-        remotes = [repo.remotes.origin] + [
-            rem for rem in repo.remotes if rem != repo.remotes.origin
-        ]
-        # test all the remotes for this branch (starting with origin),
-        # break for the first one matching
-        git_errors = []
-        for remote in remotes:
-            try:
-                remote.pull()
-            except git.exc.GitCommandError as ge:
-                git_errors.append(ge)
-            else:
-                break
-        else:
-            # did not find any remote matching, showing original error
-            print(f"Could not pull from repo {repo_name}")
-            print(f"Error : {git_errors[0]}")
-            print("------------------")
+        _try_for_all_remotes(repo, pull, raise_on_exception=False)
 
 
 def _get_version_from_db(dbname):
