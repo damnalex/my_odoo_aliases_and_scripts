@@ -47,6 +47,7 @@ go_update_and_clean_all_branches() {
     go_venv_current
 }
 
+# pythonable
 go_prune_all() {
     # git prune on all the repos of the the universe, multiverse, and on internal and support tools
     # prune universe, internal and paas
@@ -121,6 +122,7 @@ oes() {
 source $ST/scripts/completion/oe-support-completion.sh
 complete -o default -F _oe-support oes
 
+# pythonable
 bring_back_masterbeta_to_master() {
     # tool to bring back the master-beta branch of oes
     # to the same "code state" as master, so there is no need
@@ -148,17 +150,20 @@ bring_back_masterbeta_to_master() {
     cd $current_working_dir
 }
 
+#aliasable
 clean_database() {
     # start clean_database.py, dumbly
     eval $ST/clean_database.py $@
 }
 
+# pythonable
 neuter_db() {
     # neutre a DB without using oe-support
     local db_name=$1
     psql $db_name <$AP/support_scripts/neuter_db.sql
 }
 
+#aliasable
 odoosh() {
     # start odoosh.py, dumbly
     local url=$1
@@ -166,6 +171,7 @@ odoosh() {
 }
 alias odoosh_ssh='odoosh'
 
+# pythonable
 dropodoo() {
     # drop the given DBs and remove its filestore, also removes it from meta if it was a local saas db
     if [ $# -lt 1 ]; then
@@ -200,6 +206,7 @@ dropodoo() {
     return
 }
 
+# pythonable
 droplike() {
     # drop the DBs with the given patern (sql style patern)
     local dbs_list=$(list_db_like $1 | tr '\n' ' ')
@@ -210,6 +217,7 @@ droplike() {
     fi
 }
 
+# pythonable
 build_multiverse_branch() {
     # create a new mutliverse branche in $SRC_MULTI
     local version=$1
@@ -225,6 +233,7 @@ build_multiverse_branch() {
         sort_and_remove_duplicate $SRC_MULTI/version_list.txt
 }
 
+# pythonable
 update_multiverse_branch() {
     # git pull the repos of the given mutliverse branche
     local version=$1
@@ -237,6 +246,7 @@ update_multiverse_branch() {
     }; done
 }
 
+# pythonable
 update_all_multiverse_branches() {
     # git pull the repos of all the multivers branches
     echo "master"
@@ -308,6 +318,7 @@ go_venv_current() {
 }
 alias govcur="go_venv_current"
 
+# pythonable
 build_runbot() {
     # build a runbot like DB
     # TODO: rebuild the runbots and make them immortal
@@ -348,6 +359,7 @@ alias runbot="build_runbot"
 
 #local-saas
 
+# pythonable
 build_local_saas_db() {
     # create or modify a DB to make it run as if it was a DB on the saas
     local db_name=$1
@@ -363,11 +375,13 @@ build_local_saas_db() {
 }
 alias bloc='build_local_saas_db'
 
+# pythonable
 remove_from_meta() {
     # remove a db from the local metabase
     echo "DELETE FROM databases WHERE name = '$1'" | psql meta >/dev/null
 }
 
+# pythonable
 start_local_saas_db() {
     # start a local db as if it was on the saas, need to run build_local_saas_db first
     local db_name=$1
@@ -382,6 +396,7 @@ start_local_saas_db() {
 }
 alias sloc='start_local_saas_db'
 
+# pythonable
 local_saas_config_files_set() {
     # modify the source code of internal to allow me to run db with start_local_saas_db
     sed -i "" "s|OAUTH_BASE_URL = 'http://accounts.127.0.0.1.xip.io:8369'|OAUTH_BASE_URL = 'https://accounts.odoo.com' #tempcomment|" $INTERNAL/default/saas_worker/const.py
@@ -390,6 +405,7 @@ local_saas_config_files_set() {
     sed -i "" "s|assert isnamedtuple(db)|#assert isnamedtuple(db) #tempcomment|" $INTERNAL/default/saas_worker/metabase.py
 }
 
+# pythonable
 local_saas_config_files_unset() {
     # fix what was done with local_saas_config_files_set
     sed -i "" "s|OAUTH_BASE_URL = 'https://accounts.odoo.com' #tempcomment|OAUTH_BASE_URL = 'http://accounts.127.0.0.1.xip.io:8369'|" $INTERNAL/default/saas_worker/const.py
@@ -398,6 +414,7 @@ local_saas_config_files_unset() {
     sed -i "" "s|#assert isnamedtuple(db) #tempcomment|assert isnamedtuple(db)|" $INTERNAL/default/saas_worker/metabase.py
 }
 
+# pythonable
 list_local_saas() {
     # list the DB that were SAASifyied
     echo "Below, the list of local saas DBs"
@@ -409,6 +426,7 @@ list_local_saas() {
 alias lls='list_local_saas'
 
 #psql aliases
+# pythonable
 pl() {
     # list odoo DBs
     #echo "select t1.datname as db_name, pg_size_pretty(pg_database_size(t1.datname)) as db_size from pg_database t1 order by t1.datname;" | psql postgres
@@ -425,30 +443,35 @@ pl() {
     done
 }
 
+# TO REMOVE
 ploe() {
     # like pl, but just for the oe_support_XXX DBs
     # the grep is not necessary, but it makes the base name of the DBs more readable
     pl oe_support_ | grep oe_support_
 }
 
+# TO REMOVE
 plike() {
     # psql $1 but with an incomplete name, in a sql like style (useless since the autocompletion of psql, I think)
     psql $(list_db_like $1) ||
         echo "\n\n\nlooks like there was multiple result for $1, try something more precise"
 }
 
+# pythonable
 lu() {
     # list the users of DB $1 and copy the username of the admin in the clipboard
     psql -d $1 -c "SELECT login FROM res_users where active = true ORDER BY id LIMIT 1;" -tAqX | pbcopy
     psql -d $1 -c "SELECT id, login FROM res_users where active = true ORDER BY id;" -q
 }
 
+# pythonable
 list_db_like() {
     # list the DBs with a name that match the pattern (sql like style)
     psql -tAqX -d postgres -c "SELECT t1.datname AS db_name FROM pg_database t1 WHERE t1.datname like '$1' ORDER BY LOWER(t1.datname);"
 }
 alias ldl="list_db_like"
 
+# pythonable
 db_age() {
     # tels the age of a given DB
     local db_name=$1
