@@ -25,12 +25,10 @@ def extract_public_functions_from_module(module):
 
 # vvvvvvvvv   build the aliases   vvvvvvvvv
 
-import odoo_alias
-
-odoo_alias_functions = extract_public_functions_from_module(odoo_alias)
+from odoo_alias import CALLABLE_FROM_SHELL
 
 aliases = []
-for fname in odoo_alias_functions:
+for fname in CALLABLE_FROM_SHELL:
     shell_function_code = f"""{fname}() {{
     $AP/python_scripts/odoo_alias.py {fname} $@
 }}

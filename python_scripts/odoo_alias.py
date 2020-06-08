@@ -23,6 +23,14 @@ EnvTuple = collections.namedtuple("Env", " ".join(env.keys()))
 env = EnvTuple(**env)
 # env.XXX now stores the environment variable XXX
 
+CALLABLE_FROM_SHELL = set()
+
+
+def call_from_shell(func):
+    CALLABLE_FROM_SHELL.add(func.__name__)
+    return func
+
+
 #####################################
 #   Custom classes and exceptions   #
 #####################################
@@ -50,6 +58,7 @@ def _get_branch_name(path):
     return repo.active_branch.name
 
 
+@call_from_shell
 def git_branch_version(*args):
     (path,) = args
     print(_get_branch_name(path))
@@ -70,6 +79,7 @@ def _cmd_string_to_list(cmd):
     return [word for word in cmd.split(" ") if word]
 
 
+@call_from_shell
 def clear_pyc(*args):
     # remove compiled python files from the main source folder
     cmd = f"find {env.SRC} -name '*.pyc' -delete"
@@ -175,6 +185,7 @@ def _so_builder(*args):
     return cmd
 
 
+@call_from_shell
 def so(*args):
     # start an odoo db
     if len(args) and args[0] == "--help":
@@ -195,11 +206,13 @@ def _soiu(mode, *args):
     so(dbname, 1234, mode, apps, "--stop-after-init")
 
 
+@call_from_shell
 def soi(*args):
     # install modules args[1:] on DB args[0]
     _soiu("install", *args)
 
 
+@call_from_shell
 def sou(*args):
     # upgrade modules args[1:] on DB args[0]
     _soiu("upgrade", *args)
@@ -210,11 +223,13 @@ def sou(*args):
 # if that script calls another one, that one is not "debugged"
 # so it doesn't work with oe-support.
 # doesn't work with alias calling python scripts
+@call_from_shell
 def ptvsd2(*args):
     cmd = ["python2", "-m", "ptvsd", "--host", "localhost", "--port", 5678] + args
     subprocess.run(cmd)
 
 
+@call_from_shell
 def ptvsd3(*args):
     cmd = ["python3", "-m", "ptvsd", "--host", "localhost", "--port", 5678] + args
     subprocess.run(cmd)
@@ -231,20 +246,17 @@ def _ptvsd_so(python_version, *args):
         ptvsd2(*cmd)
 
 
+@call_from_shell
 def ptvsd2_so(*args):
     _ptvsd_so(2, *args)
 
 
-debo2 = ptvsd2_so
-
-
+@call_from_shell
 def ptvsd3_so(*args):
     _ptvsd_so(3, *args)
 
 
-debo = ptvsd3_so
-
-
+@call_from_shell
 def go_fetch(*args):
     # git fetch on all the repos of the main source folder
     _git_odoo_app(fetch=True)
@@ -255,6 +267,7 @@ def go_fetch(*args):
 if __name__ == "__main__":
     if len(sys.argv) > 1:
         method_name = sys.argv[1]
+        assert method_name in CALLABLE_FROM_SHELL
         method_params = sys.argv[2:]
         method_params = ", ".join(f"'{param}'" for param in method_params)
         try:

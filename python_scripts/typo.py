@@ -24,6 +24,8 @@ typos_dict = {
         "claer",
     ],
     "new_typo": ["new_ypo", "new_tupo", "new_ytpo"],
+    "ptvsd2_so": ["debo2"],
+    "ptvsd3_so": ["debo"],
 }
 
 typo_alias_list = []
