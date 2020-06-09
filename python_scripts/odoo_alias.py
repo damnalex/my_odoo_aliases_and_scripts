@@ -225,18 +225,18 @@ def sou(*args):
 # doesn't work with alias calling python scripts
 @call_from_shell
 def ptvsd2(*args):
-    cmd = ["python2", "-m", "ptvsd", "--host", "localhost", "--port", 5678] + args
+    cmd = ["python2", "-m", "ptvsd", "--host", "localhost", "--port", "5678"] + list(args)
     subprocess.run(cmd)
 
 
 @call_from_shell
 def ptvsd3(*args):
-    cmd = ["python3", "-m", "ptvsd", "--host", "localhost", "--port", 5678] + args
+    cmd = ["python3", "-m", "ptvsd", "--host", "localhost", "--port", "5678"] + list(args)
     subprocess.run(cmd)
 
 
 def _ptvsd_so(python_version, *args):
-    args += ["--limit-time-real=1000", "--limit-time-cpu=600"]
+    args = list(args) + ["--limit-time-real=1000", "--limit-time-cpu=600"]
     _so_checker(*args)
     cmd = _so_builder(*args)
     cmd = _cmd_string_to_list(cmd)
