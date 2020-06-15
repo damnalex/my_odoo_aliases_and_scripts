@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+
+# common typo and simple aliases
+
 typos_dict = {
     "git": ["gti"],
     "python3": ["pyhton3"],

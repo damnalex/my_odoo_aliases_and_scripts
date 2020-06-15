@@ -27,6 +27,7 @@ CALLABLE_FROM_SHELL = set()
 
 
 def call_from_shell(func):
+    # decorator for fucntions that are meant to be called directly from the shell
     CALLABLE_FROM_SHELL.add(func.__name__)
     return func
 
@@ -88,10 +89,10 @@ def clear_pyc(*args):
         cmd = f"find {env.SRC_MULTI} -name '*.pyc' -delete"
         subprocess.run(_cmd_string_to_list(cmd))
     # remove the compiled files from support-tools
-    subprocess.run(["rm", "-r", f"{env.ST}/__pycache__"], stderr=subprocess.DEVNULL)
-    subprocess.run(
-        ["rm", "-r", f"{env.ST}/tools/__pycache__"], stderr=subprocess.DEVNULL
-    )
+    # subprocess.run(["rm", "-r", f"{env.ST}/__pycache__"], stderr=subprocess.DEVNULL)
+    # subprocess.run(
+    #     ["rm", "-r", f"{env.ST}/tools/__pycache__"], stderr=subprocess.DEVNULL
+    # )
 
 
 ########################################################################
