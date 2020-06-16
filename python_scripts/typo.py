@@ -34,9 +34,9 @@ aliases_dict = {
     "$ST/odoosh/odoosh.py": ["odoosh"],
     "ptvsd2_so": ["debo2"],
     "ptvsd3_so": ["debo"],
-    "gov": ["gov_venv"],
-    "govcur": ["go_venv_current"],
-    "runbot": ["build_runbot"],
+    "gov_venv": ["gov"],
+    "go_venv_current": ["govcur"],
+    "build_runbot": ["runbot"],
 }
 
 typos_dict.update(aliases_dict)
