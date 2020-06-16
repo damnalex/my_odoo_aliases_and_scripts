@@ -114,7 +114,7 @@ alias geza="git -C $AP"
 
 alias c='clear'
 alias l="ls -lAh"
-alias tree="tree -C"
+alias tree="tree -C -a -I '.git'"
 
 history_count() {
     #history analytics
