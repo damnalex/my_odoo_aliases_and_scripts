@@ -29,17 +29,22 @@ typos_dict = {
     "new_typo": ["new_ypo", "new_tupo", "new_ytpo"],
 }
 
-aliases_dict = {
-    "$ST/clean_database.py": ["clean_database"],
-    "$ST/odoosh/odoosh.py": ["odoosh"],
-    "ptvsd2_so": ["debo2"],
-    "ptvsd3_so": ["debo"],
-    "gov_venv": ["gov"],
-    "go_venv_current": ["govcur"],
-    "build_runbot": ["runbot"],
+simple_aliases = {
+    "clean_database": "$ST/clean_database.py",
+    "odoosh": "$ST/odoosh/odoosh.py",
+    "debo2": "ptvsd2_so",
+    "debo": "ptvsd3_so",
+    "gov": "gov_venv",
+    "govcur": "go_venv_current",
+    "runbot": "build_runbot",
 }
 
-typos_dict.update(aliases_dict)
+for k, v in simple_aliases.items():
+    if not typos_dict.get(v):
+        typos_dict[v] = [k]
+    else:
+        typos_dict[v].append(k)
+
 
 typo_alias_list = []
 # building the aliases
