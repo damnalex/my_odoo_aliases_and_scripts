@@ -150,26 +150,12 @@ bring_back_masterbeta_to_master() {
     cd $current_working_dir
 }
 
-#aliasable
-clean_database() {
-    # start clean_database.py, dumbly
-    eval $ST/clean_database.py $@
-}
-
 # pythonable
 neuter_db() {
     # neutre a DB without using oe-support
     local db_name=$1
     psql $db_name <$AP/support_scripts/neuter_db.sql
 }
-
-#aliasable
-odoosh() {
-    # start odoosh.py, dumbly
-    local url=$1
-    eval $ST/odoosh/odoosh.py $url
-}
-alias odoosh_ssh='odoosh'
 
 # pythonable
 dropodoo() {
@@ -310,13 +296,11 @@ go_venv() {
         echo "no virtualenv name provided, falling back to standard python env"
     fi
 }
-alias gov="go_venv"
 
 go_venv_current() {
     # use the virtualenv for the currently checked out odoo branch
     go_venv $(git_branch_version $ODOO)
 }
-alias govcur="go_venv_current"
 
 # pythonable
 build_runbot() {
@@ -355,7 +339,6 @@ build_runbot() {
     esac
     echo 'built'
 }
-alias runbot="build_runbot"
 
 #local-saas
 
@@ -373,7 +356,6 @@ build_local_saas_db() {
     echo $db_uuid
     echo "INSERT INTO databases (name, uuid, port, mode, extra_apps, create_date, expire_date, last_cnx_date, cron_round, cron_time, email_daily_limit, email_daily_count, email_total_count, print_waiting_counter, print_counter, print_counter_limit) VALUES ('$db_name', '$db_uuid', 8069, 'trial', true, '2018-05-23 09:33:08.811069', '2040-02-22 23:59:59', '2018-06-28 13:44:03.980693', 0, '2018-09-21 00:40:28', 30, 10, 0, 0, 0, 10)" | psql meta
 }
-alias bloc='build_local_saas_db'
 
 # pythonable
 remove_from_meta() {
@@ -394,7 +376,6 @@ start_local_saas_db() {
         fi
     local_saas_config_files_unset
 }
-alias sloc='start_local_saas_db'
 
 # pythonable
 local_saas_config_files_set() {
@@ -423,7 +404,6 @@ list_local_saas() {
     echo "to create a new one --> build_local_saas_db db-name"
     echo "to drop --> dropodoo db-name"
 }
-alias lls='list_local_saas'
 
 #psql aliases
 # pythonable
@@ -443,20 +423,6 @@ pl() {
     done
 }
 
-# TO REMOVE
-ploe() {
-    # like pl, but just for the oe_support_XXX DBs
-    # the grep is not necessary, but it makes the base name of the DBs more readable
-    pl oe_support_ | grep oe_support_
-}
-
-# TO REMOVE
-plike() {
-    # psql $1 but with an incomplete name, in a sql like style (useless since the autocompletion of psql, I think)
-    psql $(list_db_like $1) ||
-        echo "\n\n\nlooks like there was multiple result for $1, try something more precise"
-}
-
 # pythonable
 lu() {
     # list the users of DB $1 and copy the username of the admin in the clipboard
@@ -469,7 +435,6 @@ list_db_like() {
     # list the DBs with a name that match the pattern (sql like style)
     psql -tAqX -d postgres -c "SELECT t1.datname AS db_name FROM pg_database t1 WHERE t1.datname like '$1' ORDER BY LOWER(t1.datname);"
 }
-alias ldl="list_db_like"
 
 # pythonable
 db_age() {

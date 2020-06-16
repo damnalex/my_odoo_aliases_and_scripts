@@ -27,9 +27,19 @@ typos_dict = {
         "claer",
     ],
     "new_typo": ["new_ypo", "new_tupo", "new_ytpo"],
+}
+
+aliases_dict = {
+    "$ST/clean_database.py": ["clean_database"],
+    "$ST/odoosh/odoosh.py": ["odoosh"],
     "ptvsd2_so": ["debo2"],
     "ptvsd3_so": ["debo"],
+    "gov": ["gov_venv"],
+    "govcur": ["go_venv_current"],
+    "runbot": ["build_runbot"],
 }
+
+typos_dict.update(aliases_dict)
 
 typo_alias_list = []
 # building the aliases

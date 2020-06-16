@@ -90,9 +90,9 @@ def clear_pyc(*args):
         subprocess.run(_cmd_string_to_list(cmd))
     # remove the compiled files from support-tools
     # subprocess.run(["rm", "-r", f"{env.ST}/__pycache__"], stderr=subprocess.DEVNULL)
-    # subprocess.run(
-    #     ["rm", "-r", f"{env.ST}/tools/__pycache__"], stderr=subprocess.DEVNULL
-    # )
+    subprocess.run(
+        ["rm", "-r", f"{env.ST}/tools/__pycache__"], stderr=subprocess.DEVNULL
+    )
 
 
 ########################################################################
