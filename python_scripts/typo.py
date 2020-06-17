@@ -13,7 +13,7 @@ typos_dict = {
     "pl": ["pl$"],
     "runbot": ["runbit"],
     "tig": ["tgi", "tig$", "tog"],
-    "oes": ["eos", "ose", "oe", "eso", "oe-support"],
+    "oes": ["eos", "ose", "oe", "eso"],
     "eza": ["eaz", "za", "ez"],
     "exit": ["exiit", "exit$", "exiy", "exitt", "exirt"],
     "clear": [
@@ -25,6 +25,7 @@ typos_dict = {
         "cllear",
         "clear$",
         "claer",
+        "cmear",
     ],
     "new_typo": ["new_ypo", "new_tupo", "new_ytpo"],
 }
@@ -37,6 +38,7 @@ simple_aliases = {
     "gov": "gov_venv",
     "govcur": "go_venv_current",
     "runbot": "build_runbot",
+    "oe-support": "oes",
 }
 
 for k, v in simple_aliases.items():
