@@ -41,12 +41,12 @@ simple_aliases = {
     "oe-support": "oes",
 }
 
+# include simple aliases in typos_dict
 for k, v in simple_aliases.items():
-    if not typos_dict.get(v):
-        typos_dict[v] = [k]
-    else:
-        typos_dict[v].append(k)
+    typos_dict[v] = typos_dict.get(v, []) + [k]
 
+# remove duplicates
+typos_dict = {k: set(v) for k, v in typos_dict.items()}
 
 typo_alias_list = []
 # building the aliases
