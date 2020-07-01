@@ -18,6 +18,8 @@ from docopt import docopt
 import psycopg2
 import git
 
+from utils import env
+
 # relevant_saas_versions = ["11.3", "12.3"]
 # RELEVANT_BRANCHES = [f"saas-{s}" for s in relevant_saas_versions]
 # RELEVANT_BRANCHES += ["11.0", "12.0", "13.0"]
@@ -39,7 +41,7 @@ def _repos(repos_names):
         # assuming repos_names is either a list of full paths
         # or folders in ~/src
         if "/" not in rn:
-            rn = f"~/src/{rn}"
+            rn = f"{env.SRC}/{rn}"
         yield git.Repo(rn)
 
 
@@ -56,7 +58,7 @@ def _try_for_all_remotes(
     # the remote is give to :F as a keyword argument, with the key `remote`
     # if :raise_on_exception is True and none of the remotes succeeded,
     # the first git error is reraised. If :raise_on_exception is False,
-    # the first git error is simply printed.
+    # the git errors are simply printed.
     # if :stop_on_success is True, the process stops as soon as a succesful
     # execution of :F happens.
     remotes = [repo.remotes.origin] + [
@@ -66,7 +68,8 @@ def _try_for_all_remotes(
     git_errors = []
     res = []
     for remote in remotes:
-        print(f"remote: {remote}") if verbose else None
+        if verbose:
+            print(f"remote: {remote}")
         fkwargs["remote"] = remote
         try:
             res += [F(*fargs, **fkwargs)]
@@ -81,10 +84,15 @@ def _try_for_all_remotes(
     else:
         if raise_on_exception:
             raise git_errors[0]
-        elif git_errors:
+        elif git_errors and stop_on_success:
             print(f"Error : {git_errors[0]}")
             print("------------------")
     return res
+
+
+def shorten_path(path):
+    # return just the last bit of the path
+    return path.split("/")[-1]
 
 
 class DetachedHeadError(Exception):
@@ -124,8 +132,16 @@ def list_all_repos_info():
     """ display the available information regarding the community, enterprise,
     design themes, internal, paas and support-tools current branch
     """
-    repos = ["odoo", "enterprise", "design-themes", "internal", "paas", "support-tools"]
+    repos = [
+        env.ODOO,
+        env.ENTERPRISE,
+        env.DESIGN_THEMES,
+        env.INTERNAL,
+        env.PAAS,
+        env.ST,
+    ]
     for repo_name, repo in zip(repos, _repos(repos)):
+        repo_name = shorten_path(repo_name)
         print(f"current {repo_name} branch")
         try:
             nbr_ahead, nbr_behind = _nbr_commits_ahead_and_behind(repo)
@@ -145,12 +161,20 @@ def fetch_all_repos_info():
     """ updates the available information regarding the community, enterprise,
     design themes, internal, paas and support-tools repos
     """
-    repos = ["odoo", "enterprise", "design-themes", "internal", "paas", "support-tools"]
+    repos = [
+        env.ODOO,
+        env.ENTERPRISE,
+        env.DESIGN_THEMES,
+        env.INTERNAL,
+        env.PAAS,
+        env.ST,
+    ]
 
     def fetch(*args, **kwargs):
         kwargs["remote"].fetch()
 
     for repo_name, repo in zip(repos, _repos(repos)):
+        repo_name = shorten_path(repo_name)
         print(f"fetching {repo_name}")
         _try_for_all_remotes(
             repo, fetch, raise_on_exception=False, stop_on_success=False, verbose=True
@@ -169,14 +193,15 @@ def odoo_repos_pull(version=None, fast=False):
         return
     if version:
         odoo_repos_checkout([version])
-    repos = ["odoo", "enterprise", "design-themes"]
+    repos = [env.ODOO, env.ENTERPRISE, env.DESIGN_THEMES]
     if not fast:
-        repos += ["internal", "paas"]
+        repos += [env.INTERNAL, env.PAAS]
 
     def pull(*args, **kwargs):
         kwargs["remote"].pull()
 
     for repo_name, repo in zip(repos, _repos(repos)):
+        repo_name = shorten_path(repo_name)
         print(f"Pulling {repo_name}")
         _try_for_all_remotes(repo, pull, raise_on_exception=False)
 
@@ -211,16 +236,17 @@ def odoo_repos_checkout(versions):
     else:
         version = versions[0]
     # 1 version given, use it for the main standard odoo repos
-    repos = ["odoo", "enterprise", "design-themes"]
+    repos = [env.ODOO, env.ENTERPRISE, env.DESIGN_THEMES]
     if version == "8.0":
-        repos.remove("enterprise")
+        repos.remove(env.ENTERPRISE)
     for repo_name, repo in zip(repos, _repos(repos)):
+        repo_name = shorten_path(repo_name)
         print(f"checkouting {repo_name} to {version}")
         _stash_and_checkout(repo, version)
 
 
 def odoo_repos_checkout_multi(versions, raise_on_error=False):
-    repos = ["odoo", "enterprise", "design-themes", "internal"]
+    repos = [env.ODOO, env.ENTERPRISE, env.DESIGN_THEMES, env.INTERNAL]
     if len(versions) > len(repos):
         if raise_on_error:
             raise TooManyVersions(
@@ -228,6 +254,7 @@ def odoo_repos_checkout_multi(versions, raise_on_error=False):
             )
         print(f"too many params, ignoring the following {versions[len(repos):]}")
     for version, repo_name, repo in zip(versions, repos, _repos(repos)):
+        repo_name = shorten_path(repo_name)
         print(f"checkouting {repo_name} to {version}")
         _stash_and_checkout(repo, version)
 

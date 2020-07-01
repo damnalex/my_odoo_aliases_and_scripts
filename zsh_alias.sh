@@ -43,6 +43,10 @@ eza() {
         file_to_load="python_scripts/typo.py"
         file_type="py"
         ;;
+    utils)
+        file_to_load="python_scripts/utils.py"
+        file_type="py"
+        ;;
     compl)
         file_to_load="completion.sh"
         file_type="sh"

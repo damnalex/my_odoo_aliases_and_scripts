@@ -5,29 +5,15 @@ import collections
 import subprocess
 from textwrap import dedent as _dd
 
+from utils import env
 from git_odoo import _repos, _get_version_from_db, App as _git_odoo_app
 
-# environment variables
-env = [
-    "AP",
-    "SRC",
-    "ODOO",
-    "ENTERPRISE",
-    "INTERNAL",
-    "ST",
-    "SRC_MULTI",
-    "ODOO_STORAGE",
-]
-env = {e: os.getenv(e) for e in env}
-EnvTuple = collections.namedtuple("Env", " ".join(env.keys()))
-env = EnvTuple(**env)
-# env.XXX now stores the environment variable XXX
 
 CALLABLE_FROM_SHELL = set()
 
 
 def call_from_shell(func):
-    # decorator for fucntions that are meant to be called directly from the shell
+    # decorator for functions that are meant to be called directly from the shell
     CALLABLE_FROM_SHELL.add(func.__name__)
     return func
 

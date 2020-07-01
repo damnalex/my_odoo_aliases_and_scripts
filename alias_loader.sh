@@ -7,7 +7,9 @@ export AP=$(dirname $0)
 export SRC="$HOME/src"
 export ODOO="$SRC/odoo"
 export ENTERPRISE="$SRC/enterprise"
+export DESIGN_THEMES="$SRC/design-themes"
 export INTERNAL="$SRC/internal"
+export PAAS="$SRC/paas"
 export ST="$SRC/support-tools"
 export SRC_MULTI="$HOME/multi_src"
 
