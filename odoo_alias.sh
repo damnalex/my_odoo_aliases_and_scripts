@@ -127,13 +127,15 @@ bring_back_masterbeta_to_master() {
     # tool to bring back the master-beta branch of oes
     # to the same "code state" as master, so there is no need
     # to force push to test new things easily
+    setopt localoptions rmstarsilent
     local current_working_dir=$(pwd)
     cd $ST
     # create temporary folder and make sure it is clean (maybe the folder already exists)
     mkdir /tmp/tempfolderforoesupportrepo
     rm -rf /tmp/tempfolderforoesupportrepo/*
     # copy everything except the dotfiles, dotfolders, and __pycache__ from the master branche
-    git switch master
+    git fetch
+    git checkout origin/master
     cp -r * /tmp/tempfolderforoesupportrepo
     rm -rf /tmp/tempfolderforoesupportrepo/__pycache__
     # get the curret commit hash to document the new commit
