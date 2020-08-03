@@ -1,20 +1,16 @@
 import os
-import collections
 
-# environment variables
-env = [
-    "AP",
-    "SRC",
-    "ODOO",
-    "ENTERPRISE",
-    "INTERNAL",
-    "ST",
-    "SRC_MULTI",
-    "ODOO_STORAGE",
-    "PAAS",
-    "DESIGN_THEMES",
-]
-env = {e: os.getenv(e) for e in env}
-EnvTuple = collections.namedtuple("Env", " ".join(env.keys()))
-env = EnvTuple(**env)
-# env.XXX now stores the environment variable XXX
+
+class EnvironmentExtractor:
+    """ Recovers any environment variables.
+        Once called, self.XXX stores the environment variable XXX value,
+        for faster subsequent calls"""
+
+    def __getattr__(self, name):
+        """ Will only be called the first time self.XXX is called"""
+        env_var = os.getenv(name)
+        setattr(self, name, env_var)
+        return env_var
+
+
+env = EnvironmentExtractor()
