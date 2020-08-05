@@ -267,7 +267,8 @@ build_odoo_virtualenv() {
         rm -rf "o_${version}"
     fi
     # virtualenv -p $(which $python_inter) "o_${version}" &&
-    virtualenv "$python_inter" "o_${version}" &&
+    # virtualenv "$python_inter" "o_${version}" &&
+    virtualenv "o_${version}" &&
         go_venv $version &&
         pip install -r $SRC_MULTI/$version/odoo/requirements.txt
     pip install -r $ST/requirements.txt
@@ -275,7 +276,10 @@ build_odoo_virtualenv() {
     pip install -r $AP/python_scripts/other_requirements.txt
     cd "$start_dir"
     echo "\n\n\n\n"
+    echo "--------------------------------"
     echo "virtualenv o_${version} is ready"
+    echo "--------------------------------"
+    echo "\n\n\n\n"
 }
 
 rebuild_main_virtualenvs() {
