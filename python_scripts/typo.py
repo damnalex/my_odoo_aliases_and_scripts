@@ -35,7 +35,7 @@ simple_aliases = {
     "odoosh": "$ST/odoosh/odoosh.py",
     "debo2": "ptvsd2_so",
     "debo": "ptvsd3_so",
-    "gov": "gov_venv",
+    "gov": "go_venv",
     "govcur": "go_venv_current",
     "runbot": "build_runbot",
     "oe-support": "oes",
