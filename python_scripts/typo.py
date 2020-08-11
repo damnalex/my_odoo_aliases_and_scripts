@@ -39,6 +39,7 @@ simple_aliases = {
     "govcur": "go_venv_current",
     "runbot": "build_runbot",
     "oe-support": "oes",
+    "ezagit": "git -C $AP",
 }
 
 # include simple aliases in typos_dict
