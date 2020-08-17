@@ -27,7 +27,7 @@ typos_dict = {
         "claer",
         "cmear",
     ],
-    "new_typo": ["new_ypo", "new_tupo", "new_ytpo"],
+    "new_typo": ["new_ypo", "new_tupo", "new_ytpo", "newtypo"],
 }
 
 simple_aliases = {
