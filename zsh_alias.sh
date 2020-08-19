@@ -234,6 +234,9 @@ if [ "$OSTYPE" = "darwin19.0" ]; then
     alias netdata_start="brew services start netdata"
     alias netdata_stop="brew services stop netdata"
 
+    # paths to some libraries
+    export PKG_CONFIG_PATH="/usr/local/opt/zlib/lib/pkgconfig"
+
     # end of macos stuffs
 fi
 

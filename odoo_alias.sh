@@ -257,7 +257,8 @@ build_odoo_virtualenv() {
     if [[ $# -gt 1 ]]; then
         python_inter="-p$(which $2)"
     else
-        python_inter=""
+        # default to python 3
+        python_inter="-p$(which python3)"
     fi
     local start_dir=$(pwd)
     cd $SRC_MULTI/$version || return 1
@@ -266,12 +267,16 @@ build_odoo_virtualenv() {
         echo "virtualenv already exist, rebuilding"
         rm -rf "o_${version}"
     fi
-    # virtualenv -p $(which $python_inter) "o_${version}" &&
-    # virtualenv "$python_inter" "o_${version}" &&
-    virtualenv "o_${version}" &&
-        go_venv $version &&
-        pip install -r $SRC_MULTI/$version/odoo/requirements.txt
+    virtualenv "$python_inter" "o_${version}"
+    go_venv $version
+    # ignoring in the standard requirements the psycopg2
+    sed -i "" "/psycopg2/d" $SRC_MULTI/$version/odoo/requirements.txt
+    pip install -r $SRC_MULTI/$version/odoo/requirements.txt
+    git -C $SRC_MULTI/$version/odoo stash
+    sed -i "" "/psycopg2/d" $ST/requirements.txt
     pip install -r $ST/requirements.txt
+    git -C $ST stash
+    # adding my custom requirements (includes psycopg2-binary)
     pip install -r $AP/python_scripts/requirements.txt
     pip install -r $AP/python_scripts/other_requirements.txt
     cd "$start_dir"
