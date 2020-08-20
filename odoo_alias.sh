@@ -269,7 +269,7 @@ build_odoo_virtualenv() {
     fi
     virtualenv "$python_inter" "o_${version}"
     go_venv $version
-    # ignoring in the standard requirements the psycopg2
+    # ignoring in the standard requirements for psycopg2
     sed -i "" "/psycopg2/d" $SRC_MULTI/$version/odoo/requirements.txt
     pip install -r $SRC_MULTI/$version/odoo/requirements.txt
     git -C $SRC_MULTI/$version/odoo stash
