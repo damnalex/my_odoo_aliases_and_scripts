@@ -17,6 +17,7 @@ typos_dict = {
     "eza": ["eaz", "za", "ez"],
     "exit": ["exiit", "exit$", "exiy", "exitt", "exirt"],
     "clear": [
+        "c",
         "clera",
         "clea",
         "cleare",

@@ -2,13 +2,13 @@
 ######  "manage this repo"  stuffs  ##########
 ##############################################
 
-alias e="vim"
-
 reload_zshrc() {
     # don't modify this one from eza to avoid headaches
     source ~/.zshrc
     deactivate >/dev/null 2>&1
 }
+
+alias e="vim"
 
 eza() {
     # edit and reload alias and various scripts
@@ -109,14 +109,13 @@ ezatig() {
     cd "$current_dir"
 }
 
-# git for the $AP repo
+# git the $AP repo from anywhere
 alias geza="git -C $AP"
 
 ###################################
 #########   Misc Stuff  ###########
 ###################################
 
-alias c='clear'
 alias l="ls -lAh"
 alias tree="tree -C -a -I '.git'"
 
@@ -192,6 +191,7 @@ git_last_X_hashes() {
 git_rebase_and_merge_X_on_Y() {
     # apply the content of branch X onto branch Y
     # does not modify branch X
+    git branch | grep tmp_branch_random_name && return 1
     git checkout -b tmp_branch_random_name $1 &&
         git rebase $2 &&
         git rebase $2 tmp_branch_random_name &&
@@ -252,20 +252,6 @@ new_typo() {
 ##############################################
 #############  python  stuffs  ###############
 ##############################################
-
-new_lib_in_other_python_requirements() {
-    # add a new required lib to my personal requirements.txt file
-    local library=$1
-    echo "$library" >>$AP/python_scripts/other_requirements.txt
-    sort_and_remove_duplicate $AP/python_scripts/other_requirements.txt
-}
-
-commit_new_lib_in_other_python_requirements() {
-    # automtic git commit of the changes of my requirements.txt file
-    # if there was anything else that was staged, it is commited too (get rekt)
-    git -C $AP add $AP/python_scripts/other_requirements.txt
-    git -C $AP commit -m "[AUTOMATIC] update other_requirements.txt"
-}
 
 ##############################################
 ##############  style stuffs  ################
