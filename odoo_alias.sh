@@ -51,11 +51,15 @@ go_update_and_clean_all_branches() {
 go_prune_all() {
     # git prune on all the repos of the the universe, multiverse, and on internal and support tools
     # prune universe, internal and paas
+    echo "----"
+    echo "pruning the universe"
     local repos=("$ODOO" "$ENTERPRISE" "$SRC/design-themes" "$INTERNAL" "$SRC/paas" "$ST")
     for repo in $repos; do {
         git -C "$repo" gc --prune=now
     }; done
     # prune multiverse
+    echo "----"
+    echo "pruning the multiverse"
     repos=("odoo" "enterprise" "design-themes")
     for repo in $repos; do {
         git -C "$SRC_MULTI/master/$repo" worktree prune
@@ -237,16 +241,18 @@ update_multiverse_branch() {
 # pythonable
 update_all_multiverse_branches() {
     # git pull the repos of all the multivers branches
-    echo "master"
+    echo "###########################################"
+    echo "starting to pull multiverse branches"
+    echo " -----> master multiverse"
     update_multiverse_branch master
     for version in $(cat $SRC_MULTI/version_list.txt); do {
         if [[ "$version" != "master" ]]; then
-            echo $version
+            echo " -----> $version multiverse"
             update_multiverse_branch "$version"
         fi
     }; done
-    echo "###########################################"
     echo "mutliverse branches are up to date"
+    echo "###########################################"
 }
 
 build_odoo_virtualenv() {
