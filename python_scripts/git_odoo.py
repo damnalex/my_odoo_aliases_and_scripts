@@ -55,7 +55,7 @@ def _try_for_all_remotes(
     **fkwargs,
 ):
     # execute the function :F on all remotes, until one succeeds
-    # the remote is give to :F as a keyword argument, with the key `remote`
+    # the remote is give to :F as a keyword argument, with the key `remote` added.
     # if :raise_on_exception is True and none of the remotes succeeded,
     # the first git error is reraised. If :raise_on_exception is False,
     # the git errors are simply printed.
