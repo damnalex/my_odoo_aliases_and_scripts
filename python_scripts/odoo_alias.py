@@ -66,19 +66,21 @@ def _cmd_string_to_list(cmd):
     return [word for word in cmd.split()]
 
 
+def sh_run(cmd, **kwargs):
+    # wrapper for subprocess.run
+    cmd = _cmd_string_to_list(cmd)
+    return subprocess.run(cmd, **kwargs)
+
+
 @call_from_shell
 def clear_pyc(*args):
     # remove compiled python files from the main source folder
-    cmd = f"find {env.SRC} -name '*.pyc' -delete"
-    subprocess.run(_cmd_string_to_list(cmd))
+    sh_run(f"find {env.SRC} -name '*.pyc' -delete")
     if args and args[0] == "--all":
-        cmd = f"find {env.SRC_MULTI} -name '*.pyc' -delete"
-        subprocess.run(_cmd_string_to_list(cmd))
+        sh_run(f"find {env.SRC_MULTI} -name '*.pyc' -delete")
     # remove the compiled files from support-tools
-    subprocess.run(["rm", "-r", f"{env.ST}/__pycache__"], stderr=subprocess.DEVNULL)
-    subprocess.run(
-        ["rm", "-r", f"{env.ST}/tools/__pycache__"], stderr=subprocess.DEVNULL
-    )
+    sh_run(f"rm -r {env.ST}/__pycache__", stderr=subprocess.DEVNULL)
+    sh_run(f"rm -r {env.ST}/tools/__pycache__", stderr=subprocess.DEVNULL)
 
 
 ########################################################################
@@ -181,8 +183,7 @@ def so(*args):
         return
     _so_checker(*args)
     cmd = _so_builder(*args)
-    cmd = _cmd_string_to_list(cmd)
-    subprocess.run(cmd)
+    sh_run(cmd)
 
 
 def _soiu(mode, *args):
