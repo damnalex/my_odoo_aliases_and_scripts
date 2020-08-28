@@ -63,7 +63,7 @@ def _check_file_exists(path):
 def _cmd_string_to_list(cmd):
     # input: a shell command in string form
     # returns the command in a list usable by subprocess.run
-    return [word for word in cmd.split(" ") if word]
+    return [word for word in cmd.split()]
 
 
 @call_from_shell
