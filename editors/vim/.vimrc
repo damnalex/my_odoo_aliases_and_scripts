@@ -129,7 +129,7 @@ let g:indent_guides_enable_on_vim_startup = 1
 " ##################################
 
 " hardmode - disable hjkl to force me to use other moves more often
-noremap h <NOP>
+" noremap h <NOP>
 " noremap j <NOP>
 " noremap k <NOP>
-noremap l <NOP>
+" noremap l <NOP>

@@ -189,7 +189,7 @@ def _soiu(mode, *args):
     assert mode in ("install", "upgrade")
     mode = "-i" if mode == "install" else "-u"
     dbname, *apps = args
-    assert apps
+    assert apps, "No apps list provided"
     apps = ",".join(apps)
     so(dbname, 1234, mode, apps, "--stop-after-init")
 
