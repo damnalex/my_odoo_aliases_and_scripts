@@ -14,10 +14,10 @@
     "editor.renderLineHighlight": "all",
     "editor.smoothScrolling": true,
     "editor.cursorSmoothCaretAnimation": true,
+    "editor.minimap.enabled": true,
     "editor.minimap.renderCharacters": false,
     "zenMode.fullScreen": false,
     "debug.toolBarLocation": "docked",
-    "editor.minimap.enabled": true,
     "editor.cursorSurroundingLines": 4,
     // special styles
     "editor.tokenColorCustomizations": {
@@ -104,6 +104,11 @@
             ],
         },
     ],
-    //end of settings
+    "powermode.enabled": true,
+    "powermode.enableShake": false,
+    "powermode.enableStatusBarComboCounter": false,
+    "powermode.enableStatusBarComboTimer": false,
+    "powermode.explosionOffset": 0.10,
+    // end of settings
     "dummy.setting": "Anything under this line should be moved to another section.",
 }
