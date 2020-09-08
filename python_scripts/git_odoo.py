@@ -34,6 +34,11 @@ RELEVANT_BRANCHES = [
     "13.0",
 ]
 
+VERSIONED_REPOS = [env.ODOO, env.ENTERPRISE, env.DESIGN_THEMES, env.USER_DOC]
+SINGLE_VERSION_REPOS = [env.INTERNAL, env.PAAS]
+SUPPORT_REPOS = [env.ST]
+ALL_REPOS = VERSIONED_REPOS + SINGLE_VERSION_REPOS + SUPPORT_REPOS
+
 
 def _repos(repos_names):
     """ Generator of repo objects for repos_names repos.
@@ -133,15 +138,7 @@ def list_all_repos_info():
     """ display the available information regarding the community, enterprise,
     design themes, internal, paas and support-tools current branch
     """
-    repos = [
-        env.ODOO,
-        env.ENTERPRISE,
-        env.DESIGN_THEMES,
-        env.USER_DOC,
-        env.INTERNAL,
-        env.PAAS,
-        env.ST,
-    ]
+    repos = ALL_REPOS
     for repo_name, repo in zip(repos, _repos(repos)):
         repo_name = shorten_path(repo_name)
         print(f"current {repo_name} branch")
@@ -163,19 +160,11 @@ def fetch_all_repos_info():
     """ updates the available information regarding the community, enterprise,
     design themes, internal, paas and support-tools repos
     """
-    repos = [
-        env.ODOO,
-        env.ENTERPRISE,
-        env.DESIGN_THEMES,
-        env.USER_DOC,
-        env.INTERNAL,
-        env.PAAS,
-        env.ST,
-    ]
 
     def fetch(*args, **kwargs):
         kwargs["remote"].fetch()
 
+    repos = ALL_REPOS
     for repo_name, repo in zip(repos, _repos(repos)):
         repo_name = shorten_path(repo_name)
         print(f"fetching {repo_name}")
@@ -196,9 +185,9 @@ def odoo_repos_pull(version=None, fast=False):
         return
     if version:
         odoo_repos_checkout([version])
-    repos = [env.ODOO, env.ENTERPRISE, env.DESIGN_THEMES, env.USER_DOC]
+    repos = VERSIONED_REPOS
     if not fast:
-        repos += [env.INTERNAL, env.PAAS]
+        repos += SINGLE_VERSION_REPOS
 
     def pull(*args, **kwargs):
         kwargs["remote"].pull()
@@ -239,7 +228,7 @@ def odoo_repos_checkout(versions):
     else:
         version = versions[0]
     # 1 version given, use it for the main standard odoo repos
-    repos = [env.ODOO, env.ENTERPRISE, env.DESIGN_THEMES, env.USER_DOC]
+    repos = VERSIONED_REPOS
     if version == "8.0":
         repos.remove(env.ENTERPRISE)
     for repo_name, repo in zip(repos, _repos(repos)):
