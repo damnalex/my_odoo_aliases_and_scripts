@@ -30,6 +30,7 @@ RELEVANT_BRANCHES = [
     "saas-11.3",
     "12.0",
     "saas-12.3",
+    "saas-13.5",
     "13.0",
 ]
 
@@ -136,6 +137,7 @@ def list_all_repos_info():
         env.ODOO,
         env.ENTERPRISE,
         env.DESIGN_THEMES,
+        env.USER_DOC,
         env.INTERNAL,
         env.PAAS,
         env.ST,
@@ -165,6 +167,7 @@ def fetch_all_repos_info():
         env.ODOO,
         env.ENTERPRISE,
         env.DESIGN_THEMES,
+        env.USER_DOC,
         env.INTERNAL,
         env.PAAS,
         env.ST,
@@ -193,7 +196,7 @@ def odoo_repos_pull(version=None, fast=False):
         return
     if version:
         odoo_repos_checkout([version])
-    repos = [env.ODOO, env.ENTERPRISE, env.DESIGN_THEMES]
+    repos = [env.ODOO, env.ENTERPRISE, env.DESIGN_THEMES, env.USER_DOC]
     if not fast:
         repos += [env.INTERNAL, env.PAAS]
 
@@ -236,13 +239,18 @@ def odoo_repos_checkout(versions):
     else:
         version = versions[0]
     # 1 version given, use it for the main standard odoo repos
-    repos = [env.ODOO, env.ENTERPRISE, env.DESIGN_THEMES]
+    repos = [env.ODOO, env.ENTERPRISE, env.DESIGN_THEMES, env.USER_DOC]
     if version == "8.0":
         repos.remove(env.ENTERPRISE)
     for repo_name, repo in zip(repos, _repos(repos)):
         repo_name = shorten_path(repo_name)
         print(f"checkouting {repo_name} to {version}")
-        _stash_and_checkout(repo, version)
+        try:
+            _stash_and_checkout(repo, version)
+        except git.exc.GitCommandError as err:
+            print(f'Could not checkout repo "{repo_name}" to version "{version}"')
+            print("Failed with the following error:")
+            print(err)
 
 
 def odoo_repos_checkout_multi(versions, raise_on_error=False):

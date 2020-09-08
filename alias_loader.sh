@@ -12,6 +12,7 @@ export INTERNAL="$SRC/internal"
 export PAAS="$SRC/paas"
 export ST="$SRC/support-tools"
 export SRC_MULTI="$HOME/multi_src"
+export USER_DOC="$SRC/documentation-user"
 
 if [ "$OSTYPE" = "darwin19.0" ]; then
     export ODOO_STORAGE="$HOME/Library/Application Support/Odoo"
