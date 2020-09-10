@@ -160,7 +160,7 @@ bring_back_masterbeta_to_master() {
 neuter_db() {
     # neutre a DB without using oe-support
     local db_name=$1
-    psql $db_name <$AP/support_scripts/neuter_db.sql
+    python3 $ST/tools/neuter.py $db_name
 }
 
 # pythonable
