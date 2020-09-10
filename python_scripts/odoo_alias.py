@@ -83,10 +83,10 @@ def clear_pyc(*args):
     sh_run(f"rm -r {env.ST}/tools/__pycache__", stderr=subprocess.DEVNULL)
 
 
-########################################################################
-#                Put "main" functions bellow this bloc                 #
-#  The params of the public functions are positional, and string only  #
-########################################################################
+#####################################################################################
+#                      Put "main" functions bellow this bloc                        #
+#  The params of functions callable from the shell are positional, and string only  #
+#####################################################################################
 
 
 def _so_checker(*args):
