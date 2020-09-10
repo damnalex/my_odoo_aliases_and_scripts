@@ -28,6 +28,7 @@ typos_dict = {
         "claer",
         "cmear",
         "cldear",
+        "cler",
     ],
     "new_typo": ["new_ypo", "new_tupo", "new_ytpo", "newtypo"],
 }
