@@ -84,7 +84,6 @@ complete -o default -F _so ptvsd2-so
 
 complete -o default -F _complete_db_name_on_first_param godb
 complete -o default -F _complete_db_name_on_first_param clean_database
-complete -o default -F _complete_db_name_on_first_param neuter_db
 complete -o default -F _complete_db_name_on_first_param dropodoo
 complete -o default -F _complete_db_name_on_first_param lu
 complete -o default -F _complete_db_name_on_first_param psql
@@ -104,3 +103,18 @@ _go_update_and_clean() {
     _complete_with_B_on_index_A 1 _complete_branch_name_on_repo_A $ODOO
 }
 complete -o default -F _go_update_and_clean go_update_and_clean
+
+_clear_pyc() {
+    if [[ COMP_CWORD -eq 1 ]]; then
+        COMPREPLY=($(compgen -W "--all" -- "${COMP_WORD[COMP_CWORD]}"))
+    fi
+}
+complete -o default -F _clear_pyc clear_pyc
+
+_neuter_db() {
+    _complete_db_name_on_first_param
+    if [[ COMP_CWORD -eq 2 ]]; then
+        COMPREPLY=($(compgen -W "--minimal" -- "${COMP_WORDS[COMP_CWORD]}"))
+    fi
+}
+complete -o default -F _neuter_db neuter_db
