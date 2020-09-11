@@ -141,7 +141,7 @@ def list_all_repos_info():
     repos = ALL_REPOS
     for repo_name, repo in zip(repos, _repos(repos)):
         repo_name = shorten_path(repo_name)
-        print(f"current {repo_name} branch")
+        print(repo_name)
         try:
             nbr_ahead, nbr_behind = _nbr_commits_ahead_and_behind(repo)
         except git.exc.GitCommandError:
@@ -153,7 +153,9 @@ def list_all_repos_info():
             tabuls = "\t" * nb_tabul
             print(f"  {repo.active_branch.name}{tabuls}↓ {nbr_behind} ↑ {nbr_ahead}")
         if repo.index.diff(None):
-            print("  !!! With Local changes !!!")
+            print("  !!! With unstaged changes !!!")
+        if repo.index.diff("HEAD"):
+            print("  !!! With uncommited changes !!!")
 
 
 def fetch_all_repos_info():
