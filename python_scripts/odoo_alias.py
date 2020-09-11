@@ -68,19 +68,24 @@ def _cmd_string_to_list(cmd):
 
 def sh_run(cmd, **kwargs):
     # wrapper for subprocess.run
-    cmd = _cmd_string_to_list(cmd)
-    return subprocess.run(cmd, **kwargs)
+    if 'stdout' not in kwargs.keys():
+        kwargs['stdout'] = subprocess.PIPE
+    if "|" not in cmd:
+        cmd = _cmd_string_to_list(cmd)
+        return subprocess.run(cmd, **kwargs).stdout.decode("utf-8")
+    else:
+        process = subprocess.Popen(cmd, shell=True, **kwargs)
+        return process.communicate()[0].decode("utf-8")
 
 
 @call_from_shell
 def clear_pyc(*args):
     # remove compiled python files from the main source folder
+    sh_run(f"find {env.SRC} -type d -name __pycache__ | xargs rm -rf")
     sh_run(f"find {env.SRC} -name '*.pyc' -delete")
     if args and args[0] == "--all":
+        sh_run(f"find {env.SRC_MULTI} -type d -name __pycache__ | xargs rm -rf")
         sh_run(f"find {env.SRC_MULTI} -name '*.pyc' -delete")
-    # remove the compiled files from support-tools
-    sh_run(f"rm -r {env.ST}/__pycache__", stderr=subprocess.DEVNULL)
-    sh_run(f"rm -r {env.ST}/tools/__pycache__", stderr=subprocess.DEVNULL)
 
 
 #####################################################################################
