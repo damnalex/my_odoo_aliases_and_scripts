@@ -68,8 +68,8 @@ def _cmd_string_to_list(cmd):
 
 def sh_run(cmd, **kwargs):
     # wrapper for subprocess.run
-    if 'stdout' not in kwargs.keys():
-        kwargs['stdout'] = subprocess.PIPE
+    if "stdout" not in kwargs.keys():
+        kwargs["stdout"] = subprocess.PIPE
     if "|" not in cmd:
         cmd = _cmd_string_to_list(cmd)
         return subprocess.run(cmd, **kwargs).stdout.decode("utf-8")
