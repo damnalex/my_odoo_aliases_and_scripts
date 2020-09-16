@@ -185,11 +185,15 @@ def odoo_repos_pull(version=None, fast=False):
             odoo_repos_pull(v, fast)
             fast = True  # only pull internal and paas once
         return
+    failed_checkouts = []
     if version:
-        odoo_repos_checkout([version])
-    repos = VERSIONED_REPOS
+        failed_checkouts = odoo_repos_checkout([version])
+    repos = VERSIONED_REPOS[:]
     if not fast:
         repos += SINGLE_VERSION_REPOS
+    if failed_checkouts:
+        for fc in failed_checkouts:
+            repos.remove(fc)
 
     def pull(*args, **kwargs):
         kwargs["remote"].pull()
@@ -223,6 +227,7 @@ def odoo_repos_checkout(versions):
     If mutliple versions are given, uses them in the order odoo, enterprise, design-themes, internal
         If the number of versions is greater than the number of handled repos, the remaining version
         are ignored (but a warning is shown)
+    returns a list of the repos for which the checkout failed
     """
     if len(versions) > 1:
         odoo_repos_checkout_multi(versions)
@@ -230,11 +235,12 @@ def odoo_repos_checkout(versions):
     else:
         version = versions[0]
     # 1 version given, use it for the main standard odoo repos
-    repos = VERSIONED_REPOS
+    repos = VERSIONED_REPOS[:]
     if version == "8.0":
         repos.remove(env.ENTERPRISE)
-    for repo_name, repo in zip(repos, _repos(repos)):
-        repo_name = shorten_path(repo_name)
+    failed_checkouts = []
+    for repo_path, repo in zip(repos, _repos(repos)):
+        repo_name = shorten_path(repo_path)
         print(f"checkouting {repo_name} to {version}")
         try:
             _stash_and_checkout(repo, version)
@@ -242,6 +248,8 @@ def odoo_repos_checkout(versions):
             print(f'Could not checkout repo "{repo_name}" to version "{version}"')
             print("Failed with the following error:")
             print(err)
+            failed_checkouts.append(repo_path)
+    return failed_checkouts
 
 
 def odoo_repos_checkout_multi(versions, raise_on_error=False):
