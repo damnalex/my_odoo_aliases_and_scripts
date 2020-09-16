@@ -27,6 +27,9 @@ export GPG_TTY=$(tty)
 autoload bashcompinit
 bashcompinit
 
+# use vim as default editor
+export EDITOR="vim"
+
 # activate vi mode in the terminal
 bindkey -v
 if [ ! -f ~/.inputrc ]; then
