@@ -180,7 +180,7 @@ def odoo_repos_pull(version=None, fast=False):
     If no version is provided, update the current branche.
     If :version is not a string, itterate on it and update the given branches sequentially.
     """
-    if version and not isinstance(version, str):
+    if version and isinstance(version, list):
         for v in version:
             odoo_repos_pull(v, fast)
             fast = True  # only pull internal and paas once
