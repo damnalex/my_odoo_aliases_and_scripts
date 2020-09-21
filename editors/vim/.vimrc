@@ -9,6 +9,17 @@ syntax enable  "enable syntaxe highlight
 set nowrap  "don't wrap long lines
 set scrolloff=5  "don't let the cursor be at the very top or very bottom of the screen, helps have enough code context at all time
 set lazyredraw  "don't redraw the screen during macros --> makes them a slightly bit faster I guess ?
+set showcmd
+colorscheme default
+colorscheme darkblue
+colorscheme elflord
+
+" uncomment this if ntpeters/vim-better-whitespace is not installed
+" set list
+" set listchars=tab:~-,trail:.,extends:>,precedes:<
+" if (v:version >= 700) && ((&termencoding == "utf-8") || has("gui_running"))
+" 	set listchars=tab:»·,trail:·,extends:>,precedes:<,nbsp:=
+" endif
 
 " sound stuff
 set noerrorbells  "no dings, the ding is bad and useless
@@ -74,12 +85,15 @@ set hidden      " hide buffers instead of closing them.
                 " If I try to close vim from the other buffers, I am simply
                 " brought back to the non saved buffer (after an error
                 " message)
+
 " Easy window navigation
 map <C-h> <C-w>h
 map <C-j> <C-w>j
 map <C-k> <C-w>k
 map <C-l> <C-w>l
 
+" language specific settings
+let python_highlight_numbers = 1
 
 " ###################################
 " ######     Plugins Zone    ########
@@ -94,7 +108,7 @@ endif
 
 " plugin install
 call plug#begin('~/.vim/plugged')
-Plug 'yuttie/comfortable-motion.vim'
+" Plug 'yuttie/comfortable-motion.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'itchyny/lightline.vim'
 Plug 'tomtom/tcomment_vim'
@@ -108,9 +122,9 @@ call plug#end()
 
 " plugin config
 " comfortable-motion
-let g:comfortable_motion_friction = 400.0
-let g:comfortable_motion_air_drag = 1.0
-let g:comfortable_motion_impulse_mulitplier = 1.5
+" let g:comfortable_motion_friction = 400.0
+" let g:comfortable_motion_air_drag = 1.0
+" let g:comfortable_motion_impulse_mulitplier = 1.5
 
 " vim-gitgutter
 set updatetime=100 " this is not a setting specific to gitgutter but necessary for it to be responsive
@@ -119,7 +133,6 @@ set updatetime=100 " this is not a setting specific to gitgutter but necessary f
 set laststatus=2 " this is not a setting specific to lightline but necessary for it to be active in mono-window mode
 
 " vim-indent-line
-colorscheme default " vim-indent-line requires a theme to bet set
 let g:indent_guides_guide_size = 1
 let g:indent_guides_color_change_percent = 3
 let g:indent_guides_enable_on_vim_startup = 1
