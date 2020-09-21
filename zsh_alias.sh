@@ -205,6 +205,10 @@ git_prune_branches() {
     git branch -vv | grep ': gone] ' | awk '{print $1}' | xargs git branch -D
 }
 
+git_push_to_all_remotes() {
+    git remote | xargs -L1 -I R git push R
+}
+
 sort_and_remove_duplicate() {
     # don't use this for very big files as it puts the whole file in memory
     # a more memory efficient alternative would be to use a tmp file, but
