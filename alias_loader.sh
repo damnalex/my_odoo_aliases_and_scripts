@@ -27,8 +27,8 @@ export GPG_TTY=$(tty)
 autoload bashcompinit
 bashcompinit
 
-# use vim as default editor
-export EDITOR="vim"
+# use neovim as default editor
+export EDITOR="nvim"
 
 # activate vi mode in the terminal
 bindkey -v

@@ -8,7 +8,7 @@ reload_zshrc() {
     deactivate >/dev/null 2>&1
 }
 
-alias e="vim"
+alias e="nvim"
 
 eza() {
     # edit and reload alias and various scripts
@@ -52,7 +52,7 @@ eza() {
         file_type="sh"
         ;;
     vim)
-        file_to_load="editors/vim/.vimrc"
+        file_to_load="editors/neovim/init.vim"
         file_type="other"
         ;;
     "")
@@ -73,7 +73,7 @@ eza() {
         echo "git_odoo.py --> eza git"
         echo "typo.py --> eza typo"
         echo "completion.sh --> eza compl"
-        echo ".vimrc --> eza vim"
+        echo "neovim config --> eza vim"
         echo "repo info --> eza tig"
         return
         ;;
@@ -82,17 +82,17 @@ eza() {
     local current_dir=$(pwd)
     cd $AP
     if [[ $2 == "" ]]; then
-        vim $AP/$file_to_load || return
+        e $AP/$file_to_load || return
     else
         case $file_type in
         sh)
-            vim -c "/.*$2.*(" $AP/$file_to_load || return
+            e -c "/.*$2.*(" $AP/$file_to_load || return
             ;;
         py)
-            vim -c "/def $2" $AP/$file_to_load || return
+            e -c "/def $2" $AP/$file_to_load || return
             ;;
         other)
-            vim -c "$2" $AP/$file_to_load || return
+            e -c "$2" $AP/$file_to_load || return
             ;;
         esac
     fi
