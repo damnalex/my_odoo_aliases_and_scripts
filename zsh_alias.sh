@@ -55,26 +55,21 @@ eza() {
         file_to_load="editors/neovim/init.vim"
         file_type="other"
         ;;
-    "")
-        #default
-        file_to_load="odoo_alias.sh"
-        file_type="sh"
-        ;;
     tig)
         ezatig
         return
         ;;
     *)
-        echo "zsh_alias.sh --> eza zsh"
-        echo "alias_loader.sh --> eza loader"
-        echo "odoo_alias.sh --> eza odoo   or   eza"
-        echo "odoo_alias.py --> eza odoopy"
-        echo "drop_protected_dbs.txt --> eza drop"
-        echo "git_odoo.py --> eza git"
-        echo "typo.py --> eza typo"
-        echo "completion.sh --> eza compl"
-        echo "neovim config --> eza vim"
-        echo "repo info --> eza tig"
+        echo "eza zsh --> zsh_alias.sh"
+        echo "eza loader --> alias_loader.sh"
+        echo "eza odoo --> odoo_alias.sh"
+        echo "eza odoopy --> odoo_alias.py"
+        echo "eza drop --> drop_protected_dbs.txt"
+        echo "eza git --> git_odoo.py"
+        echo "eza typo --> typo.py"
+        echo "eza compl --> completion.sh"
+        echo "eza vim --> neovim config"
+        echo "eza tig --> repo info"
         return
         ;;
     esac
