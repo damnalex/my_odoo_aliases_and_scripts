@@ -109,6 +109,7 @@
     "powermode.enableStatusBarComboCounter": false,
     "powermode.enableStatusBarComboTimer": false,
     "powermode.explosionOffset": 0.10,
+    "tabnine.experimentalAutoImports": true,
     // end of settings
     "dummy.setting": "Anything under this line should be moved to another section.",
 }
