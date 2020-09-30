@@ -20,18 +20,16 @@ import git
 
 from utils import env
 
-# relevant_saas_versions = ["11.3", "12.3"]
+# relevant_saas_versions = ["12.3"]
 # RELEVANT_BRANCHES = [f"saas-{s}" for s in relevant_saas_versions]
-# RELEVANT_BRANCHES += ["11.0", "12.0", "13.0"]
+# RELEVANT_BRANCHES += ["12.0", "13.0", "14.0"]
 
 # optimize for smaller checkout between versions on git_odoo pull --all
 RELEVANT_BRANCHES = [
-    "11.0",
-    "saas-11.3",
     "12.0",
     "saas-12.3",
-    "saas-13.5",
     "13.0",
+    "14.0",
 ]
 
 VERSIONED_REPOS = [env.ODOO, env.ENTERPRISE, env.DESIGN_THEMES, env.USER_DOC]
