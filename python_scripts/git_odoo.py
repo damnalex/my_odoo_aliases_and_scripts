@@ -39,8 +39,7 @@ ALL_REPOS = VERSIONED_REPOS + SINGLE_VERSION_REPOS + SUPPORT_REPOS
 
 
 def _repos(repos_names):
-    """ Generator of repo objects for repos_names repos.
-    """
+    """Generator of repo objects for repos_names repos."""
     for rn in repos_names:
         # assuming repos_names is either a list of full paths
         # or folders in ~/src
@@ -133,7 +132,7 @@ def _nbr_commits_ahead_and_behind(repo):
 
 
 def list_all_repos_info():
-    """ display the available information regarding the community, enterprise,
+    """display the available information regarding the community, enterprise,
     design themes, internal, paas and support-tools current branch
     """
     repos = ALL_REPOS
@@ -157,7 +156,7 @@ def list_all_repos_info():
 
 
 def fetch_all_repos_info():
-    """ updates the available information regarding the community, enterprise,
+    """updates the available information regarding the community, enterprise,
     design themes, internal, paas and support-tools repos
     """
 
@@ -174,7 +173,7 @@ def fetch_all_repos_info():
 
 
 def odoo_repos_pull(version=None, fast=False):
-    """ Updates branches of the community, enterprise and design themes repos.
+    """Updates branches of the community, enterprise and design themes repos.
     If no version is provided, update the current branche.
     If :version is not a string, itterate on it and update the given branches sequentially.
     """
@@ -203,8 +202,7 @@ def odoo_repos_pull(version=None, fast=False):
 
 
 def _get_version_from_db(dbname):
-    """ get the odoo version of the given DB
-    """
+    """get the odoo version of the given DB"""
     with psycopg2.connect(f"dbname='{dbname}'") as conn, conn.cursor() as cr:
         query = "SELECT replace((regexp_matches(latest_version, '^\d+\.0|^saas~\d+\.\d+|saas~\d+'))[1], '~', '-') FROM ir_module_module WHERE name='base'"
         cr.execute(query)
@@ -212,15 +210,14 @@ def _get_version_from_db(dbname):
 
 
 def _stash_and_checkout(repo, version):
-    """ Stash checkout and clean a given repo
-    """
+    """Stash checkout and clean a given repo"""
     repo.git.stash()
     repo.git.checkout(version)
     repo.git.clean("-df")
 
 
 def odoo_repos_checkout(versions):
-    """ checkout to the :versions branche of the community, enterprise and design themes repos.
+    """checkout to the :versions branche of the community, enterprise and design themes repos.
     If only one version is given, uses it for odoo, enterprise and design-themes
     If mutliple versions are given, uses them in the order odoo, enterprise, design-themes, internal
         If the number of versions is greater than the number of handled repos, the remaining version

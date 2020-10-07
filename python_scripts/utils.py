@@ -2,9 +2,9 @@ import os
 
 
 class EnvironmentExtractor:
-    """ Recovers any environment variables.
-        Once called, self.XXX stores the environment variable XXX value,
-        for faster subsequent calls"""
+    """Recovers any environment variables.
+    Once called, self.XXX stores the environment variable XXX value,
+    for faster subsequent calls"""
 
     def __getattr__(self, name):
         """ Will only be called the first time self.XXX is called"""
