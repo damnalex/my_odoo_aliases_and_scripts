@@ -180,7 +180,7 @@ git_fame() {
 }
 
 git_last_X_hashes() {
-    git log --pretty=format:"%H" | head -n $1
+    git rev-list -n $1 HEAD
 }
 
 git_rebase_and_merge_X_on_Y() {
