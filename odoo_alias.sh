@@ -157,13 +157,6 @@ bring_back_masterbeta_to_master() {
 }
 
 # pythonable
-neuter_db() {
-    # neutre a DB without using oe-support
-    local db_name=$1
-    python3 $ST/tools/neuter.py $db_name
-}
-
-# pythonable
 dropodoo() {
     # drop the given DBs and remove its filestore, also removes it from meta if it was a local saas db
     if [ $# -lt 1 ]; then

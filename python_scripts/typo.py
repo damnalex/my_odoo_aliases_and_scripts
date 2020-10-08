@@ -37,6 +37,7 @@ typos_dict = {
 simple_aliases = {
     "clean_database": "$ST/clean_database.py",
     "odoosh": "$ST/odoosh/odoosh.py",
+    "neuter_db": "$TS/tools/neuter.py",
     "debo2": "ptvsd2_so",
     "debo": "ptvsd3_so",
     "gov": "go_venv",
