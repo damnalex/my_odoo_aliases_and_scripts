@@ -201,7 +201,7 @@ git_prune_branches() {
 }
 
 git_push_to_all_remotes() {
-    git remote | xargs -L1 -I R git push R
+    git remote | xargs -L1 -I R git push R $@
 }
 
 sort_and_remove_duplicate() {
