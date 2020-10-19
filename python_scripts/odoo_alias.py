@@ -4,6 +4,7 @@ import os
 import collections
 import subprocess
 from textwrap import dedent as _dd
+from psycopg2 import OperationalError
 
 from utils import env
 from git_odoo import _repos, _get_version_from_db, App as _git_odoo_app
@@ -169,7 +170,15 @@ def _so_builder(*args):
         cmd = f"{ODOO_BIN_PATH} {PATH_ENTERPRISE} {PARAMS_NORMAL} {additional_params}"
     else:
         # version 9 or below
-        if _get_version_from_db(env.ODOO) == "8.0":
+        try:
+            version = _get_version_from_db(db_name)
+        except OperationalError as e:
+            msg = f"""{e}
+                Note:
+                `so` does not work with DBs < 10.0, unless it already exists
+                This will probably never be fixed."""
+            raise Invalid_params(msg)
+        if version == "8.0":
             cmd = f"{ODOO_PY_PATH} {PATH_COMMUNITY} {PARAMS_NORMAL} {additional_params}"
         else:
             cmd = (
