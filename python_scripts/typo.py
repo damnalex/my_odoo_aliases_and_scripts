@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from collections import defaultdict
 
 # common typo and simple aliases
 
@@ -48,10 +49,11 @@ simple_aliases = {
 }
 
 # include simple aliases in typos_dict
+typos_dict = defaultdict(list, typos_dict)
 for k, v in simple_aliases.items():
-    typos_dict[v] = typos_dict.get(v, []) + [k]
+    typos_dict[v] += [k]
 
-# remove duplicates
+# remove unintentionnal duplicates
 typos_dict = {k: set(v) for k, v in typos_dict.items()}
 
 typo_alias_list = []
