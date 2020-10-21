@@ -150,6 +150,7 @@ def _so_checker(*args):
             )
 
 
+@call_from_shell
 def _so_builder(*args):
     # build the command to start odoo
     db_name = args[0]
