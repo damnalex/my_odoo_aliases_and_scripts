@@ -61,18 +61,12 @@ def _check_file_exists(path):
         return False
 
 
-def _cmd_string_to_list(cmd):
-    # input: a shell command in string form
-    # returns the command in a list usable by subprocess.run
-    return [word for word in cmd.split()]
-
-
 def sh_run(cmd, **kwargs):
     # wrapper for subprocess.run
     if "stdout" not in kwargs.keys():
         kwargs["stdout"] = subprocess.PIPE
     if "|" not in cmd:
-        cmd = _cmd_string_to_list(cmd)
+        cmd = cmd.split()
         return subprocess.run(cmd, **kwargs).stdout.decode("utf-8")
     else:
         process = subprocess.Popen(cmd, shell=True, **kwargs)
@@ -229,17 +223,13 @@ def sou(*args):
 # doesn't work with alias calling python scripts
 @call_from_shell
 def ptvsd2(*args):
-    cmd = ["python2", "-m", "ptvsd", "--host", "localhost", "--port", "5678"] + list(
-        args
-    )
+    cmd = "python2 -m ptvsd --host localhost --port 5678".split() + list(args)
     subprocess.run(cmd)
 
 
 @call_from_shell
 def ptvsd3(*args):
-    cmd = ["python3", "-m", "ptvsd", "--host", "localhost", "--port", "5678"] + list(
-        args
-    )
+    cmd = "python3 -m ptvsd --host localhost --port 5678".split() + list(args)
     subprocess.run(cmd)
 
 
@@ -247,7 +237,7 @@ def _ptvsd_so(python_version, *args):
     args = list(args) + ["--limit-time-real=1000", "--limit-time-cpu=600"]
     _so_checker(*args)
     cmd = _so_builder(*args)
-    cmd = _cmd_string_to_list(cmd)
+    cmd = cmd.split()
     if python_version == 3:
         ptvsd3(*cmd)
     else:
