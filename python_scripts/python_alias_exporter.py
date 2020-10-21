@@ -27,13 +27,10 @@ import os
 
 from odoo_alias import CALLABLE_FROM_SHELL
 
-aliases = []
-for fname in CALLABLE_FROM_SHELL:
-    shell_function_code = f"""{fname}() {{
-    $AP/python_scripts/odoo_alias.py {fname} $@
-}}
-"""
-    aliases.append(shell_function_code)
+aliases = [
+    f"{fname}() {{ $AP/python_scripts/odoo_alias.py {fname} $@ }}\n"
+    for fname in CALLABLE_FROM_SHELL
+]
 
 from typo import typo_alias_list
 
