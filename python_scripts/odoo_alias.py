@@ -260,6 +260,40 @@ def go_fetch(*args):
     _git_odoo_app(fetch=True)
 
 
+#  vvvvvv   not strictly odoo   vvvvvvv
+
+
+@call_from_shell
+def shurl(*args):
+    """returns (and prints) a short (and tracked) url version of a link
+    hosted on an odoo saas server"""
+    import xmlrpc.client
+    from functools import partial
+
+    api_key = env.SHORT_URL_KEY
+    api_login = env.SHORT_URL_LOGIN
+    assert all((api_key, api_login))
+    long_url = args[0]
+    dburl = "https://short-url.moens.xyz"
+    db = "noapp"
+    # connect to https://short-url.moens.xyz/ create a link.tracker with args[0] as the url field
+    # the get short_url field from the newly created record
+    common = xmlrpc.client.ServerProxy("{}/xmlrpc/2/common".format(dburl))
+    models = xmlrpc.client.ServerProxy("{}/xmlrpc/2/object".format(dburl))
+    uid = common.authenticate(db, api_login, api_key, {})
+    r_exec = partial(models.execute_kw, db, uid, api_key)
+    data = {"url": long_url, "medium_id": 11}
+    url_id = r_exec("link.tracker", "create", [data])
+    short_url = r_exec(
+        "link.tracker",
+        "search_read",
+        [[["id", "=", url_id]]],
+        {"fields": ["short_url"]},
+    )[0]["short_url"]
+    print(short_url)
+    return short_url
+
+
 # ^^^^^^^^^^^ aliasable functions above this line ^^^^^^^^^
 
 if __name__ == "__main__":
