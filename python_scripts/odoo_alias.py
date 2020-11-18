@@ -282,7 +282,7 @@ def shurl(*args):
     models = xmlrpc.client.ServerProxy("{}/xmlrpc/2/object".format(dburl))
     uid = common.authenticate(db, api_login, api_key, {})
     r_exec = partial(models.execute_kw, db, uid, api_key)
-    data = {"url": long_url, "medium_id": 11}
+    data = {"url": long_url}
     url_id = r_exec("link.tracker", "create", [data])
     short_url = r_exec(
         "link.tracker",
