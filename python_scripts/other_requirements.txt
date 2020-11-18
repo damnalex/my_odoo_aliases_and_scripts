@@ -8,6 +8,7 @@ keyring
 phonenumbers
 prettytable
 ptvsd
+pudb
 pyldap
 pyopenssl
 pyserial
