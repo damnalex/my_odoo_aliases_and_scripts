@@ -8,7 +8,7 @@ reload_zshrc() {
     deactivate >/dev/null 2>&1
 }
 
-alias e="nvim"
+alias e="vim"
 
 eza() {
     # edit and reload alias and various scripts
@@ -52,7 +52,7 @@ eza() {
         file_type="sh"
         ;;
     vim)
-        file_to_load="editors/neovim/init.vim"
+        file_to_load="editors/vim/.vimrc"
         file_type="other"
         ;;
     tig)
@@ -68,7 +68,7 @@ eza() {
         echo "eza git --> git_odoo.py"
         echo "eza typo --> typo.py"
         echo "eza compl --> completion.sh"
-        echo "eza vim --> neovim config"
+        echo "eza vim --> vim config"
         echo "eza tig --> repo info"
         return
         ;;

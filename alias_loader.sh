@@ -28,7 +28,7 @@ autoload bashcompinit
 bashcompinit
 
 # use neovim as default editor
-export EDITOR="nvim"
+export EDITOR="vim"
 
 # activate vi mode in the terminal
 bindkey -v
