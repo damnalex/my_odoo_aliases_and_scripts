@@ -80,9 +80,9 @@
         "suppressShowKeyBindingsNotice": true,
     },
     "disableLigatures.mode": "Cursor",
-    "git-graph.commitDetailsViewLocation": "Docked to Bottom",
-    "git-graph.dateFormat": "Relative",
-    "git-graph.dateType": "Commit Date",
+    "git-graph.commitDetailsView.location": "Docked to Bottom",
+    "git-graph.date.format": "Relative",
+    "git-graph.date.type": "Commit Date",
     "vim.visualstar": true,
     "vim.insertModeKeyBindings": [
         {
