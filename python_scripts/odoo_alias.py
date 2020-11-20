@@ -10,13 +10,37 @@ from utils import env
 from git_odoo import _repos, _get_version_from_db, App as _git_odoo_app
 
 
+########################
+#   decorators stuff   #
+########################
+
 CALLABLE_FROM_SHELL = set()
+SHELL_END_HOOK = set()
+SHELL_DIFFERED_COMMANDS_FILE = f"{env.AP}/differed_commands.txt"
 
 
 def call_from_shell(func):
     # decorator for functions that are meant to be called directly from the shell
     CALLABLE_FROM_SHELL.add(func.__name__)
     return func
+
+
+def shell_end_hook(func):
+    # decorator for functions that need to call a shell
+    # command AFTER the python script exits
+    # the decorated app should call `differed_sh_run`
+    SHELL_END_HOOK.add(func.__name__)
+    return func
+
+
+differed_sh_run_new_batch = True
+def differed_sh_run(cmd):
+    # prepare a command to be executed after the end of the python script
+    # can only work in functions decorated with `shell_end_hook`
+    write_mode = "w" if differed_sh_run_new_batch else "a"
+    with open(SHELL_DIFFERED_COMMANDS_FILE, write_mode) as f:
+        f.write(cmd + "\n")
+    differed_sh_run_new_batch = False
 
 
 #####################################
@@ -292,6 +316,13 @@ def shurl(*args):
     )[0]["short_url"]
     print(short_url)
     return short_url
+
+
+@shell_end_hook
+@call_from_shell
+def dummy_command(*args):
+    print("in python")
+    differed_sh_run("echo 'in shell'")
 
 
 # ^^^^^^^^^^^ aliasable functions above this line ^^^^^^^^^

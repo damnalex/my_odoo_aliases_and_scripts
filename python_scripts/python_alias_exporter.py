@@ -25,12 +25,23 @@ import os
 
 # vvvvvvvvv   build the aliases   vvvvvvvvv
 
-from odoo_alias import CALLABLE_FROM_SHELL
+from odoo_alias import CALLABLE_FROM_SHELL, SHELL_END_HOOK, SHELL_DIFFERED_COMMANDS_FILE
 
-aliases = [
-    f"{fname}() {{ $AP/python_scripts/odoo_alias.py {fname} $@ }}\n"
-    for fname in CALLABLE_FROM_SHELL
-]
+shell_function_template = """{fname}() {{
+    $AP/python_scripts/odoo_alias.py {fname} $@\
+    {diff_exec}
+}}
+"""
+differed_execution_code = f"""
+    while read l; do
+        eval $l;
+    done <{SHELL_DIFFERED_COMMANDS_FILE}\
+"""
+
+aliases = []
+for fname in CALLABLE_FROM_SHELL:
+    diff_exec = differed_execution_code if fname in SHELL_END_HOOK else ""
+    aliases.append(shell_function_template.format(fname=fname, diff_exec=diff_exec))
 
 from typo import typo_alias_list
 

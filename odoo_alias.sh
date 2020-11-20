@@ -4,6 +4,7 @@
 
 # git stuffs
 alias git_odoo="$AP/python_scripts/git_odoo.py"
+# pythonable
 go() {
     #switch branch for all odoo repos
     echo "cleaning the junk"
@@ -19,6 +20,7 @@ go() {
     golist
 }
 
+# pythonable
 go_update_and_clean() {
     # git pull on all the repos of the main source folder (except for support-tools)
     if [ $# -eq 1 ]; then
@@ -32,6 +34,7 @@ go_update_and_clean() {
     golist
 }
 
+# pythonable
 go_update_and_clean_all_branches() {
     # like go_update_and_clean for all main branches, and does the multiverse too
     git_odoo pull --all
@@ -76,6 +79,7 @@ golist() {
 # this is to fetch everytime a terminal is loaded, or sourced, so it happens often
 # & is especially important here
 
+# pythonable
 godb() {
     # switch repos branch to the version of the given DB
     local db_name=$1
@@ -99,6 +103,7 @@ goso() {
         eval so $@
 }
 
+# pythonable
 oes() {
     # start oe-support, with some smartness
     if [[ $1 == "raw" ]]; then
