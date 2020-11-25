@@ -34,6 +34,8 @@ def shell_end_hook(func):
 
 
 differed_sh_run_new_batch = True
+
+
 def differed_sh_run(cmd):
     # prepare a command to be executed after the end of the python script
     # can only work in functions decorated with `shell_end_hook`
