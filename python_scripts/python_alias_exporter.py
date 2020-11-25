@@ -35,7 +35,9 @@ shell_function_template = """{fname}() {{
 differed_execution_code = f"""
     while read l; do
         eval $l;
-    done <{SHELL_DIFFERED_COMMANDS_FILE}\
+    done <{SHELL_DIFFERED_COMMANDS_FILE}
+    date >> $AP/differed_commands_history.txt
+    cat {SHELL_DIFFERED_COMMANDS_FILE} >> $AP/differed_commands_history.txt
 """
 
 aliases = []

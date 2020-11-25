@@ -37,6 +37,8 @@ differed_sh_run_new_batch = True
 def differed_sh_run(cmd):
     # prepare a command to be executed after the end of the python script
     # can only work in functions decorated with `shell_end_hook`
+    # or called by functions decorated with `shell_end_hook`
+    global differed_sh_run_new_batch
     write_mode = "w" if differed_sh_run_new_batch else "a"
     with open(SHELL_DIFFERED_COMMANDS_FILE, write_mode) as f:
         f.write(cmd + "\n")
