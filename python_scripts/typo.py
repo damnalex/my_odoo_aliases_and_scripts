@@ -33,11 +33,6 @@ typos_dict = {
         "cler",
     ],
     "new_typo": ["new_ypo", "new_tupo", "new_ytpo", "newtypo"],
-    "git_push_to_all_remotes": [
-        "gitpush_to_all_remotes",
-        "git_push_to_all_repos",
-        "git-push_to_all_remotes",
-    ],
 }
 
 simple_aliases = {
