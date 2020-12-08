@@ -38,6 +38,7 @@ differed_execution_code = f"""
     done <{SHELL_DIFFERED_COMMANDS_FILE}
     date >> $AP/differed_commands_history.txt
     cat {SHELL_DIFFERED_COMMANDS_FILE} >> $AP/differed_commands_history.txt
+    cp /dev/null {SHELL_DIFFERED_COMMANDS_FILE}
 """
 
 aliases = []

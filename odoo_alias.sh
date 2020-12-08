@@ -4,35 +4,6 @@
 
 # git stuffs
 alias git_odoo="$AP/python_scripts/git_odoo.py"
-# pythonable
-go() {
-    #switch branch for all odoo repos
-    echo "cleaning the junk"
-    clear_pyc
-    if [[ $# -gt 1 ]]; then
-        git_odoo checkout $@
-    else
-        local version=$1
-        git_odoo checkout $version
-        go_venv $version
-    fi
-    echo "-------"
-    golist
-}
-
-# pythonable
-go_update_and_clean() {
-    # git pull on all the repos of the main source folder (except for support-tools)
-    if [ $# -eq 1 ]; then
-        git_odoo pull --version $1
-        go_venv $1
-    else
-        git_odoo pull
-    fi
-    clear_pyc
-    echo "-------"
-    golist
-}
 
 # pythonable
 go_update_and_clean_all_branches() {
@@ -79,28 +50,9 @@ golist() {
 # this is to fetch everytime a terminal is loaded, or sourced, so it happens often
 # & is especially important here
 
-# pythonable
-godb() {
-    # switch repos branch to the version of the given DB
-    local db_name=$1
-    if psql -lqt | cut -d \| -f 1 | grep -qw $db_name; then #check if the database already exists
-        git_odoo checkout --dbname $db_name
-        go_venv $(_db_version $db_name)
-    else
-        echo "DB $db_name does not exist"
-    fi
-}
-
 _db_version() {
     # get the version on an odoo DB
     psql -tAqX -d $1 -c "SELECT replace((regexp_matches(latest_version, '^\d+\.0|^saas~\d+\.\d+|saas~\d+'))[1], '~', '-') FROM ir_module_module WHERE name='base';"
-}
-
-goso() {
-    # switch repos to the version of given db and starts it
-    local db_name=$1
-    godb $db_name &&
-        eval so $@
 }
 
 # pythonable
@@ -160,41 +112,6 @@ bring_back_masterbeta_to_master() {
 
     # go back to my starting point
     cd $current_working_dir
-}
-
-# pythonable
-dropodoo() {
-    # drop the given DBs and remove its filestore, also removes it from meta if it was a local saas db
-    if [ $# -lt 1 ]; then
-        echo "requires the name(s) of the DB(s) to drop"
-        echo "dropodoo DB_Name [Other_DB_name* ...]"
-        return 1
-    fi
-    if [ $# -eq 1 ]; then
-        local db_name_1=$1
-        if [[ $db_name_1 =~ $(echo ^\($(paste -sd'|' $AP/drop_protected_dbs.txt)\)$) ]]; then
-            echo "db $db_name_1 is drop protected --> aborting"
-            echo "to override protection, modify protection file at $AP/drop_protected_dbs.txt"
-            return 1
-        fi
-        remove_from_meta $db_name_1 2>/dev/null
-        if [[ $db_name_1 =~ '^oe_support_*' ]]; then
-            echo "Dropping the DB ${db_name_1} using oe-support"
-            oes cleanup ${db_name_1:11}
-        else
-            psql -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '$db_name_1';" -q >/dev/null
-            dropdb $db_name_1
-            rm -rf $ODOO_STORAGE/filestore/$db_name_1
-        fi
-        echo "$db_name_1 has been dropped"
-        return 1
-    fi
-
-    # drop multiple DB at the same time
-    for db_name in $@; do
-        dropodoo $db_name
-    done
-    return
 }
 
 # pythonable
@@ -371,12 +288,6 @@ build_local_saas_db() {
     local db_uuid=$(psql -tAqX -d $db_name -c "SELECT value FROM ir_config_parameter WHERE key = 'database.uuid';")
     echo $db_uuid
     echo "INSERT INTO databases (name, uuid, port, mode, extra_apps, create_date, expire_date, last_cnx_date, cron_round, cron_time, email_daily_limit, email_daily_count, email_total_count, print_waiting_counter, print_counter, print_counter_limit) VALUES ('$db_name', '$db_uuid', 8069, 'trial', true, '2018-05-23 09:33:08.811069', '2040-02-22 23:59:59', '2018-06-28 13:44:03.980693', 0, '2018-09-21 00:40:28', 30, 10, 0, 0, 0, 10)" | psql meta
-}
-
-# pythonable
-remove_from_meta() {
-    # remove a db from the local metabase
-    echo "DELETE FROM databases WHERE name = '$1'" | psql meta >/dev/null
 }
 
 # pythonable

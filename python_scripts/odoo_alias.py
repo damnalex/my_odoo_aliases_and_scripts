@@ -4,7 +4,7 @@ import os
 import collections
 import subprocess
 from textwrap import dedent as _dd
-from psycopg2 import OperationalError
+from psycopg2 import OperationalError, ProgrammingError, connect
 
 from utils import env
 from git_odoo import _repos, _get_version_from_db, App as _git_odoo_app
@@ -17,6 +17,7 @@ from git_odoo import _repos, _get_version_from_db, App as _git_odoo_app
 CALLABLE_FROM_SHELL = set()
 SHELL_END_HOOK = set()
 SHELL_DIFFERED_COMMANDS_FILE = f"{env.AP}/differed_commands.txt"
+differed_sh_run_new_batch = True
 
 
 def call_from_shell(func):
@@ -31,9 +32,6 @@ def shell_end_hook(func):
     # the decorated app should call `differed_sh_run`
     SHELL_END_HOOK.add(func.__name__)
     return func
-
-
-differed_sh_run_new_batch = True
 
 
 def differed_sh_run(cmd):
@@ -111,6 +109,18 @@ def clear_pyc(*args):
         sh_run(f"find {env.SRC_MULTI} -name '*.pyc' -delete")
 
 
+def psql(dbname, query):
+    # execute an sql query on a given database
+    with connect(f"dbname='{dbname}'") as conn, conn.cursor() as cr:
+        cr.execute(query)
+        try:
+            return cr.fetchall()
+        except ProgrammingError:
+            # printing a tactical dot to know that we went through here at least
+            print(".")
+            return []
+
+
 #####################################################################################
 #                      Put "main" functions bellow this bloc                        #
 #  The params of functions callable from the shell are positional, and string only  #
@@ -121,7 +131,6 @@ def _so_checker(*args):
     # check that the params given to 'so' are correct,
     # check that I am not trying to start a protected DB,
     # check that I am sure to want to start a DB with the wrong branch checked out (only check $ODOO)
-    import psycopg2
 
     if len(args) == 0:
         raise Invalid_params(
@@ -143,7 +152,7 @@ def _so_checker(*args):
         )
     try:
         db_version = _get_version_from_db(db_name)
-    except psycopg2.OperationalError:
+    except OperationalError:
         # db doesn't exist.
         pass
     else:
@@ -280,6 +289,98 @@ def ptvsd2_so(*args):
 @call_from_shell
 def ptvsd3_so(*args):
     _ptvsd_so(3, *args)
+
+
+@shell_end_hook
+@call_from_shell
+def go(*args):
+    # switch branch for all odoo repos
+    print("cleaning all the junk")
+    clear_pyc()
+    params = {"checkout": True, "<version>": args}
+    _git_odoo_app(**params)
+    if len(args) == 1:
+        differed_sh_run(f"go_venv {args[0]}")
+    print("-----------")
+    differed_sh_run("golist")
+
+
+@shell_end_hook
+@call_from_shell
+def go_update_and_clean(*args):
+    # git pull on all the repos of the main source folder (except for support-tools)
+    version = args[0] if args else None
+    params = {"pull": True, "--version": version}
+    _git_odoo_app(**params)
+    clear_pyc()
+    differed_sh_run("go_venv_current")
+    differed_sh_run("echo '--------'")
+    differed_sh_run("golist")
+
+
+@shell_end_hook
+@call_from_shell
+def godb(*args):
+    # switch repos branch to the version of the given DB
+    db_name = args[0]
+    try:
+        version = _get_version_from_db(db_name)
+    except OperationalError:
+        print(f"DB {db_name} does not exist")
+    else:
+        params = {"checkout": True, "--dbname": db_name}
+        _git_odoo_app(**params)
+        differed_sh_run(f"go_venv {version}")
+
+
+@shell_end_hook
+@call_from_shell
+def goso(*args):
+    # switch repos to the version of given db and starts it
+    db_name = args[0]
+    godb(db_name)
+    so(*args)
+
+
+@shell_end_hook
+@call_from_shell
+def dropodoo(*args):
+    """drop the given DBs and remove its filestore,
+    also removes it from meta if it was a local saas db"""
+    import appdirs
+    from shutil import rmtree
+
+    if not args:
+        raise Invalid_params(
+            """\
+            Requires the name(s) of the DB(s) to drop
+            dropodoo <db_name(s)>"""
+        )
+    protection_file = f"{env.AP}/drop_protected_dbs.txt"
+    with open(protection_file, "r") as f:
+        drop_protected_dbs = [db.strip() for db in f]
+    for db in args:
+        if db in drop_protected_dbs:
+            raise Invalid_params(
+                f"""\
+                DB {db} is drop protected --> aborting
+                To override protection, modify the protection file at {protection_file}"""
+            )
+        # remove from meta
+        psql("meta", f"DELETE FROM databases WHERE name = '{db}'")
+        # dropping
+        if db.startswith("oe_support_"):
+            print(f"Dropping the DB {db} using oe-support")
+            differed_sh_run(f"oes cleanup {db[11:]}")
+        else:
+            psql(
+                "postgres",
+                f"SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '{db}'",
+            )
+            sh_run(f"dropdb {db}")
+            FS_DIR = os.path.join(appdirs.user_data_dir("Odoo"), "filestore")
+            filestore_path = os.path.expanduser(os.path.join(FS_DIR, db))
+            rmtree(filestore_path)
 
 
 @call_from_shell
