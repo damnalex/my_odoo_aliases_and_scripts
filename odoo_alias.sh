@@ -2,6 +2,11 @@
 ######################  Odoo stuffs #######################
 ###########################################################
 
+ssho() {
+    # connect to odoo servers
+    ssh $1.odoo.com -t 'screen -rx'
+}
+
 # git stuffs
 alias git_odoo="$AP/python_scripts/git_odoo.py"
 
