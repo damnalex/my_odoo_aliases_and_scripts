@@ -73,8 +73,7 @@ def _get_branch_name(path):
 
 
 @call_from_shell
-def git_branch_version(*args):
-    (path,) = args
+def git_branch_version(path):
     print(_get_branch_name(path))
 
 
@@ -182,13 +181,7 @@ def _so_checker(*args):
 
 
 @call_from_shell
-def _so_builder(*args):
-    # build the command to start odoo
-    db_name = args[0]
-    if len(args) < 2:
-        cmd = _so_builder(db_name, 8069)
-        return cmd
-    port_number = args[1]
+def _so_builder(db_name, port_number=8069, *args):
     ODOO_BIN_PATH = f"{env.ODOO}/odoo-bin"
     ODOO_PY_PATH = f"{env.ODOO}/odoo.py"
     PATH_COMMUNITY = f"--addons-path={env.ODOO}/addons"
@@ -196,7 +189,7 @@ def _so_builder(*args):
         f"--addons-path={env.ENTERPRISE},{env.ODOO}/addons,{env.SRC}/design-themes"
     )
     PARAMS_NORMAL = f"--db-filter=^{db_name}$ -d {db_name} --xmlrpc-port={port_number}"
-    additional_params = " ".join(args[2:])
+    additional_params = " ".join(args)
     if _check_file_exists(ODOO_BIN_PATH):
         # version 10 or above
         cmd = f"{ODOO_BIN_PATH} {PATH_ENTERPRISE} {PARAMS_NORMAL} {additional_params}"
@@ -229,28 +222,29 @@ def so(*args):
         return
     _so_checker(*args)
     cmd = _so_builder(*args)
-    sh_run(cmd)
+    out = sh_run(cmd)
+    # this is to make `so --help` work
+    print(out)
 
 
-def _soiu(mode, *args):
+def _soiu(mode, db_name, *apps):
     assert mode in ("install", "upgrade")
     mode = "-i" if mode == "install" else "-u"
-    dbname, *apps = args
     assert apps, "No apps list provided"
     apps = ",".join(apps)
-    so(dbname, 1234, mode, apps, "--stop-after-init")
+    so(db_name, 1234, mode, apps, "--stop-after-init")
 
 
 @call_from_shell
-def soi(*args):
+def soi(db_name, *apps):
     # install modules args[1:] on DB args[0]
-    _soiu("install", *args)
+    _soiu("install", db_name, *apps)
 
 
 @call_from_shell
-def sou(*args):
+def sou(db_name, *apps):
     # upgrade modules args[1:] on DB args[0]
-    _soiu("upgrade", *args)
+    _soiu("upgrade", db_name, *apps)
 
 
 # start python scripts with the vscode python debugger
@@ -307,9 +301,8 @@ def go(*args):
 
 @shell_end_hook
 @call_from_shell
-def go_update_and_clean(*args):
+def go_update_and_clean(version=None):
     # git pull on all the repos of the main source folder (except for support-tools)
-    version = args[0] if args else None
     params = {"pull": True, "--version": version}
     _git_odoo_app(**params)
     clear_pyc()
@@ -320,9 +313,8 @@ def go_update_and_clean(*args):
 
 @shell_end_hook
 @call_from_shell
-def godb(*args):
+def godb(db_name):
     # switch repos branch to the version of the given DB
-    db_name = args[0]
     try:
         version = _get_version_from_db(db_name)
     except OperationalError:
@@ -335,22 +327,21 @@ def godb(*args):
 
 @shell_end_hook
 @call_from_shell
-def goso(*args):
+def goso(db_name, *args):
     # switch repos to the version of given db and starts it
-    db_name = args[0]
     godb(db_name)
-    so(*args)
+    so(db_name, *args)
 
 
 @shell_end_hook
 @call_from_shell
-def dropodoo(*args):
+def dropodoo(*dbs):
     """drop the given DBs and remove its filestore,
     also removes it from meta if it was a local saas db"""
     import appdirs
     from shutil import rmtree
 
-    if not args:
+    if not dbs:
         raise Invalid_params(
             """\
             Requires the name(s) of the DB(s) to drop
@@ -359,7 +350,7 @@ def dropodoo(*args):
     protection_file = f"{env.AP}/drop_protected_dbs.txt"
     with open(protection_file, "r") as f:
         drop_protected_dbs = [db.strip() for db in f]
-    for db in args:
+    for db in dbs:
         if db in drop_protected_dbs:
             raise Invalid_params(
                 f"""\
@@ -393,16 +384,15 @@ def go_fetch(*args):
 
 
 @call_from_shell
-def shurl(*args):
-    """returns (and prints) a short (and tracked) url version of a link
-    hosted on an odoo saas server"""
+def shurl(long_url):
+    """ Returns (and prints) a short (and tracked) url version of a link.
+    Hosted on an odoo saas server"""
     import xmlrpc.client
     from functools import partial
 
     api_key = env.SHORT_URL_KEY
     api_login = env.SHORT_URL_LOGIN
     assert all((api_key, api_login))
-    long_url = args[0]
     dburl = "https://short-url.moens.xyz"
     db = "noapp"
     # connect to https://short-url.moens.xyz/ create a link.tracker with args[0] as the url field
