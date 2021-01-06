@@ -385,7 +385,7 @@ def go_fetch(*args):
 
 @call_from_shell
 def shurl(long_url):
-    """ Returns (and prints) a short (and tracked) url version of a link.
+    """Returns (and prints) a short (and tracked) url version of a link.
     Hosted on an odoo saas server"""
     import xmlrpc.client
     from functools import partial

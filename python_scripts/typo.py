@@ -54,9 +54,17 @@ typos_dict = defaultdict(list, typos_dict)
 for k, v in simple_aliases.items():
     typos_dict[v].append(k)
 
+# fmt: off
+
 # remove unintentionnal duplicates
-typos_dict = {k: set(v) for k, v in typos_dict.items()}
+typos_dict = {
+    k: set(v)
+    for k, v in typos_dict.items()
+}
 
 typo_alias_list = [
-    f"alias '{typo}'='{good}'\n" for good, typos in typos_dict.items() for typo in typos
+    f"alias '{typo}'='{good}'\n"
+    for good, typos in typos_dict.items()
+    for typo in typos
 ]
+# fmt: on
