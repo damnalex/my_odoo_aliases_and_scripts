@@ -413,6 +413,76 @@ def shurl(long_url):
     return short_url
 
 
+@call_from_shell
+def compare_our_modules(old_json_file, new_json_file):
+    """ Print a list of the newly added modules. """
+    import json
+    from collections import defaultdict
+
+    with open(old_json_file) as f_old, open(new_json_file) as f_new:
+        old_data = json.load(f_old)
+        new_data = json.load(f_new)
+    # extract only the newly added modules
+    only_new = defaultdict(list)
+    for version, modules in new_data.items():
+        for module in modules:
+            if module not in old_data[version]:
+                only_new[version].append(module)
+    # inverse mapping for easier formating
+    only_new_by_module = defaultdict(list)
+    for version, modules in only_new.items():
+        for module in modules:
+            only_new_by_module[module].append(version)
+
+    print("[IMP] clean_database: update `our modules` list")
+    print("New module(s):")
+    for module, versions in only_new_by_module.items():
+        versions.sort()
+        pretty_versions = f"({', '.join(versions)})"
+        print(f"{module} {pretty_versions}")
+
+
+@shell_end_hook
+@call_from_shell
+def our_modules_update_and_compare(*args):
+    dry_run = True
+    args = list(args)
+    if "--pull-request" in args:
+        dry_run = False
+        args.remove("--pull-request")
+    params = " ".join(args) if args else "--update-branches"
+    if dry_run:
+        print(
+            """
+            ------------------------------------------------------
+            This will not create a pull request
+            Add the `--pull-request` option to create the branch,
+            commit and pull request.
+            ------------------------------------------------------
+            """
+        )
+    cmds = f"""cd $ST/scripts/clean_database_helper/
+    git switch master
+    git pull
+    cp OUR_MODULES.json /tmp/OUR_MODULES_OLD.json
+    ./Our_modules_generator.py {params}
+    cp OUR_MODULES.json /tmp/OUR_MODULES_NEW.json
+    """
+    if dry_run:
+        cmds += """compare_our_modules /tmp/OUR_MODULES_OLD.json /tmp/OUR_MODULES_NEW.json
+        git stash
+        """
+    else:
+        cmds += """git add OUR_MODULES.json
+        git checkout -b "master-ourmodulesupdate$(date -u +'%Y%m%d')-mao"
+        compare_our_modules /tmp/OUR_MODULES_OLD.json /tmp/OUR_MODULES_NEW.json | git commit -F -
+        test -z "$(git diff HEAD master)" || ( git push --set-upstream  origin  "master-ourmodulesupdate$(date -u +'%Y%m%d')-mao" && gh pr create --title "[IMP] clean_database: update `our modules` list" --body " ")
+        git switch master
+        git branch -D "master-ourmodulesupdate$(date -u +'%Y%m%d')-mao"
+        """
+    differed_sh_run(cmds)
+
+
 @shell_end_hook
 @call_from_shell
 def dummy_command(*args):
