@@ -488,6 +488,15 @@ def our_modules_update_and_compare(*args):
 def dummy_command(*args):
     print("in python")
     differed_sh_run("echo 'in shell'")
+    differed_sh_run(
+        """
+    if [[ "" == "" ]]; then
+        echo "coucou"
+    else
+        echo "uocuoc"
+    fi
+    """
+    )
 
 
 # ^^^^^^^^^^^ aliasable functions above this line ^^^^^^^^^
