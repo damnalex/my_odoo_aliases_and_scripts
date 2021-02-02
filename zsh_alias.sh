@@ -96,17 +96,6 @@ eza() {
     source $AP/alias_loader.sh
 }
 
-ezatig() {
-    # tig the $AP folder from anywhere
-    local current_dir=$(pwd)
-    cd $AP
-    tig
-    cd "$current_dir"
-}
-
-# git the $AP repo from anywhere
-alias geza="git -C $AP"
-
 ###################################
 #########   Misc Stuff  ###########
 ###################################
