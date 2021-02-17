@@ -435,6 +435,7 @@ def compare_our_modules(old_json_file, new_json_file):
             only_new_by_module[module].append(version)
 
     print("[IMP] clean_database: update `our modules` list")
+    print("")
     print("New module(s):")
     for module, versions in only_new_by_module.items():
         versions.sort()
