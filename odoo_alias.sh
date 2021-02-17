@@ -12,10 +12,10 @@ alias git_odoo="$AP/python_scripts/git_odoo.py"
 
 # pythonable
 go_update_and_clean_all_branches() {
-    # go through all branches of the universe and mutliverse and pull them
-    # It also checks for new modules using the our_module_generator helper
+    # like go_update_and_clean for all main branches, and does the multiverse too
+    git_odoo pull --all
     update_all_multiverse_branches
-    our_modules_update_and_compare
+    echo "all branches have been pulled"
     go_prune_all
     clear_pyc --all
     run 5 echo "#############################"
