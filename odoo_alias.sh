@@ -217,7 +217,7 @@ build_odoo_virtualenv() {
 rebuild_main_virtualenvs() {
     # recreate the main virtual envs
     # usefull when I add something to other_requirements.txt
-    local main_versions=("11.0" "12.0" "13.0" "saas-12.3")
+    local main_versions=("12.0" "saas-12.3" "13.0" "14.0")
     for version in $main_versions; do {
         build_odoo_virtualenv $version
     }; done
