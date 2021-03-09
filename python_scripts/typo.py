@@ -48,6 +48,7 @@ simple_aliases = {
     "ezagit": "git -C $AP",
     "ezatig": "tig -C$AP",
     "python3.7": "/usr/local/opt/python@3.7/bin/python3.7",
+    "thingsToDiscussAtNextSquadMeeting": "vim ~/Documents/meetings_notes/thingsToDiscussAtNextSquadMeeting.txt",
 }
 
 # include simple aliases in typos_dict
