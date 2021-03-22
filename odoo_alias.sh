@@ -15,7 +15,9 @@ go_update_and_clean_all_branches() {
     # go through all branches of the universe and mutliverse and pull them
     # It also checks for new modules using the our_module_generator helper
     update_all_multiverse_branches
+    local current_working_dir=$(pwd)
     our_modules_update_and_compare
+    cd $current_working_dir
     go_prune_all
     clear_pyc --all
     run 5 echo "#############################"
