@@ -2,3 +2,5 @@ pyvenv.cfg
 node_modules/
 package.json
 *.pyc
+__pycache__/
+.vscode/

@@ -1,15 +1,13 @@
 [user]
 	name = Moens Alexandre
 	email = mao@odoo.com
+	signingKey = DD1DCA797C7B5947
 [core]
 	excludesfile = /home/odoo/.gitignore_global
 	editor = vim
 [alias]
-	co = checkout
-	st = status --short
-	ci = commit
-	a = add
     hist = log --graph --all --date=short --pretty=format:'%C(dim white)%h%Creset%C(auto)%d%Creset %s %C(blue)<%an> %C(dim green)(%cd)%Creset%n'
+	alias = ! git config --get-regexp ^alias\\. | sed -e s/^alias\\.// -e s/\\ /\\ =\\ /
 [commit]
     verbose = true 
 	gpgSign = true
@@ -22,3 +20,7 @@
     defaultRemote = origin
 [gpg]
 	program = gpg
+[rebase]
+	autoSquash = true
+[pull]
+	rebase = true
