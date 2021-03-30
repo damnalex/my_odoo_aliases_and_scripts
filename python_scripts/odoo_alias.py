@@ -446,7 +446,7 @@ def emp(trigram):
 @shell_end_hook
 @call_from_shell
 def our_modules_update_and_compare(*args):
-    cmds = f"""cd $ST/scripts/clean_database_helper/
+    cmds = """cd $ST/scripts/clean_database_helper/
     ./Our_modules_generator.py --update-branches
     """
     differed_sh_run(cmds)
