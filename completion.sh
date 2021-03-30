@@ -18,8 +18,8 @@ _complete_with_B_on_index_A() {
 ####################################
 
 _complete_db_name() {
-    local db_name=$(list_db_like "%%" | sed '/CLEAN*/d' | sed '/template*/d' | sed '/meta/d' | sed '/postgres/d' | tr '\n' ' ')
-    COMPREPLY=($(compgen -W "$db_name" -- "${COMP_WORD[COMP_CWORD]}"))
+    local db_names=$(list_db_like "%%" | sed '/CLEAN*/d' | sed '/template*/d' | sed '/meta/d' | sed '/postgres/d' | tr '\n' ' ')
+    COMPREPLY=($(compgen -W "$db_names" -- "${COMP_WORD[COMP_CWORD]}"))
 }
 
 _complete_db_name_on_first_param() {
@@ -84,7 +84,7 @@ complete -o default -F _so ptvsd2-so
 
 complete -o default -F _complete_db_name_on_first_param godb
 complete -o default -F _complete_db_name_on_first_param clean_database
-complete -o default -F _complete_db_name_on_first_param dropodoo
+complete -o default -F _complete_db_name dropodoo
 complete -o default -F _complete_db_name_on_first_param lu
 complete -o default -F _complete_db_name_on_first_param psql
 complete -o default -F _complete_db_name_on_first_param pgcli
