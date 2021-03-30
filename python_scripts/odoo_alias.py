@@ -383,24 +383,28 @@ def go_fetch(*args):
 #  vvvvvv   not strictly odoo   vvvvvvv
 
 
+def _get_xmlrpc_executer(dburl, dbname, login, password):
+    """ return a function that executes xml_rpc calls on a given odoo db """
+    import xmlrpc.client
+    from functools import partial
+
+    common = xmlrpc.client.ServerProxy("{}/xmlrpc/2/common".format(dburl))
+    models = xmlrpc.client.ServerProxy("{}/xmlrpc/2/object".format(dburl))
+    uid = common.authenticate(dbname, login, password, {})
+    r_exec = partial(models.execute_kw, dbname, uid, password)
+    return r_exec
+
+
 @call_from_shell
 def shurl(long_url):
     """Returns (and prints) a short (and tracked) url version of a link.
     Hosted on an odoo saas server"""
-    import xmlrpc.client
-    from functools import partial
-
     api_key = env.SHORT_URL_KEY
     api_login = env.SHORT_URL_LOGIN
     assert all((api_key, api_login))
     dburl = "https://short-url.moens.xyz"
     db = "noapp"
-    # connect to https://short-url.moens.xyz/ create a link.tracker with args[0] as the url field
-    # the get short_url field from the newly created record
-    common = xmlrpc.client.ServerProxy("{}/xmlrpc/2/common".format(dburl))
-    models = xmlrpc.client.ServerProxy("{}/xmlrpc/2/object".format(dburl))
-    uid = common.authenticate(db, api_login, api_key, {})
-    r_exec = partial(models.execute_kw, db, uid, api_key)
+    r_exec = _get_xmlrpc_executer(dburl, db, api_login, api_key)
     data = {"url": long_url}
     url_id = r_exec("link.tracker", "create", [data])
     short_url = r_exec(
@@ -411,6 +415,32 @@ def shurl(long_url):
     )[0]["short_url"]
     print(short_url)
     return short_url
+
+
+@call_from_shell
+def emp(trigram):
+    """ open the employee page for the given trigram """
+    import keyring
+    import webbrowser
+
+    api_key = keyring.get_password("oe-support", "mao-2FA")
+    api_login = "mao"
+    assert all((api_key, api_login))
+    dburl = "https://www.odoo.com"
+    db = "openerp"
+    r_exec = _get_xmlrpc_executer(dburl, db, api_login, api_key)
+    tri = f"({trigram})"
+    try:
+        emp_uid = r_exec(
+            "hr.employee.public",
+            "search_read",
+            [[["name", "like", tri]]],
+            {"fields": ["id"]},
+        )[0]["id"]
+    except IndexError:
+        raise Invalid_params(f"Could not find employee {trigram}")
+    url = f"https://www.odoo.com/web?debug=1#id={emp_uid}&model=hr.employee.public&view_type=form"
+    webbrowser.open(url)
 
 
 @shell_end_hook
