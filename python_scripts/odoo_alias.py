@@ -418,8 +418,8 @@ def shurl(long_url):
 
 
 @call_from_shell
-def emp(trigram):
-    """ open the employee page for the given trigram """
+def emp(*trigrams):
+    """ open the employee page for the given trigrams """
     import keyring
     import webbrowser
 
@@ -429,18 +429,19 @@ def emp(trigram):
     dburl = "https://www.odoo.com"
     db = "openerp"
     r_exec = _get_xmlrpc_executer(dburl, db, api_login, api_key)
-    tri = f"({trigram})"
-    try:
-        emp_uid = r_exec(
-            "hr.employee.public",
-            "search_read",
-            [[["name", "like", tri]]],
-            {"fields": ["id"]},
-        )[0]["id"]
-    except IndexError:
-        raise Invalid_params(f"Could not find employee {trigram}")
-    url = f"https://www.odoo.com/web?debug=1#id={emp_uid}&model=hr.employee.public&view_type=form"
-    webbrowser.open(url)
+    for trigram in trigrams:
+        tri = f"({trigram})"
+        try:
+            emp_uid = r_exec(
+                "hr.employee.public",
+                "search_read",
+                [[["name", "like", tri]]],
+                {"fields": ["id"]},
+            )[0]["id"]
+        except IndexError:
+            raise Invalid_params(f"Could not find employee {trigram}")
+        url = f"https://www.odoo.com/web?debug=1#id={emp_uid}&model=hr.employee.public&view_type=form"
+        webbrowser.open(url)
 
 
 @shell_end_hook
