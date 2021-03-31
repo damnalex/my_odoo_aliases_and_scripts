@@ -431,16 +431,17 @@ def emp(*trigrams):
     r_exec = _get_xmlrpc_executer(dburl, db, api_login, api_key)
     for trigram in trigrams:
         tri = f"({trigram})"
+        emp_uid = r_exec(
+            "hr.employee.public",
+            "search_read",
+            [[["name", "like", tri]]],
+            {"fields": ["id"]},
+        )
         try:
-            emp_uid = r_exec(
-                "hr.employee.public",
-                "search_read",
-                [[["name", "like", tri]]],
-                {"fields": ["id"]},
-            )[0]["id"]
+            id = emp_uid[0]["id"]
         except IndexError:
             raise Invalid_params(f"Could not find employee {trigram}")
-        url = f"https://www.odoo.com/web?debug=1#id={emp_uid}&model=hr.employee.public&view_type=form"
+        url = f"https://www.odoo.com/web?debug=1#id={id}&model=hr.employee.public&view_type=form"
         webbrowser.open(url)
 
 
