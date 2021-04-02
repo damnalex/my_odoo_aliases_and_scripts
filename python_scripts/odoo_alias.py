@@ -430,7 +430,7 @@ def emp(*trigrams):
     db = "openerp"
     r_exec = _get_xmlrpc_executer(dburl, db, api_login, api_key)
     for trigram in trigrams:
-        tri = f"({trigram})"
+        tri = f"({trigram.lower()})"
         emp_uid = r_exec(
             "hr.employee.public",
             "search_read",
