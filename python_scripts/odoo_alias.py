@@ -429,20 +429,29 @@ def emp(*trigrams):
     dburl = "https://www.odoo.com"
     db = "openerp"
     r_exec = _get_xmlrpc_executer(dburl, db, api_login, api_key)
-    for trigram in trigrams:
-        tri = f"({trigram.lower()})"
-        emp_uid = r_exec(
-            "hr.employee.public",
-            "search_read",
-            [[["name", "like", tri]]],
-            {"fields": ["id"]},
-        )
-        try:
-            id = emp_uid[0]["id"]
-        except IndexError:
-            raise Invalid_params(f"Could not find employee {trigram}")
-        url = f"https://www.odoo.com/web?debug=1#id={id}&model=hr.employee.public&view_type=form"
+    f_trigrams = (f"({trigram.lower()})" for trigram in trigrams)
+    domain = ["|"] * (len(trigrams) - 1)
+    domain += [["name", "like", tri] for tri in f_trigrams]
+    employees_data = r_exec(
+        "hr.employee.public", "search_read", [domain], {"fields": ["id", "name"]},
+    )
+    emps = {emp["id"]: emp["name"] for emp in employees_data}
+    url_template = "https://www.odoo.com/web?debug=1#id={id}&model=hr.employee.public&view_type=form"
+    urls = (url_template.format(id=uid) for uid in emps)
+    for url in urls:
         webbrowser.open(url)
+        print(url)
+    if len(emps) != len(trigrams):
+        if len(emps) < len(trigrams):
+            msg = "\n\n\nLooks like some employee(s) could no be found"
+        else:
+            msg = "\n\n\nLooks like some trigram(s) matches multiple employees"
+        debug_info = f"""
+            requested trigrams: {trigrams}
+            domain of the request: {domain}
+            results: {emps}
+            """
+        raise Invalid_params(msg + debug_info)
 
 
 @shell_end_hook
