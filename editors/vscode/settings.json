@@ -19,6 +19,7 @@
     "zenMode.fullScreen": false,
     "debug.toolBarLocation": "docked",
     "editor.cursorSurroundingLines": 4,
+    "editor.lineNumbers": "relative",
     // special styles
     "editor.tokenColorCustomizations": {
         "textMateRules": [
