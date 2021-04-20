@@ -360,7 +360,7 @@ def dropodoo(*dbs):
         # remove from meta
         psql("meta", f"DELETE FROM databases WHERE name = '{db}'")
         # dropping
-        if db.startswith("oe_support_"):
+        if db.startswith("oes_"):
             print(f"Dropping the DB {db} using oe-support")
             differed_sh_run(f"oes cleanup {db[11:]}")
         else:
