@@ -362,7 +362,7 @@ def dropodoo(*dbs):
         # dropping
         if db.startswith("oes_"):
             print(f"Dropping the DB {db} using oe-support")
-            differed_sh_run(f"oes cleanup {db[11:]}")
+            differed_sh_run(f"oes cleanup {db[4:]}")
         else:
             psql(
                 "postgres",
@@ -371,7 +371,10 @@ def dropodoo(*dbs):
             sh_run(f"dropdb {db}")
             FS_DIR = os.path.join(appdirs.user_data_dir("Odoo"), "filestore")
             filestore_path = os.path.expanduser(os.path.join(FS_DIR, db))
-            rmtree(filestore_path)
+            try:
+                rmtree(filestore_path)
+            except FileNotFoundError:
+                print("failed to delete the filestore, looks like it doesn't exist anymore")
 
 
 @call_from_shell
