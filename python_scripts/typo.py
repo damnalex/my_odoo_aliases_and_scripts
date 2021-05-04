@@ -49,6 +49,7 @@ simple_aliases = {
     "ezatig": "tig -C$AP",
     "python3.7": "/usr/local/opt/python@3.7/bin/python3.7",
     "thingsToDiscussAtNextSquadMeeting": "vim ~/Documents/meetings_notes/thingsToDiscussAtNextSquadMeeting.txt",
+    "flushdns" : "sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder",
 }
 
 # include simple aliases in typos_dict
