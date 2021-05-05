@@ -17,9 +17,8 @@ typos_dict = {
     "oes": ["eos", "ose", "oe", "eso"],
     "eza": ["eaz", "za", "ez"],
     "ezatig": ["ezatgi", "eaztgi"],
-    "exit": ["exiit", "exit$", "exiy", "exitt", "exirt"],
+    "exit": ["exiit", "exit$", "exiy", "exitt", "exirt", "exir"],
     "clear": [
-        "c",
         "clera",
         "clea",
         "cleare",
@@ -48,8 +47,8 @@ simple_aliases = {
     "ezagit": "git -C $AP",
     "ezatig": "tig -C$AP",
     "python3.7": "/usr/local/opt/python@3.7/bin/python3.7",
-    "thingsToDiscussAtNextSquadMeeting": "vim ~/Documents/meetings_notes/thingsToDiscussAtNextSquadMeeting.txt",
-    "flushdns" : "sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder",
+    "python3.9": "/usr/local/opt/python@3.9/bin/python3.9",
+    "thingsToDiscussAtNextSquadMeeting": "e ~/Documents/meetings_notes/thingsToDiscussAtNextSquadMeeting.txt",
 }
 
 # include simple aliases in typos_dict

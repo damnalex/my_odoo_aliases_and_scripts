@@ -227,6 +227,9 @@ if [ "$OSTYPE" = "darwin19.0" ]; then
     # paths to some libraries
     export PKG_CONFIG_PATH="/usr/local/opt/zlib/lib/pkgconfig"
 
+    # misc
+    alias flushdns='sudo dscacheutil -flushcache && sudo killall -HUP mDNSResponder'
+
     # end of macos stuffs
 fi
 

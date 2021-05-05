@@ -374,7 +374,9 @@ def dropodoo(*dbs):
             try:
                 rmtree(filestore_path)
             except FileNotFoundError:
-                print("failed to delete the filestore, looks like it doesn't exist anymore")
+                print(
+                    "failed to delete the filestore, looks like it doesn't exist anymore"
+                )
 
 
 @call_from_shell

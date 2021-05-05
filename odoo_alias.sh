@@ -392,5 +392,3 @@ pgbadger_clean() {
 ##############################################
 ###############  tmp aliases #################
 ##############################################
-
-alias loempia_law="e ~/Documents/meetings_notes/IAmTheLaw/apps_the_rules.txt"

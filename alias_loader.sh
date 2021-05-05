@@ -27,7 +27,7 @@ export GPG_TTY=$(tty)
 autoload bashcompinit
 bashcompinit
 
-# use neovim as default editor
+# use vim as default editor
 export EDITOR="vim"
 
 # activate vi mode in the terminal
@@ -40,7 +40,7 @@ else
     fi
 fi
 
-# setup .zshrc
+# setup .zshrc to source this file
 if ! grep -q "source $0" ~/.zshrc; then
     echo "source $0" >>~/.zshrc
 fi
