@@ -164,22 +164,43 @@ run() {
 git_fame() {
     # SLOW FOR VERY BIG REPO
     # show the number of lines attributed to each contributor in file $1, or for all files in folder if no file is provided
+    if [[ $1 == "-C" ]]; then
+        local repo=$2
+        shift 2
+    else
+        local repo=$(pwd)
+    fi
+    #
     local file_to_analyse=$1
-    git ls-tree -r -z --name-only HEAD -- ${file_to_analyse} | xargs -0 -n1 git blame --line-porcelain HEAD | grep "^author " | sort | uniq -c | sort -nr
+    git -C $repo ls-tree -r -z --name-only HEAD -- ${file_to_analyse} | xargs -0 -n1 git -C $repo blame --line-porcelain HEAD | grep "^author " | sort | uniq -c | sort -nr
 }
 
 git_last_X_hashes() {
-    git rev-list -n $1 HEAD
+    if [[ $1 == "-C" ]]; then
+        local repo=$2
+        shift 2
+    else
+        local repo=$(pwd)
+    fi
+    #
+    git -C $repo rev-list -n $1 HEAD
 }
 
 git_rebase_and_merge_X_on_Y() {
     # apply the content of branch X onto branch Y
     # does not modify branch X
-    git branch | grep tmp_branch_random_name && return 1
-    git checkout -b tmp_branch_random_name $1 &&
-        git rebase $2 &&
-        git rebase $2 tmp_branch_random_name &&
-        git branch -D tmp_branch_random_name
+    if [[ $1 == "-C" ]]; then
+        local repo=$2
+        shift 2
+    else
+        local repo=$(pwd)
+    fi
+    #
+    git -C $repo branch | grep tmp_branch_random_name && return 1
+    git -C $repo checkout -b tmp_branch_random_name $1 &&
+        git -C $repo rebase $2 &&
+        git -C $repo rebase $2 tmp_branch_random_name &&
+        git -C $repo branch -D tmp_branch_random_name
 }
 
 git_prune_branches() {
@@ -192,7 +213,14 @@ git_prune_branches() {
 }
 
 git_push_to_all_remotes() {
-    git remote | xargs -L1 -I R git push R $@
+    if [[ $1 == "-C" ]]; then
+        local repo=$2
+        shift 2
+    else
+        local repo=$(pwd)
+    fi
+    #
+    git -C $repo remote | xargs -L1 -I R git -C $repo push R $@
 }
 
 sort_and_remove_duplicate() {
