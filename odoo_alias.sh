@@ -31,9 +31,9 @@ go_prune_all() {
     # prune universe, internal and paas
     echo "----"
     echo "pruning the universe"
-    local repos=("$ODOO" "$ENTERPRISE" "$SRC/design-themes" "$INTERNAL" "$SRC/paas" "$ST")
+    local repos=("$ODOO" "$ENTERPRISE" "$SRC/design-themes" "$INTERNAL" "$SRC/paas")
     for repo in $repos; do {
-        git -C "$repo" gc --prune=now
+        git_prune_branches $repo
     }; done
     # prune multiverse
     echo "----"
@@ -41,8 +41,8 @@ go_prune_all() {
     repos=("odoo" "enterprise" "design-themes")
     for repo in $repos; do {
         git -C "$SRC_MULTI/master/$repo" worktree prune
+        git_prune_branches "$SRC_MULTI/master/$repo"
     }; done
-    # wait for all background pruning to finish
     echo "----"
     echo "All repos have been pruned"
 }

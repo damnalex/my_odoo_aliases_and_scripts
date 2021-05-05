@@ -185,8 +185,10 @@ git_rebase_and_merge_X_on_Y() {
 git_prune_branches() {
     # remove remote branches that don't exist anymore
     # then remove the local branches that don't exists on the remote ANYMORE
-    git fetch --prune --all
-    git branch -vv | grep ': gone] ' | awk '{print $1}' | xargs git branch -D
+    local repo=${1:-$(pwd)}
+    git -C $repo fetch --prune --all
+    git -C $repo branch -vv | grep ': gone] ' | awk '{print $1}' | xargs git -C $repo branch -D
+    git -C $repo gc --prune=now
 }
 
 git_push_to_all_remotes() {
