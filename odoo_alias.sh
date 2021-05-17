@@ -5,7 +5,7 @@
 
 ssho() {
     # connect to odoo servers
-    ssh $1.odoo.com -t 'screen -rx'
+    ssh $1.odoo.com -t 'screen -rx' || odoosh $1
 }
 
 # git stuffs
