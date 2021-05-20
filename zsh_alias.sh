@@ -1,3 +1,4 @@
+# TODO : recentralize aliases and completions
 ##############################################
 ######  "manage this repo"  stuffs  ##########
 ##############################################
