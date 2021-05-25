@@ -273,11 +273,9 @@ ap_format_files() {
     sort_and_remove_duplicate $AP/python_scripts/other_requirements.txt
 }
 
-
 ###########################################################
 ######################  Odoo stuffs #######################
 ###########################################################
-
 
 ssho() {
     # connect to odoo servers
