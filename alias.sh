@@ -40,7 +40,7 @@ eza() {
         file_type="other"
         ;;
     typo)
-        file_to_load="python_scripts/typo.py"
+        file_to_load="python_scripts/odoo_alias.py"
         file_type="py"
         ;;
     utils)
