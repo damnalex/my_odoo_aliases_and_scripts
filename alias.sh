@@ -16,7 +16,7 @@ eza() {
     local file_type=""
     case $1 in
     zsh)
-        file_to_load="zsh_alias.sh"
+        file_to_load="alias.sh"
         file_type="sh"
         ;;
     loader)
@@ -24,7 +24,7 @@ eza() {
         file_type="sh"
         ;;
     odoo)
-        file_to_load="odoo_alias.sh"
+        file_to_load="alias.sh"
         file_type="sh"
         ;;
     odoopy)
@@ -60,9 +60,9 @@ eza() {
         return
         ;;
     *)
-        echo "eza zsh --> zsh_alias.sh"
+        echo "eza zsh --> alias.sh"
         echo "eza loader --> alias_loader.sh"
-        echo "eza odoo --> odoo_alias.sh"
+        echo "eza odoo --> alias.sh"
         echo "eza odoopy --> odoo_alias.py"
         echo "eza drop --> drop_protected_dbs.txt"
         echo "eza git --> git_odoo.py"

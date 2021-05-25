@@ -46,13 +46,13 @@ _eza() {
         local function_names=" "
         case ${COMP_WORDS[1]} in
         zsh)
-            function_names=$(grep ".*() {" $AP/zsh_alias.sh | sed 's/() {*//' | tr '\n' ' ')
+            function_names=$(grep ".*() {" $AP/alias.sh | sed 's/() {*//' | tr '\n' ' ')
             ;;
         loader)
             function_names=$(grep ".*() {" $AP/alias_loader.sh | sed 's/() {*//' | tr '\n' ' ')
             ;;
         odoo)
-            function_names=$(grep ".*() {" $AP/odoo_alias.sh | sed 's/() {*//' | tr '\n' ' ')
+            function_names=$(grep ".*() {" $AP/alias.sh | sed 's/() {*//' | tr '\n' ' ')
             ;;
         odoopy)
             function_names=$(grep "^def .*):" $AP/python_scripts/odoo_alias.py | sed 's/def //' | sed 's/(.*)*//' | tr '\n' ' ')

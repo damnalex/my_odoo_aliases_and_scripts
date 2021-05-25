@@ -46,7 +46,7 @@ if ! grep -q "source $0" ~/.zshrc; then
 fi
 
 # load all the other files in the $AP folder
-source $AP/odoo_alias.sh
+source $AP/alias.sh
 
 # load python based aliases
 python3 $AP/python_scripts/python_alias_exporter.py
