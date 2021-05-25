@@ -40,7 +40,7 @@ _complete_branch_name_on_repo_A() {
 
 _eza() {
     if [[ COMP_CWORD -eq 1 ]]; then
-        COMPREPLY=($(compgen -W "zsh odoo odoopy loader drop git typo compl vim tig utils" -- "${COMP_WORD[1]}"))
+        COMPREPLY=($(compgen -W "zsh odoo odoopy loader drop git compl vim tig utils" -- "${COMP_WORD[1]}"))
     fi
     if [[ COMP_CWORD -eq 2 ]]; then
         local function_names=" "
@@ -55,7 +55,7 @@ _eza() {
             function_names=$(grep ".*() {" $AP/alias.sh | sed 's/() {*//' | tr '\n' ' ')
             ;;
         odoopy)
-            function_names=$(grep "^def .*):" $AP/python_scripts/odoo_alias.py | sed 's/def //' | sed 's/(.*)*//' | tr '\n' ' ')
+            function_names=$(grep "^def .*):" $AP/python_scripts/alias.py | sed 's/def //' | sed 's/(.*)*//' | tr '\n' ' ')
             ;;
         git)
             function_names=$(grep "^def .*):" $AP/python_scripts/git_odoo.py | sed 's/def //' | sed 's/(.*)*//' | tr '\n' ' ')

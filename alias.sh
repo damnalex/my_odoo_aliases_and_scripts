@@ -28,7 +28,7 @@ eza() {
         file_type="sh"
         ;;
     odoopy)
-        file_to_load="python_scripts/odoo_alias.py"
+        file_to_load="python_scripts/alias.py"
         file_type="py"
         ;;
     git)
@@ -38,10 +38,6 @@ eza() {
     drop)
         file_to_load="drop_protected_dbs.txt"
         file_type="other"
-        ;;
-    typo)
-        file_to_load="python_scripts/odoo_alias.py"
-        file_type="py"
         ;;
     utils)
         file_to_load="python_scripts/utils.py"
@@ -63,10 +59,9 @@ eza() {
         echo "eza zsh --> alias.sh"
         echo "eza loader --> alias_loader.sh"
         echo "eza odoo --> alias.sh"
-        echo "eza odoopy --> odoo_alias.py"
+        echo "eza odoopy --> alias.py"
         echo "eza drop --> drop_protected_dbs.txt"
         echo "eza git --> git_odoo.py"
-        echo "eza typo --> typo.py"
         echo "eza compl --> completion.sh"
         echo "eza vim --> vim config"
         echo "eza tig --> repo info"
@@ -260,15 +255,6 @@ if [ "$OSTYPE" = "darwin19.0" ]; then
 
     # end of macos stuffs
 fi
-
-##############################################
-##############  typo  stuffs  ################
-##############################################
-
-new_typo() {
-    # open the typo definition file
-    eza typo
-}
 
 ##############################################
 #############  python  stuffs  ###############

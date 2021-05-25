@@ -3,7 +3,7 @@ import inspect
 import types
 import os
 
-from odoo_alias import (
+from alias import (
     CALLABLE_FROM_SHELL,
     SHELL_END_HOOK,
     SHELL_DIFFERED_COMMANDS_FILE,
@@ -11,7 +11,7 @@ from odoo_alias import (
 )
 
 shell_function_template = """{fname}() {{
-    $AP/python_scripts/odoo_alias.py {fname} $@\
+    $AP/python_scripts/alias.py {fname} $@\
     {diff_exec}
 }}
 """
