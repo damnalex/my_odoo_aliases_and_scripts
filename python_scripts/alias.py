@@ -401,6 +401,18 @@ def _get_xmlrpc_executer(dburl, dbname, login, password):
     return r_exec
 
 
+def _xmlrpc_odoo_com():
+    import keyring
+
+    api_key = keyring.get_password("oe-support", "mao-2FA")
+    api_login = "mao"
+    assert all((api_key, api_login))
+    dburl = "https://www.odoo.com"
+    db = "openerp"
+    r_exec = _get_xmlrpc_executer(dburl, db, api_login, api_key)
+    return r_exec
+
+
 @call_from_shell
 def shurl(long_url):
     """Returns (and prints) a short (and tracked) url version of a link.
@@ -426,15 +438,9 @@ def shurl(long_url):
 @call_from_shell
 def emp(*trigrams):
     """ open the employee page for the given trigrams """
-    import keyring
     import webbrowser
 
-    api_key = keyring.get_password("oe-support", "mao-2FA")
-    api_login = "mao"
-    assert all((api_key, api_login))
-    dburl = "https://www.odoo.com"
-    db = "openerp"
-    r_exec = _get_xmlrpc_executer(dburl, db, api_login, api_key)
+    r_exec = _xmlrpc_odoo_com()
     f_trigrams = (f"({trigram.lower()})" for trigram in trigrams)
     domain = ["|"] * (len(trigrams) - 1)
     domain += [["name", "like", tri] for tri in f_trigrams]
@@ -456,6 +462,35 @@ def emp(*trigrams):
             requested trigrams: {trigrams}
             domain of the request: {domain}
             results: {emps}
+            """
+        raise Invalid_params(msg + debug_info)
+
+
+@call_from_shell
+def o_user(*trigrams):
+    import webbrowser
+
+    r_exec = _xmlrpc_odoo_com()
+    f_trigrams = (f"{trigram.lower()}" for trigram in trigrams)
+    domain = ["|"] * (len(trigrams) - 1)
+    domain += [["login", "=", tri] for tri in f_trigrams]
+    users_data = r_exec(
+        "res.users", "search_read", [domain], {"fields": ["id", "login"]},
+    )
+    users = {user["id"]: user["login"] for user in users_data}
+    url_template = (
+        "https://www.odoo.com/web?debug=1#id={id}&model=res.users&view_type=form"
+    )
+    urls = (url_template.format(id=uid) for uid in users)
+    for url in urls:
+        webbrowser.open(url)
+        print(url)
+    if len(users) != len(trigrams):
+        msg = "\n\n\nLooks like some user(s) could no be found"
+        debug_info = f"""
+            requested trigrams: {trigrams}
+            domain of the request: {domain}
+            results: {users}
             """
         raise Invalid_params(msg + debug_info)
 
