@@ -274,7 +274,7 @@ ap_format_files() {
 
 ssho() {
     # connect to odoo servers
-    ssh $1.odoo.com -t 'screen -rx'
+    ssh -o "StrictHostKeyChecking no" $1.odoo.com -t 'screen -rx'
 }
 
 # git stuffs
