@@ -60,12 +60,9 @@
     "editor.dragAndDrop": false,
     "workbench.settings.useSplitJSON": true,
     "files.defaultLanguage": "${activeEditorLanguage}",
-    "workbench.editorAssociations": [
-        {
-            "viewType": "jupyter.notebook.ipynb",
-            "filenamePattern": "*.ipynb"
-        }
-    ],
+    "workbench.editorAssociations": {
+        "*.ipynb": "jupyter.notebook.ipynb"
+    },
     // language specific settings
     "[python]": {
         "editor.rulers": [
