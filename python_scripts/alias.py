@@ -455,7 +455,7 @@ def emp(*trigrams):
         print(url)
     if len(emps) != len(trigrams):
         if len(emps) < len(trigrams):
-            msg = "\n\n\nLooks like some employee(s) could no be found"
+            msg = "\n\n\nLooks like some employee(s) could not be found"
         else:
             msg = "\n\n\nLooks like some trigram(s) matches multiple employees"
         debug_info = f"""
