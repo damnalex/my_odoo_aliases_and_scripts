@@ -659,6 +659,51 @@ pgbadger_clean() {
     echo "" >"$POSTGRES_LOC/postgresql.log"
 }
 
+
+
+sync_filestore_to_remote() {
+    # sends a local filestore to a remote server in batches (1 per fiesltore folder)
+    # the goal is too use less additional space than a big zip file, while not sending
+    # each file individually (might trigger a rate limiting)
+
+    args=("$@")
+    ELEMENTS=${#args[@]}
+    if [ $ELEMENTS -ne 3 ]; then
+        echo "Usage: sync_filestore_to_remote    local_filestore_path remote_host remote_filestore_path"
+        exit 1
+    fi
+
+    local local_filestore_path=$1
+    local remote_host=$2
+    local remote_filestore_path=$3
+
+    cd $local_filestore_path
+    for folder in $(ls); do
+        echo "starting work on $folder ------------------------------"
+        zip -r "tmp$folder.zip" $folder/*
+        echo "finishing zip folder"
+        echo "sending °°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°"
+        rsync -rhP "tmp$folder.zip" "$remote_host:$remote_filestore_path"
+        echo "finished sending  °°°°°°°°°°°°°°°°°°°°°°°°°°°°°"
+        echo "starting remote commande ##############################"
+        ssh $remote_host "cd $remote_filestore_path; unzip -u tmp$folder.zip; rm tmp$folder.zip"
+        echo "$folder done ------------------------------------------"
+        rm "tmp$folder.zip"
+        echo "sleeping 5 seconds to avoid rate limiting on odoosh ..."
+        sleep 5
+    done
+}
+
+# zip archive of what's not present in the other place yet (for odoo filestores)
+#   rsync -arvnh . ../filestore2 |  grep \/ | grep -v \/sec | grep -v \/$ | xargs zip -r ../filestorediff.zip
+# TODO generalize
+
+# List files that still need to be transfered
+#   rsync -arvnh . ../filestore2 |  grep \/ | grep -v \/sec | grep -v \/$
+# based on this list function, sync_filestore_to_odoosh could become idempotent AND efficient
+
+# beware of $(getconf ARG_MAX)      (unlikely to cause issue but you never know)
+
 ##############################################
 ###############  tmp aliases #################
 ##############################################
