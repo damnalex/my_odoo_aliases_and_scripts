@@ -39,6 +39,7 @@ else
         echo "set editing-mode vi" >>~/.inputrc
     fi
 fi
+bindkey '^x^e' edit-command-line
 
 # setup .zshrc to source this file
 if ! grep -q "source $0" ~/.zshrc; then
