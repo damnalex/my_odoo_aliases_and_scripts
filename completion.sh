@@ -1,4 +1,3 @@
-# TODO : recentralize aliases and completions
 ####################################
 #####    completion tools     ######
 ####################################

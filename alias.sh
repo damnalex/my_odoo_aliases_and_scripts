@@ -231,31 +231,6 @@ wait_for_pid() {
     while kill -0 "$1" 2>/dev/null; do sleep 0.2; done
 }
 
-#########################################
-######## system specific stuffs #########
-#########################################
-
-if [ "$OSTYPE" = "darwin19.0" ]; then
-    # macos specific stuffs
-    export LC_ALL=en_US.UTF-8
-    export LANG=en_US.UTF-8
-    export PATH="/usr/local/sbin:$PATH"
-    alias code='/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin/code'
-
-    # monitoring
-    alias netdata="netdata_start > /dev/null && open http://localhost:19999"
-    alias netdata_start="brew services start netdata"
-    alias netdata_stop="brew services stop netdata"
-
-    # paths to some libraries
-    export PKG_CONFIG_PATH="/usr/local/opt/zlib/lib/pkgconfig"
-
-    # misc
-    alias flushdns='sudo dscacheutil -flushcache && sudo killall -HUP mDNSResponder'
-
-    # end of macos stuffs
-fi
-
 ##############################################
 #############  python  stuffs  ###############
 ##############################################
@@ -664,8 +639,6 @@ pgbadger_clean() {
     echo "" >"$POSTGRES_LOC/postgresql.log"
 }
 
-
-
 sync_filestore_to_remote() {
     # sends a local filestore to a remote server in batches (1 per fiesltore folder)
     # the goal is too use less additional space than a big zip file, while not sending
@@ -708,5 +681,3 @@ sync_filestore_to_remote() {
 # based on this list function, sync_filestore_to_odoosh could become idempotent AND efficient
 
 # beware of $(getconf ARG_MAX)      (unlikely to cause issue but you never know)
-
-
