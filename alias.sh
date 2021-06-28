@@ -315,26 +315,29 @@ _db_version() {
 # pythonable
 oes() {
     # start oe-support, with some smartness
-    if [[ $1 == "raw" ]]; then
-        shift
-    else
-        if [[ $1 == "fetch" ]] && ! [[ $* == *'--no-start'* ]]; then
-            # running first a fetch without starting the db
-            # then running a separate start to automagically
-            # use the right virtual-env, even when the db version
-            # is not known beforehand
-            eval oes $@ --no-start
-            eval oes start $@[2,-1]
-            return
-        fi
-        if [[ $1 == "start" ]] || [[ $1 == "restore" ]]; then
-            local version=$(_db_version $(list_db_like "%$2")) 2>/dev/null
-            if [[ $version != "" ]]; then
-                go_venv $version
-            fi
-        fi
-    fi
+    # if [[ $1 == "raw" ]]; then
+    #     shift
+    # else
+    #     if [[ $1 == "fetch" ]] && ! [[ $* == *'--no-start'* ]]; then
+    #         # running first a fetch without starting the db
+    #         # then running a separate start to automagically
+    #         # use the right virtual-env, even when the db version
+    #         # is not known beforehand
+    #         echo "oes $@ --no-start "
+    #         eval oes $@ --no-start
+    #         echo " oes start $@[2,-1] "
+    #         eval oes start $@[2,-1]
+    #         return
+    #     fi
+    #     if [[ $1 == "start" ]] || [[ $1 == "restore" ]]; then
+    #         local version=$(_db_version $(list_db_like "%$2")) 2>/dev/null
+    #         if [[ $version != "" ]]; then
+    #             go_venv $version
+    #         fi
+    #     fi
+    # fi
     #start odoo support
+    echo " $ST/oe-support.py $@ "
     eval $ST/oe-support.py $@
     (clear_pyc &)
 }
