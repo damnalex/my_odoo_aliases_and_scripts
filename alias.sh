@@ -47,6 +47,10 @@ eza() {
         file_to_load="editors/vim/.vimrc"
         file_type="other"
         ;;
+    tmp)
+        file_to_load="temporary-scripts.sh"
+        file_type="sh"
+        ;;
     tig)
         ezatig
         return
@@ -59,6 +63,7 @@ eza() {
         echo "eza git --> git_odoo.py"
         echo "eza drop --> drop_protected_dbs.txt"
         echo "eza vim --> vim config"
+        echo "eza tmp --> temporary-scripts.sh"
         echo "eza tig --> repo info"
         return
         ;;
@@ -704,6 +709,4 @@ sync_filestore_to_remote() {
 
 # beware of $(getconf ARG_MAX)      (unlikely to cause issue but you never know)
 
-##############################################
-###############  tmp aliases #################
-##############################################
+
