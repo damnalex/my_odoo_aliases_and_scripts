@@ -3,7 +3,7 @@ set nocompatible
 " visual stuff
 set ruler  "Show the line and column number of the cursor position at the bottom right corner
 set number  "Show the line numbers
-set relativenumber
+set relativenumber  "show lines numbers above and below as relative jumps
 set cursorline  "underline the current line, helps find the cursor
 syntax enable  "enable syntaxe highlight
 set nowrap  "don't wrap long lines
@@ -25,8 +25,8 @@ colorscheme elflord
 set noerrorbells  "no dings, the ding is bad and useless
 
 " search stuff
-set ignorecase
-set smartcase
+set ignorecase  "case insensitiv search
+set smartcase   "but not too insensitiv
 set incsearch  "show the search results as I type
 set hlsearch  "underline the search results
 " show subsequent search results in the middle of the screen
@@ -64,9 +64,10 @@ let g:netrw_liststyle=3     " tree view
 " let g:netrw_list_hide.=',\(^\|\s\s\)\zs\.\S\+'    " hide dotfiles
 
 " sometime my pinky finger is tired
-imap jj <Esc>
-imap kk <Esc>
+imap jk <Esc>
 " (or I forget to leave insert mode before moving around)
+" imap jj <Esc>
+" imap kk <Esc>
 
 " things from 'dougblack.io/words/a-good-vimrc.html'
 " -------------------------------------------------
@@ -87,10 +88,10 @@ set hidden      " hide buffers instead of closing them.
                 " message)
 
 " Easy window navigation
-map <C-h> <C-w>h
-map <C-j> <C-w>j
-map <C-k> <C-w>k
-map <C-l> <C-w>l
+" map <C-h> <C-w>h
+" map <C-j> <C-w>j
+" map <C-k> <C-w>k
+" map <C-l> <C-w>l
 
 " language specific settings
 let python_highlight_numbers = 1
@@ -108,7 +109,6 @@ endif
 
 " plugin install
 call plug#begin('~/.vim/plugged')
-" Plug 'yuttie/comfortable-motion.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'itchyny/lightline.vim'
 Plug 'tomtom/tcomment_vim'
@@ -119,12 +119,6 @@ call plug#end()
 " run :source ~/.vimrc  to reload vimrc
 " run :PlugInstall to install declared plugins
 " run :PlugClean to uninstall undeclared plugins
-
-" plugin config
-" comfortable-motion
-" let g:comfortable_motion_friction = 400.0
-" let g:comfortable_motion_air_drag = 1.0
-" let g:comfortable_motion_impulse_mulitplier = 1.5
 
 " vim-gitgutter
 set updatetime=100 " this is not a setting specific to gitgutter but necessary for it to be responsive
