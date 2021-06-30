@@ -21,7 +21,7 @@ eza() {
         ;;
     loader)
         file_to_load="alias_loader.sh"
-        file_type="sh"
+        file_type="other" # to match on non function declaration tokkens
         ;;
     py)
         file_to_load="python_scripts/alias.py"
@@ -82,7 +82,7 @@ eza() {
             e -c "/def $2" $AP/$file_to_load || return
             ;;
         other)
-            e -c "$2" $AP/$file_to_load || return
+            e -c "/$2" $AP/$file_to_load || return
             ;;
         esac
     fi

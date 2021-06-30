@@ -39,7 +39,7 @@ _complete_branch_name_on_repo_A() {
 
 _eza() {
     if [[ COMP_CWORD -eq 1 ]]; then
-        COMPREPLY=($(compgen -W "shell py loader drop git compl vim tig utils" -- "${COMP_WORD[1]}"))
+        COMPREPLY=($(compgen -W "shell py loader drop git compl vim tig utils tmp" -- "${COMP_WORD[1]}"))
     fi
     if [[ COMP_CWORD -eq 2 ]]; then
         local function_names=" "
@@ -48,7 +48,7 @@ _eza() {
             function_names=$(grep ".*() {" $AP/alias.sh | sed 's/() {*//' | tr '\n' ' ')
             ;;
         loader)
-            function_names=$(grep ".*() {" $AP/alias_loader.sh | sed 's/() {*//' | tr '\n' ' ')
+            function_names=$(grep "export " $AP/alias_loader.sh | sed 's/export //' | awk -F '=' '{print $1}' | tr '\n' ' ')
             ;;
         py)
             function_names=$(grep "^def .*):" $AP/python_scripts/alias.py | sed 's/def //' | sed 's/(.*)*//' | tr '\n' ' ')
@@ -58,6 +58,9 @@ _eza() {
             ;;
         compl)
             function_names=$(grep ".*() {" $AP/completion.sh | grep -v "function_names" | sed 's/() {*//' | tr '\n' ' ')
+            ;;
+        tmp)
+            function_names=$(grep ".*() {" $AP/temporary-scripts.sh | sed 's/() {*//' | tr '\n' ' ')
             ;;
         *) ;;
 
