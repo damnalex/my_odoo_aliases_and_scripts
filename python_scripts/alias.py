@@ -445,7 +445,10 @@ def emp(*trigrams):
     domain = ["|"] * (len(trigrams) - 1)
     domain += [["name", "like", tri] for tri in f_trigrams]
     employees_data = r_exec(
-        "hr.employee.public", "search_read", [domain], {"fields": ["id", "name"]},
+        "hr.employee.public",
+        "search_read",
+        [domain],
+        {"fields": ["id", "name"]},
     )
     emps = {emp["id"]: emp["name"] for emp in employees_data}
     url_template = "https://www.odoo.com/web?debug=1#id={id}&model=hr.employee.public&view_type=form"
@@ -475,7 +478,10 @@ def o_user(*trigrams):
     domain = ["|"] * (len(trigrams) - 1)
     domain += [["login", "=", tri] for tri in f_trigrams]
     users_data = r_exec(
-        "res.users", "search_read", [domain], {"fields": ["id", "login"]},
+        "res.users",
+        "search_read",
+        [domain],
+        {"fields": ["id", "login"]},
     )
     users = {user["id"]: user["login"] for user in users_data}
     url_template = (
