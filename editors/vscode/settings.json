@@ -62,6 +62,7 @@
     "telemetry.enableTelemetry": false,
     "editor.accessibilitySupport": "off",
     "editor.dragAndDrop": false,
+    "editor.inlineSuggest.enabled": true,
     "workbench.settings.useSplitJSON": true,
     "files.defaultLanguage": "${activeEditorLanguage}",
     "workbench.editorAssociations": {
