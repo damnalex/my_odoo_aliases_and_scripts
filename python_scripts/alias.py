@@ -417,11 +417,13 @@ def _xmlrpc_odoo_com():
 def shurl(long_url):
     """Returns (and prints) a short (and tracked) url version of a link.
     Hosted on an odoo saas server"""
-    api_key = env.SHORT_URL_KEY
+    import keyring
+
     api_login = env.SHORT_URL_LOGIN
+    api_key = keyring.get_password("shurl", api_login)
     assert all((api_key, api_login))
-    dburl = "https://short-url.moens.xyz"
-    db = "noapp"
+    dburl = "https://shorturl.moens.xyz"
+    db = "runboot"
     r_exec = _get_xmlrpc_executer(dburl, db, api_login, api_key)
     data = {"url": long_url}
     url_id = r_exec("link.tracker", "create", [data])
@@ -431,6 +433,9 @@ def shurl(long_url):
         [[["id", "=", url_id]]],
         {"fields": ["short_url"]},
     )[0]["short_url"]
+    # force the "right" domain
+    short_url = short_url.replace("runboot.odoo.com", "shorturl.moens.xyz")
+    short_url = short_url.replace("totd.moens.xyz", "shorturl.moens.xyz")
     print(short_url)
     return short_url
 
