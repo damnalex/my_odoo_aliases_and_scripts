@@ -476,27 +476,39 @@ def emp(*trigrams):
 
 @call_from_shell
 def o_user(*trigrams):
+    """open the odoo.com page for the given users
+    trigrams is a list of trigrams or user ids"""
     import webbrowser
 
-    r_exec = _xmlrpc_odoo_com()
-    f_trigrams = (f"{trigram.lower()}" for trigram in trigrams)
-    domain = ["|"] * (len(trigrams) - 1)
-    domain += [["login", "=", tri] for tri in f_trigrams]
-    users_data = r_exec(
-        "res.users",
-        "search_read",
-        [domain],
-        {"fields": ["id", "login"]},
-    )
-    users = {user["id"]: user["login"] for user in users_data}
+    def _isint(s):
+        try:
+            int(s)
+            return True
+        except ValueError:
+            return False
+
+    uids = [uid for uid in trigrams if _isint(uid)]
+    f_trigrams = [f"{trigram.lower()}" for trigram in trigrams if not _isint(trigram)]
+    users = {}
+    if f_trigrams:
+        domain = ["|"] * (len(f_trigrams) - 1)
+        domain += [["login", "=", tri] for tri in f_trigrams]
+        r_exec = _xmlrpc_odoo_com()
+        users_data = r_exec(
+            "res.users",
+            "search_read",
+            [domain],
+            {"fields": ["id", "login"]},
+        )
+        users = {user["id"]: user["login"] for user in users_data}
     url_template = (
         "https://www.odoo.com/web?debug=1#id={id}&model=res.users&view_type=form"
     )
-    urls = (url_template.format(id=uid) for uid in users)
+    urls = [url_template.format(id=uid) for uid in list(users) + uids]
     for url in urls:
         webbrowser.open(url)
         print(url)
-    if len(users) != len(trigrams):
+    if len(urls) != len(trigrams):
         msg = "\n\n\nLooks like some user(s) could no be found"
         debug_info = f"""
             requested trigrams: {trigrams}
