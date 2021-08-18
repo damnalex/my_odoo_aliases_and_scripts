@@ -684,3 +684,8 @@ sync_filestore_to_remote() {
 # based on this list function, sync_filestore_to_odoosh could become idempotent AND efficient
 
 # beware of $(getconf ARG_MAX)      (unlikely to cause issue but you never know)
+
+test-dump() {
+    #create a DB using the dump.sql file in the current folder
+    createdb "$1-test" && psql -d "$1-test" < dump.sql  && neuter_db "$1-test" && pl
+}
