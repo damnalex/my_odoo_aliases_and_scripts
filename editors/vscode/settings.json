@@ -2,9 +2,8 @@
     // general style
     "workbench.colorTheme": "Monokai",
     "workbench.iconTheme": "material-icon-theme",
-    "editor.fontFamily": "'Operator Mono Lig','Operator Mono','Fira Code','Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
+    "editor.fontFamily": "'Operator Mono','Monaco','Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
     "terminal.integrated.fontFamily": "'Monaco','Operator mono large','Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
-    "editor.fontLigatures": true,
     "editor.fontSize": 12,
     "window.zoomLevel": 1,
     "editor.cursorBlinking": "expand",
@@ -87,7 +86,6 @@
     "gitlens.advanced.messages": {
         "suppressShowKeyBindingsNotice": true,
     },
-    "disableLigatures.mode": "Cursor",
     "git-graph.commitDetailsView.location": "Docked to Bottom",
     "git-graph.date.format": "Relative",
     "git-graph.date.type": "Commit Date",
