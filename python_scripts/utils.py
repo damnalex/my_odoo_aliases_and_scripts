@@ -7,7 +7,7 @@ class EnvironmentExtractor:
     for faster subsequent calls"""
 
     def __getattr__(self, name):
-        """ Will only be called the first time self.XXX is called"""
+        """Will only be called the first time self.XXX is called"""
         env_var = os.getenv(name)
         if not env_var:
             raise ValueError(f"No value found for environment variable {name}")

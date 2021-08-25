@@ -390,7 +390,7 @@ def go_fetch(*args):
 
 
 def _get_xmlrpc_executer(dburl, dbname, login, password):
-    """ return a function that executes xml_rpc calls on a given odoo db """
+    """return a function that executes xml_rpc calls on a given odoo db"""
     import xmlrpc.client
     from functools import partial
 
@@ -442,7 +442,7 @@ def shurl(long_url):
 
 @call_from_shell
 def emp(*trigrams):
-    """ open the employee page for the given trigrams """
+    """open the employee page for the given trigrams"""
     import webbrowser
 
     r_exec = _xmlrpc_odoo_com()
