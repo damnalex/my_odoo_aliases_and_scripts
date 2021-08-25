@@ -643,9 +643,9 @@ pgbadger_clean() {
 }
 
 sync_filestore_to_remote() {
-    # sends a local filestore to a remote server in batches (1 per fiesltore folder)
+    # sends a local filestore to a remote server in batches (1 per filestore folder)
     # the goal is too use less additional space than a big zip file, while not sending
-    # each file individually (might trigger a rate limiting)
+    # each file individually (which might trigger a network rate limiting)
 
     args=("$@")
     ELEMENTS=${#args[@]}
