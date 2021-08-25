@@ -14,7 +14,7 @@ export ST="$SRC/support-tools"
 export SRC_MULTI="$HOME/multi_src"
 export USER_DOC="$SRC/documentation-user"
 
-if [ "$OSTYPE" = "darwin20.0" ]; then
+if [[ $OSTYPE =~ ^darwin ]]; then
     # macos specific stuffs
     export ODOO_STORAGE="$HOME/Library/Application Support/Odoo"
     export LC_ALL=en_US.UTF-8
