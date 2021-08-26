@@ -314,7 +314,7 @@ _db_version() {
 
 # pythonable
 oes() {
-    start oe-support, with some smartness
+    # start oe-support, with some smartness
     if [[ $1 == "raw" ]]; then
         shift
     else
@@ -336,7 +336,7 @@ oes() {
             fi
         fi
     fi
-    start odoo support
+    # start odoo support
     echo " $ST/oe-support.py $@ "
     eval $ST/oe-support.py $@
     (clear_pyc &)
