@@ -396,9 +396,6 @@ build_multiverse_branch() {
         git -C $SRC_MULTI/master/${rep} worktree prune
         git -C $SRC_MULTI/master/${rep} worktree add $SRC_MULTI/${version}/${rep} ${version}
     }; done
-    # adding branch to list of known branches
-    echo ${version} >>$SRC_MULTI/version_list.txt &&
-        sort_and_remove_duplicate $SRC_MULTI/version_list.txt
 }
 
 # pythonable
@@ -421,7 +418,7 @@ update_all_multiverse_branches() {
     echo "starting to pull multiverse branches"
     echo " -----> master multiverse"
     update_multiverse_branch master
-    for version in $(cat $SRC_MULTI/version_list.txt); do {
+    for version in $(echo $SRC_MULTI/*/ | xargs basename); do {
         if [[ "$version" != "master" ]]; then
             echo " -----> $version multiverse"
             update_multiverse_branch "$version"
