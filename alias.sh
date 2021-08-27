@@ -687,6 +687,6 @@ sync_filestore_to_remote() {
 
 test-dump() {
     #create a DB using the dump.sql file in the current folder
-    local $db_name="$1-test"
+    local db_name="$1-test"
     createdb $db_name && psql -d $db_name <dump.sql && $ST/tools/neuter.py $db_name && pl
 }
