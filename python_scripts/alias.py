@@ -501,9 +501,7 @@ def o_user(*trigrams):
             {"fields": ["id", "login"]},
         )
         users = {user["id"]: user["login"] for user in users_data}
-    url_template = (
-        "https://www.odoo.com/web?debug=1#id={id}&model=res.users&view_type=form"
-    )
+    url_template = "https://www.odoo.com/web?debug=1#id={id}&action=17&model=res.users&view_type=form"
     urls = [url_template.format(id=uid) for uid in list(users) + uids]
     for url in urls:
         webbrowser.open(url)
