@@ -64,10 +64,10 @@ let g:netrw_liststyle=3     " tree view
 " let g:netrw_list_hide.=',\(^\|\s\s\)\zs\.\S\+'    " hide dotfiles
 
 " sometime my pinky finger is tired
-imap jk <Esc>
+imap jkjk <Esc>
+imap jjj <Esc>
+imap kkk <Esc>
 " (or I forget to leave insert mode before moving around)
-" imap jj <Esc>
-" imap kk <Esc>
 
 " things from 'dougblack.io/words/a-good-vimrc.html'
 " -------------------------------------------------
