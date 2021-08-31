@@ -60,9 +60,6 @@
     "editor.inlineSuggest.enabled": true,
     "workbench.settings.useSplitJSON": true,
     "files.defaultLanguage": "${activeEditorLanguage}",
-    "workbench.editorAssociations": {
-        "*.ipynb": "jupyter-notebook"
-    },
     // language specific settings
     "[python]": {
         "editor.rulers": [
