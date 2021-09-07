@@ -337,7 +337,7 @@ oes() {
         fi
     fi
     # start odoo support
-    echo " $ST/oe-support.py $@ "
+    # echo " $ST/oe-support.py $@ "
     eval $ST/oe-support.py $@
     (clear_pyc &)
 }
