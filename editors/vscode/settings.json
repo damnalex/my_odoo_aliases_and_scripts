@@ -5,7 +5,7 @@
     "editor.fontFamily": "'Operator Mono','Monaco','Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
     "terminal.integrated.fontFamily": "'Monaco','Operator mono large','Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
     "editor.fontSize": 12,
-    "window.zoomLevel": 1,
+    "window.zoomLevel": -1,
     "editor.cursorBlinking": "expand",
     "workbench.editor.highlightModifiedTabs": true,
     "editor.renderWhitespace": "all",
