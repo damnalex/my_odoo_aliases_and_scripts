@@ -24,6 +24,8 @@ if [[ $OSTYPE =~ ^darwin ]]; then
     export PKG_CONFIG_PATH="/usr/local/opt/zlib/lib/pkgconfig"
     # misc
     alias flushdns='sudo dscacheutil -flushcache && sudo killall -HUP mDNSResponder'
+    # paths to gnu version of tools
+    export PATH="/usr/local/opt/grep/libexec/gnubin:$PATH"
 else
     # on linux machine
     export ODOO_STORAGE="$HOME/.local/Odoo"
