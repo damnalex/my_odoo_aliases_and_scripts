@@ -683,8 +683,14 @@ sync_filestore_to_remote() {
 # beware of $(getconf ARG_MAX)      (unlikely to cause issue but you never know)
 
 test-dump() {
-    #create a DB using the dump.sql file in the current folder
+    # test dump (in the current folder) for safety
+    $PSS/saas/test_dump_safety.sh dump.sql || return 1
+    # create a DB using the dump.sql file in the current folder
     local db_name="$1-test"
-    createdb $db_name && psql -d $db_name <dump.sql && $ST/tools/neuter.py $db_name --filestore || $ST/tools/neuter.py $db_name 
-    pl
+    createdb $db_name || return 1
+    psql -d $db_name <dump.sql || return 1
+    # neutralize db for local testing
+    $ST/tools/neuter.py $db_name --filestore || $ST/tools/neuter.py $db_name
+    # show DB version and size
+    pl | grep $db_name
 }
