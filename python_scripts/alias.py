@@ -9,7 +9,6 @@ from psycopg2 import OperationalError, ProgrammingError, connect
 from utils import env
 from git_odoo import _repos, _get_version_from_db, App as _git_odoo_app
 
-from collections import defaultdict
 
 ########################
 #   decorators stuff   #
@@ -588,20 +587,11 @@ def typos_and_simple_aliases():
         "thingsToDiscussAtNextSquadMeeting": "e ~/Documents/meetings_notes/thingsToDiscussAtNextSquadMeeting.txt",
     }
 
-    # remove unintentionnal duplicates
-    typos_dict = {k: set(v) for k, v in typos_dict.items()}
+    # reverse mappping (and remove duplicates)
+    alias_dict = {typo: good for good, typos in typos_dict.items() for typo in typos}
 
-    # include simple aliases in typos_dict
-    typos_dict = defaultdict(set, typos_dict)
-    for k, v in simple_aliases.items():
-        typos_dict[v].add(k)
-
-    typo_alias_list = [
-        f"alias '{typo}'='{good}'\n"
-        for good, typos in typos_dict.items()
-        for typo in typos
-    ]
-    return typo_alias_list
+    alias_dict.update(simple_aliases)
+    return [f"alias '{typo}'='{good}'\n" for typo, good in alias_dict.items()]
 
 
 def generate_aliases():
