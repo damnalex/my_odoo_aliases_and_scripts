@@ -55,6 +55,10 @@ eza() {
         ezatig
         return
         ;;
+    typo)
+        eza py typos_and_simple_aliases
+        return
+        ;;
     *)
         echo "eza shell --> alias.sh"
         echo "eza loader --> alias_loader.sh"
