@@ -591,7 +591,14 @@ def typos_and_simple_aliases():
     alias_dict = {typo: good for good, typos in typos_dict.items() for typo in typos}
 
     alias_dict.update(simple_aliases)
-    return [f"alias '{typo}'='{good}'\n" for typo, good in alias_dict.items()]
+
+    # done this way to enbale syntaxe highlighting with Zsh-syntax-highlighting
+    # (it fails with some aliases, not sure what's the root cause)
+    # and autocompletion
+    # (the one that fail the highlight also fail to complete)
+    alias_template = "{typo} () {{ {good} $@  }}\n"
+    return [alias_template.format(good=good, typo=typo) for typo, good in alias_dict.items()]
+    # return [f"alias '{typo}'='{good}'\n" for typo, good in alias_dict.items()]
 
 
 def generate_aliases():
