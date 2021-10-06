@@ -596,8 +596,8 @@ def typos_and_simple_aliases():
     # (it fails with some aliases, not sure what's the root cause)
     # and autocompletion
     # (the one that fail the highlight also fail to complete)
-    alias_template = "{typo} () {{ {good} $@  }}\n"
-    return [alias_template.format(good=good, typo=typo) for typo, good in alias_dict.items()]
+    templ = "{typo} () {{ {good} $@  }}\n"
+    return [templ.format(typo=t, good=g) for t, g in alias_dict.items()]
     # return [f"alias '{typo}'='{good}'\n" for typo, good in alias_dict.items()]
 
 
