@@ -446,7 +446,7 @@ build_odoo_virtualenv() {
         python_inter="-p$(which python3)"
     fi
     local start_dir=$(pwd)
-    cd $SRC_MULTI/$version || return 1
+    cd $SRC_MULTI/$version || build_multiverse_branch $version # existance of the multiverse branch is mandatory
     if [ -d "o_${version}" ]; then
         echo "virtualenv already exist, rebuilding"
         rm -rf "o_${version}"
