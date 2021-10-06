@@ -397,6 +397,7 @@ build_multiverse_branch() {
     local repos=("odoo" "enterprise" "design-themes")
     for rep in $repos; do {
         echo ${rep}
+        git -C $SRC_MULTI/master/${rep} fetch
         git -C $SRC_MULTI/master/${rep} worktree prune
         git -C $SRC_MULTI/master/${rep} worktree add $SRC_MULTI/${version}/${rep} ${version}
     }; done
@@ -435,6 +436,7 @@ update_all_multiverse_branches() {
 build_odoo_virtualenv() {
     # (re)create a new virtual env, using the corresponding multiverse branch as a reference
     # stores the virtual env in the multiverse branche, under the o_XXX folder
+    deactivate # I don't want virtual envs being based on other virtual envs
     local version=$1
     local python_inter
     if [[ $# -gt 1 ]]; then
@@ -445,7 +447,6 @@ build_odoo_virtualenv() {
     fi
     local start_dir=$(pwd)
     cd $SRC_MULTI/$version || return 1
-    deactivate || echo "no virtualenv activated"
     if [ -d "o_${version}" ]; then
         echo "virtualenv already exist, rebuilding"
         rm -rf "o_${version}"
