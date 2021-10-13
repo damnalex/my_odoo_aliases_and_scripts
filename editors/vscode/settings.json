@@ -18,6 +18,7 @@
     "debug.toolBarLocation": "docked",
     "editor.cursorSurroundingLines": 4,
     "editor.lineNumbers": "relative",
+    "explorer.openEditors.visible": 0,
     // special styles
     "editor.tokenColorCustomizations": {
         "textMateRules": [
