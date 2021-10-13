@@ -664,7 +664,7 @@ sync_filestore_to_remote() {
     for folder in $(ls); do
         echo "starting work on $folder ------------------------------"
         zip -r "tmp$folder.zip" $folder/*
-        echo "finishing zip folder"
+        echo "finished zipping folder"
         echo "sending °°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°"
         rsync -rhP "tmp$folder.zip" "$remote_host:$remote_filestore_path"
         echo "finished sending  °°°°°°°°°°°°°°°°°°°°°°°°°°°°°"
