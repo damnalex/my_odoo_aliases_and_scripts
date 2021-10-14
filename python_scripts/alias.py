@@ -502,8 +502,9 @@ def o_user(*trigrams):
         users = {user["id"]: user["login"] for user in users_data}
     url_template = "https://www.odoo.com/web?debug=1#id={id}&action=17&model=res.users&view_type=form"
     urls = [url_template.format(id=uid) for uid in list(users) + uids]
+    print(users)
     for url in urls:
-        webbrowser.open(url)
+        # webbrowser.open(url)
         print(url)
     if len(urls) != len(trigrams):
         msg = "\n\n\nLooks like some user(s) could no be found"
