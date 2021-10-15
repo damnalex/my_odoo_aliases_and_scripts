@@ -620,7 +620,7 @@ def generate_aliases():
         $AP/python_scripts/alias.py {fname} $@\
         {diff_exec}
     }}
-    """
+\n"""
     differed_execution_code = f"""
         while read l; do
             eval $l;
