@@ -516,6 +516,19 @@ def o_user(*trigrams):
         raise Invalid_params(msg + debug_info)
 
 
+@call_from_shell
+def o_ver(domain, verbose=True):
+    # returns versions information about an odoo database, given a domain name
+    import xmlrpc.client
+
+    version_info = xmlrpc.client.ServerProxy(
+        f"https://{domain}/xmlrpc/2/common"
+    ).version()
+    if verbose:
+        print(version_info)
+    return version_info
+
+
 @shell_end_hook
 @call_from_shell
 def our_modules_update_and_compare(*args):
