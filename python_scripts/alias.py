@@ -504,7 +504,8 @@ def o_user(*trigrams):
     urls = [url_template.format(id=uid) for uid in list(users) + uids]
     print(users)
     for url in urls:
-        # webbrowser.open(url)
+        if uids:
+            webbrowser.open(url)
         print(url)
     if len(urls) != len(trigrams):
         msg = "\n\n\nLooks like some user(s) could no be found"
