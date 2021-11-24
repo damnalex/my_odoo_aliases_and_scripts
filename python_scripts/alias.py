@@ -440,7 +440,7 @@ def shurl(long_url):
 
 
 @call_from_shell
-def emp(*trigrams):
+def o_emp(*trigrams):
     """open the employee page for the given trigrams"""
     import webbrowser
 
@@ -583,6 +583,7 @@ def typos_and_simple_aliases():
             "cler",
         ],
         "new_typo": ["new_ypo", "new_tupo", "new_ytpo", "newtypo"],
+        "o_emp": ["emp"],
     }
 
     simple_aliases = {
