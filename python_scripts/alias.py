@@ -222,7 +222,10 @@ def so(*args):
         return
     _so_checker(*args)
     cmd = _so_builder(*args)
-    out = sh_run(cmd)
+    try:
+        out = sh_run(cmd)
+    except KeyboardInterrupt:
+        out = "\n\n\n\nServer Stopped by KeyboardInterrupt"
     # this is to make `so --help` work
     print(out)
 
