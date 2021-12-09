@@ -571,7 +571,15 @@ def typos_and_simple_aliases():
         "oes": ["eos", "ose", "oe", "eso"],
         "eza": ["eaz", "za", "ez"],
         "ezatig": ["ezatgi", "eaztgi"],
-        "exit": ["exiit", "exit$", "exiy", "exitt", "exirt", "exir"],
+        "exit": [
+            "exiit",
+            "exit$",
+            "exiy",
+            "exitt",
+            "exirt",
+            "exir",
+            "exut",
+        ],
         "clear": [
             "clera",
             "clea",
