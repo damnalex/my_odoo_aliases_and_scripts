@@ -182,7 +182,7 @@ git_last_X_hashes() {
         local repo=$(pwd)
     fi
     #
-    git -C $repo rev-list -n $1 HEAD
+    git -C $repo rev-list -n $1 HEAD | tac
 }
 
 git_rebase_and_merge_X_on_Y() {
