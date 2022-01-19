@@ -594,7 +594,6 @@ def typos_and_simple_aliases():
             "cler",
         ],
         "new_typo": ["new_ypo", "new_tupo", "new_ytpo", "newtypo"],
-        "o_emp": ["emp"],
     }
 
     simple_aliases = {
