@@ -17,7 +17,6 @@
     "zenMode.fullScreen": false,
     "debug.toolBarLocation": "docked",
     "editor.cursorSurroundingLines": 4,
-    "editor.lineNumbers": "relative",
     "explorer.openEditors.visible": 0,
     "editor.guides.bracketPairs": "active",
     // special styles
