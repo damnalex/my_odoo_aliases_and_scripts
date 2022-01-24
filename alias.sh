@@ -695,7 +695,7 @@ sync_filestore_to_remote() {
 
 test-dump() {
     # test dump (in the current folder) for safety
-    $PSS/saas/test_dump_safety.sh dump.sql || return 1
+    $PSS/saas/test_dump_safety.py dump.sql || return 1
     # create a DB using the dump.sql file in the current folder
     local db_name="$1-test"
     createdb $db_name || return 1
