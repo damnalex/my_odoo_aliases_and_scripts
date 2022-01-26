@@ -77,3 +77,11 @@ source $AP/completion.sh
 # this file may be deleted at any time, so we need to make sure that it actually exists before trying to source it
 touch $AP/temporary-scripts.sh
 source $AP/temporary-scripts.sh
+
+
+##################################################
+###            Finishing touches               ###
+##################################################
+# scripts / alias defined in this repo to call at each terminal startup
+
+govcur
