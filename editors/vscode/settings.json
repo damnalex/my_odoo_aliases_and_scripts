@@ -68,7 +68,6 @@
             120,
         ],
     },
-    "python.pythonPath": "/usr/bin/python3",
     "python.linting.pycodestyleEnabled": true,
     "python.linting.pycodestyleArgs": [
         "--ignore=E501,E301,E302,E126,E123,E127,E128,E265,E305,W605",
