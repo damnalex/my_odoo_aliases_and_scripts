@@ -701,7 +701,7 @@ test-dump() {
     createdb $db_name || return 1
     psql -d $db_name <dump.sql || return 1
     # neutralize db for local testing
-    $ST/tools/neuter.py $db_name --filestore || $ST/tools/neuter.py $db_name
+    $ST/lib/neuter.py $db_name --filestore || $ST/lib/neuter.py $db_name
     # show DB version and size
     pl | grep $db_name
 }

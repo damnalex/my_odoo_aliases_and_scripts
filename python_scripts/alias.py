@@ -598,8 +598,8 @@ def typos_and_simple_aliases():
 
     simple_aliases = {
         "clean_database": "$ST/clean_database.py",
-        "odoosh": "$ST/odoosh/odoosh.py",
-        "neuter_db": "$ST/tools/neuter.py",
+        "odoosh": "$ST/scripts/odoosh/odoosh.py",
+        "neuter_db": "$ST/lib/neuter.py",
         "debo2": "ptvsd2_so",
         "debo": "ptvsd3_so",
         "gov": "go_venv",
