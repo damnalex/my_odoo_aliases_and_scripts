@@ -14,7 +14,7 @@ from git_odoo import _repos, _get_version_from_db, App as _git_odoo_app
 #   decorators stuff   #
 ########################
 
-CALLABLE_FROM_SHELL = set()
+CALLABLE_FROM_SHELL = dict()
 SHELL_END_HOOK = set()
 SHELL_DIFFERED_COMMANDS_FILE = f"{env.AP}/differed_commands.txt"
 differed_sh_run_new_batch = True
@@ -22,7 +22,7 @@ differed_sh_run_new_batch = True
 
 def call_from_shell(func):
     # decorator for functions that are meant to be called directly from the shell
-    CALLABLE_FROM_SHELL.add(func.__name__)
+    CALLABLE_FROM_SHELL[func.__name__] = func
     return func
 
 
@@ -30,14 +30,15 @@ def shell_end_hook(func):
     # decorator for functions that need to call a shell
     # command AFTER the python script exits
     # the decorated app should call `differed_sh_run`
+    # can only work with functions decorated with `call_from_shell`
     SHELL_END_HOOK.add(func.__name__)
     return func
 
 
 def differed_sh_run(cmd):
     # prepare a command to be executed after the end of the python script
-    # can only work in functions decorated with `shell_end_hook`
-    # or called by functions decorated with `shell_end_hook`
+    # can only work in functions decorated with `shell_end_hook` and `call_from_shell`
+    # or called by functions decorated with `shell_end_hook` and `call_from_shell`
     global differed_sh_run_new_batch
     write_mode = "w" if differed_sh_run_new_batch else "a"
     with open(SHELL_DIFFERED_COMMANDS_FILE, write_mode) as f:
@@ -664,9 +665,8 @@ if __name__ == "__main__":
         else:
             assert method_name in CALLABLE_FROM_SHELL
             method_params = sys.argv[2:]
-            method_params = ", ".join(f"'{param}'" for param in method_params)
             try:
-                eval(f"{method_name}({method_params})")
+                CALLABLE_FROM_SHELL[method_name](*method_params)
             except (Invalid_params, UserAbort) as nice_e:
                 print(nice_e)
     else:
