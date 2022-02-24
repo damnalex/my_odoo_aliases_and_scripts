@@ -355,36 +355,6 @@ source $ST/scripts/completion/oe-support-completion.sh
 complete -o default -F _oe-support oes
 
 # pythonable
-bring_back_masterbeta_to_master() {
-    # tool to bring back the master-beta branch of oes
-    # to the same "code state" as master, so there is no need
-    # to force push to test new things easily
-    setopt localoptions rmstarsilent
-    local current_working_dir=$(pwd)
-    cd $ST
-    # create temporary folder and make sure it is clean (maybe the folder already exists)
-    mkdir /tmp/tempfolderforoesupportrepo
-    rm -rf /tmp/tempfolderforoesupportrepo/*
-    # copy everything except the dotfiles, dotfolders, and __pycache__ from the master branche
-    git fetch
-    git checkout origin/master
-    cp -r * /tmp/tempfolderforoesupportrepo
-    rm -rf /tmp/tempfolderforoesupportrepo/__pycache__
-    # get the curret commit hash to document the new commit
-    local master_hash=$(git rev-parse --short HEAD)
-    # empty the code of the master-beta branch
-    git switch master-beta
-    rm -rf *
-    # apply the master branch code onto master-beta
-    cp -r /tmp/tempfolderforoesupportrepo/* .
-    git add .
-    git commit -m "[bringing back to master] $master_hash"
-
-    # go back to my starting point
-    cd $current_working_dir
-}
-
-# pythonable
 droplike() {
     # drop the DBs with the given patern (sql style patern)
     local dbs_list=$(list_db_like $1 | tr '\n' ' ')
