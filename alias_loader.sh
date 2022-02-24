@@ -79,7 +79,6 @@ source $AP/completion.sh
 touch $AP/temporary-scripts.sh
 source $AP/temporary-scripts.sh
 
-
 ##################################################
 ###            Finishing touches               ###
 ##################################################
