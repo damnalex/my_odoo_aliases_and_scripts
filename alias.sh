@@ -315,7 +315,7 @@ golist() {
 
 (go_fetch >/dev/null 2>&1 &)
 # this is to fetch everytime a terminal is loaded, or sourced, so it happens often
-# & is especially important here
+# `&` is especially important here
 
 _db_version() {
     # get the version on an odoo DB
@@ -471,44 +471,6 @@ go_venv() {
 go_venv_current() {
     # use the virtualenv for the currently checked out odoo branch
     go_venv $(git_branch_version $ODOO)
-}
-
-# pythonable
-build_runbot() {
-    # build a runbot like DB
-    # TODO: rebuild the runbots and make them immortal
-    local version=$1
-    local new_db_name=$2
-    dropodoo $new_db_name 2>/dev/null
-    mkdir $ODOO_STORAGE/filestore/$new_db_name/
-    case $version in
-    8)
-        createdb -T CLEAN_ODOO_V8 $new_db_name
-        cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V8/* $ODOO_STORAGE/filestore/$new_db_name/
-        ;;
-    9)
-        createdb -T CLEAN_ODOO_V9 $new_db_name
-        cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V9/* $ODOO_STORAGE/filestore/$new_db_name/
-        ;;
-    10)
-        createdb -T CLEAN_ODOO_V10 $new_db_name
-        cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V10/* $ODOO_STORAGE/filestore/$new_db_name/
-        ;;
-    11)
-        createdb -T CLEAN_ODOO_V11 $new_db_name
-        cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V11/* $ODOO_STORAGE/filestore/$new_db_name/
-        ;;
-    12)
-        createdb -T CLEAN_ODOO_V12 $new_db_name
-        cp -r $ODOO_STORAGE/filestore/CLEAN_ODOO_V12/* $ODOO_STORAGE/filestore/$new_db_name/
-        ;;
-    *)
-        echo "no match for version ${version}"
-        echo "list of valid version:\n9\n10\n11\n12"
-        return 1
-        ;;
-    esac
-    echo 'built'
 }
 
 #local-saas

@@ -3,8 +3,3 @@ postgres
 template0
 template1
 dummy_undropable_db
-CLEAN_ODOO_V12
-CLEAN_ODOO_V11
-CLEAN_ODOO_V10
-CLEAN_ODOO_V9
-CLEAN_ODOO_V8
