@@ -6,18 +6,18 @@
 	excludesfile = /home/odoo/.gitignore_global
 	editor = vim
 [alias]
-    hist = log --graph --all --date=short --pretty=format:'%C(dim white)%h%Creset%C(auto)%d%Creset %s %C(blue)<%an> %C(dim green)(%cd)%Creset%n'
+	hist = log --graph --all --date=short --pretty=format:'%C(dim white)%h%Creset%C(auto)%d%Creset %s %C(blue)<%an> %C(dim green)(%cd)%Creset%n'
 	alias = ! git config --get-regexp ^alias\\. | sed -e s/^alias\\.// -e s/\\ /\\ =\\ /
 [commit]
-    verbose = true 
+	verbose = true
 	gpgsign = false
 [filter "lfs"]
-    clean = git-lfs clean -- %f
-    smudge = git-lfs smudge -- %f
-    process = git-lfs filter-process
-    required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
 [checkout]
-    defaultRemote = origin
+	defaultRemote = origin
 [gpg]
 	program = gpg
 [rebase]
