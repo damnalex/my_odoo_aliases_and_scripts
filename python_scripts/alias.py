@@ -608,7 +608,7 @@ def typos_and_simple_aliases():
         "runbot": "build_runbot",
         "oe-support": "oes",
         "ezagit": "git -C $AP",
-        "ezatig": "tig -C$AP",
+        "ezatig": "tig -C $AP",
         "python3.7": "/usr/local/opt/python@3.7/bin/python3.7",
         "python3.9": "/usr/local/opt/python@3.9/bin/python3.9",
         "thingsToDiscussAtNextSquadMeeting": "e ~/Documents/meetings_notes/thingsToDiscussAtNextSquadMeeting.txt",
