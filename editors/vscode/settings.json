@@ -61,6 +61,7 @@
     "editor.inlineSuggest.enabled": true,
     "workbench.settings.useSplitJSON": true,
     "files.defaultLanguage": "${activeEditorLanguage}",
+    "workbench.editor.historyBasedLanguageDetection": true,
     // language specific settings
     "[python]": {
         "editor.rulers": [
