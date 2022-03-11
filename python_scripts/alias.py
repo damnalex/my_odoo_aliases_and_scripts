@@ -524,11 +524,9 @@ def o_user(*trigrams):
 @call_from_shell
 def o_ver(domain, verbose=True):
     # returns versions information about an odoo database, given a domain name
-    import xmlrpc.client
+    from xmlrpc.client import ServerProxy as server
 
-    version_info = xmlrpc.client.ServerProxy(
-        f"https://{domain}/xmlrpc/2/common"
-    ).version()
+    version_info = server(f"https://{domain}/xmlrpc/2/common").version()
     if verbose:
         print(version_info)
     return version_info
