@@ -82,6 +82,7 @@
     "gitlens.heatmap.locations": [
         "gutter"
     ],
+    "gitlens.codeLens.enabled": false,
     "git-graph.commitDetailsView.location": "Docked to Bottom",
     "git-graph.date.format": "Relative",
     "git-graph.date.type": "Commit Date",
