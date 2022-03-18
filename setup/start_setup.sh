@@ -65,15 +65,15 @@ if [[ $1 == "step2" ]]; then
     run 15 echo " "
     echo "Base setup for multiverse done: building main branches"
     echo "°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°"
+    build_multiverse_branch 15.0
+    build_multiverse_branch 14.0
     build_multiverse_branch 13.0
-    build_multiverse_branch 12.0
-    build_multiverse_branch 11.0
     run 15 echo " "
     echo "Main branches of the mutliverse done: building main virtualenvs"
     echo "°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°"
+    build_odoo_virtualenv 15.0
+    build_odoo_virtualenv 14.0
     build_odoo_virtualenv 13.0
-    build_odoo_virtualenv 12.0
-    build_odoo_virtualenv 11.0
 
     run 15 echo " "
     echo "Settings up editors"
