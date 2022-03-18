@@ -80,6 +80,8 @@ export APPS_VERSION=saas-14.1
 export APPS_PYTHON_VERSION=python3
 export APPS_ODOO_BIN=odoo-bin
 
+export DOMAIN_SRV=odoo.local
+
 ##################################################
 ### load all the other files in the $AP folder ###
 ##################################################
