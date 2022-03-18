@@ -366,6 +366,7 @@ droplike() {
 }
 
 # pythonable
+#TODO update this to use the dockerized_saas sources
 build_multiverse_branch() {
     # create a new mutliverse branche in $SRC_MULTI
     local version=$1
@@ -380,6 +381,7 @@ build_multiverse_branch() {
 }
 
 # pythonable
+#TODO update this to use the dockerized_saas sources
 update_multiverse_branch() {
     # git pull the repos of the given mutliverse branche
     local version=$1
@@ -393,6 +395,7 @@ update_multiverse_branch() {
 }
 
 # pythonable
+#TODO update this to use the dockerized_saas sources
 update_all_multiverse_branches() {
     # git pull the repos of all the multivers branches
     echo "###########################################"
@@ -409,6 +412,7 @@ update_all_multiverse_branches() {
     echo "###########################################"
 }
 
+#TODO update this to use the dockerized_saas sources
 build_odoo_virtualenv() {
     # (re)create a new virtual env, using the corresponding multiverse branch as a reference
     # stores the virtual env in the multiverse branche, under the o_XXX folder
@@ -459,6 +463,7 @@ rebuild_main_virtualenvs() {
     }; done
 }
 
+#TODO update this to use the dockerized_saas sources
 go_venv() {
     # use the virtual env of the given odoo version
     deactivate 2>/dev/null
@@ -477,6 +482,7 @@ go_venv_current() {
 }
 
 #local-saas
+# TODO get rid of this once dockerized saas works
 
 # pythonable
 build_local_saas_db() {
@@ -534,6 +540,13 @@ list_local_saas() {
     echo "to create a new one --> build_local_saas_db db-name"
     echo "to drop --> dropodoo db-name"
 }
+
+
+update_dockerized_saas_source() {
+    echo "TODO"
+}
+
+
 
 #psql aliases
 # pythonable

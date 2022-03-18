@@ -11,8 +11,9 @@ export DESIGN_THEMES="$SRC/design-themes"
 export INTERNAL="$SRC/internal"
 export PAAS="$SRC/paas"
 export ST="$SRC/support-tools"
-export SRC_MULTI="$HOME/multi_src"
 export USER_DOC="$SRC/documentation-user"
+export SRC_MULTI="$HOME/multi_src"
+export SRC_DOCKERIZED="$HOME/dockerized_src"
 
 if [[ $OSTYPE =~ ^darwin ]]; then
     # macos specific stuffs
@@ -59,6 +60,25 @@ bindkey '^x^e' edit-command-line
 if ! grep -q "source $0" ~/.zshrc; then
     echo "source $0" >>~/.zshrc
 fi
+
+# dockerized-saas stuff
+export ODOO_SRC_ROOT=$SRC_DOCKERIZED
+
+export ACCOUNTS_VERSION=saas-15.2
+export ACCOUNTS_PYTHON_VERSION=python3
+export ACCOUNTS_ODOO_BIN=odoo-bin
+
+export MASTER_VERSION=14.0
+export MASTER_PYTHON_VERSION=python3
+export MASTER_ODOO_BIN=odoo-bin
+
+export TRIAL_VERSION=saas-15.1
+export TRIAL_PYTHON_VERSION=python3
+export TRIAL_ODOO_BIN=odoo-bin
+
+export APPS_VERSION=saas-14.1
+export APPS_PYTHON_VERSION=python3
+export APPS_ODOO_BIN=odoo-bin
 
 ##################################################
 ### load all the other files in the $AP folder ###
