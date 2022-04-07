@@ -109,16 +109,19 @@ def clear_pyc(*args):
         sh_run(f"find {env.SRC_MULTI} -name '*.pyc' -delete")
 
 
-def psql(dbname, query):
+def psql(dbname, query, ignore_error=False):
     # execute an sql query on a given database
     with connect(f"dbname='{dbname}'") as conn, conn.cursor() as cr:
         cr.execute(query)
         try:
             return cr.fetchall()
         except ProgrammingError:
-            # printing a tactical dot to know that we went through here at least
-            print(".")
-            return []
+            if ignore_error:
+                # printing a tactical dot to know that we went through here at least
+                print(".")
+                return []
+            else:
+                raise
 
 
 #####################################################################################
