@@ -5,6 +5,7 @@ import collections
 import subprocess
 from textwrap import dedent as _dd
 from psycopg2 import OperationalError, ProgrammingError, connect
+from inspect import signature
 
 from utils import env
 from git_odoo import _repos, _get_version_from_db, App as _git_odoo_app
@@ -14,6 +15,7 @@ from git_odoo import _repos, _get_version_from_db, App as _git_odoo_app
 #   decorators stuff   #
 ########################
 
+IGNORE_GENERIC_HELP = set()
 CALLABLE_FROM_SHELL = dict()
 SHELL_END_HOOK = set()
 SHELL_DIFFERED_COMMANDS_FILE = f"{env.AP}/differed_commands.txt"
@@ -44,6 +46,12 @@ def differed_sh_run(cmd):
     with open(SHELL_DIFFERED_COMMANDS_FILE, write_mode) as f:
         f.write(cmd + "\n")
     differed_sh_run_new_batch = False
+
+
+def ignore_help(func):
+    # decorated fucntion should not be caught be the generic --help handling
+    IGNORE_GENERIC_HELP.add(func.__name__)
+    return func
 
 
 #####################################
@@ -101,7 +109,8 @@ def sh_run(cmd, **kwargs):
 
 @call_from_shell
 def clear_pyc(*args):
-    # remove compiled python files from the main source folder
+    """remove compiled python files from the main source folder
+    --all : also cover the multiverse"""
     sh_run(f"find {env.SRC} -type d -name __pycache__ | xargs rm -rf")
     sh_run(f"find {env.SRC} -name '*.pyc' -delete")
     if args and args[0] == "--all":
@@ -217,9 +226,10 @@ def _so_builder(db_name, port_number=8069, *args):
     return cmd
 
 
+@ignore_help
 @call_from_shell
 def so(*args):
-    # start an odoo db
+    """start an odoo db"""
     if len(args) and args[0] == "--help":
         so("fakeDBname", 678, "--help")
         # fakeDBname & 678 don't mean anything here
@@ -244,13 +254,19 @@ def _soiu(mode, db_name, *apps):
 
 @call_from_shell
 def soi(db_name, *apps):
-    # install modules args[1:] on DB args[0]
+    """install some given modules on a given DB
+
+    usage:
+        soi <db_name> [<modules>...]"""
     _soiu("install", db_name, *apps)
 
 
 @call_from_shell
 def sou(db_name, *apps):
-    # upgrade modules args[1:] on DB args[0]
+    """upgrade some given modules on a given DB
+
+    usage:
+        sou <db_name> [<modules>...]"""
     _soiu("upgrade", db_name, *apps)
 
 
@@ -295,7 +311,7 @@ def ptvsd3_so(*args):
 @shell_end_hook
 @call_from_shell
 def go(*args):
-    # switch branch for all odoo repos
+    """switch branch for all odoo repos"""
     print("cleaning all the junk")
     clear_pyc()
     params = {"checkout": True, "<version>": args}
@@ -309,7 +325,7 @@ def go(*args):
 @shell_end_hook
 @call_from_shell
 def go_update_and_clean(version=None):
-    # git pull on all the repos of the main source folder (except for support-tools)
+    """git pull on all the repos of the main source folder (except for support-tools)"""
     params = {"pull": True, "--version": version}
     _git_odoo_app(**params)
     clear_pyc()
@@ -321,7 +337,7 @@ def go_update_and_clean(version=None):
 @shell_end_hook
 @call_from_shell
 def godb(db_name):
-    # switch repos branch to the version of the given DB
+    """switch repos branch to the version of the given DB"""
     try:
         version = _get_version_from_db(db_name)
     except OperationalError:
@@ -335,7 +351,7 @@ def godb(db_name):
 @shell_end_hook
 @call_from_shell
 def goso(db_name, *args):
-    # switch repos to the version of given db and starts it
+    """switch repos to the version of given db and starts it"""
     godb(db_name)
     so(db_name, *args)
 
@@ -448,9 +464,15 @@ def shurl(long_url):
 
 @call_from_shell
 def o_emp(*trigrams):
-    """open the employee page for the given trigrams"""
+    """open the employee page for the given trigrams
+
+    usage:
+        o_emp trigrams...
+    """
     import webbrowser
 
+    if not trigrams:
+        raise Invalid_params("`trigrams` parameter is mandatory. check --help")
     r_exec = _xmlrpc_odoo_com()
     f_trigrams = (f"({trigram.lower()})" for trigram in trigrams)
     domain = ["|"] * (len(trigrams) - 1)
@@ -482,8 +504,12 @@ def o_emp(*trigrams):
 
 @call_from_shell
 def o_user(*trigrams):
-    """open the odoo.com page for the given users
-    trigrams is a list of trigrams or user ids"""
+    """provides a link to the odoo.com page for the given users
+    trigrams is a list of trigrams or user ids
+
+    usage:
+        o_user  [<trigrams>...]
+    """
     import webbrowser
 
     def _isint(s):
@@ -526,7 +552,7 @@ def o_user(*trigrams):
 
 @call_from_shell
 def o_ver(domain, verbose=True):
-    # returns versions information about an odoo database, given a domain name
+    """returns versions information about an odoo database, given a domain name"""
     from xmlrpc.client import ServerProxy as server, ProtocolError
     from requests import get
 
@@ -554,6 +580,7 @@ def our_modules_update_and_compare(*args):
 @shell_end_hook
 @call_from_shell
 def dummy_command(*args):
+    """Just a dummy command"""
     print("in python")
     differed_sh_run("echo 'in shell'")
 
@@ -673,9 +700,15 @@ if __name__ == "__main__":
         else:
             assert method_name in CALLABLE_FROM_SHELL
             method_params = sys.argv[2:]
-            try:
-                CALLABLE_FROM_SHELL[method_name](*method_params)
-            except (Invalid_params, UserAbort) as nice_e:
-                print(nice_e)
+            if "--help" in method_params and method_name not in IGNORE_GENERIC_HELP:
+                custom_help = CALLABLE_FROM_SHELL[method_name].__doc__
+                func_sign = str(signature(CALLABLE_FROM_SHELL[method_name]))
+                pretty_func_sign = f"{method_name}{func_sign}"
+                print(custom_help or f"No doc availlable\n {pretty_func_sign}")
+            else:
+                try:
+                    CALLABLE_FROM_SHELL[method_name](*method_params)
+                except (Invalid_params, UserAbort) as nice_e:
+                    print(nice_e)
     else:
         print("Missing arguments, require at least the function name")
