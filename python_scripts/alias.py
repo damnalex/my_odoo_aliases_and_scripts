@@ -381,7 +381,7 @@ def dropodoo(*dbs):
                 To override protection, modify the protection file at {protection_file}"""
             )
         # remove from meta
-        psql("meta", f"DELETE FROM databases WHERE name = '{db}'")
+        psql("meta", f"DELETE FROM databases WHERE name = '{db}'", ignore_error=True)
         # dropping
         if db.startswith("oes_"):
             print(f"Dropping the DB {db} using oe-support")
