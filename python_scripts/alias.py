@@ -693,22 +693,25 @@ def generate_aliases():
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        method_name = sys.argv[1]
-        if method_name == "--generate":
-            generate_aliases()
-        else:
-            assert method_name in CALLABLE_FROM_SHELL
-            method_params = sys.argv[2:]
-            if "--help" in method_params and method_name not in IGNORE_GENERIC_HELP:
-                custom_help = CALLABLE_FROM_SHELL[method_name].__doc__
-                func_sign = str(signature(CALLABLE_FROM_SHELL[method_name]))
-                pretty_func_sign = f"{method_name}{func_sign}"
-                print(custom_help or f"No doc availlable\n {pretty_func_sign}")
-            else:
-                try:
-                    CALLABLE_FROM_SHELL[method_name](*method_params)
-                except (Invalid_params, UserAbort) as nice_e:
-                    print(nice_e)
-    else:
+    if len(sys.argv) <= 1:
         print("Missing arguments, require at least the function name")
+        sys.exit(1)
+
+    method_name = sys.argv[1]
+    if method_name == "--generate":
+        generate_aliases()
+        sys.exit(0)
+
+    assert method_name in CALLABLE_FROM_SHELL
+    method_params = sys.argv[2:]
+    if "--help" in method_params and method_name not in IGNORE_GENERIC_HELP:
+        custom_help = CALLABLE_FROM_SHELL[method_name].__doc__
+        func_sign = str(signature(CALLABLE_FROM_SHELL[method_name]))
+        pretty_func_sign = f"{method_name}{func_sign}"
+        print(custom_help or f"No doc availlable\n {pretty_func_sign}")
+        sys.exit(0)
+
+    try:
+        CALLABLE_FROM_SHELL[method_name](*method_params)
+    except (Invalid_params, UserAbort) as nice_e:
+        print(nice_e)
