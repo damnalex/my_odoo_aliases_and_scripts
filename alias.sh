@@ -433,12 +433,12 @@ build_odoo_virtualenv() {
     virtualenv "$python_inter" "o_${version}"
     go_venv $version
     # ignoring in the standard requirements for psycopg2
-    sed -i "" "/psycopg2/d" $SRC_MULTI/$version/odoo/requirements.txt
-    pip install -r $SRC_MULTI/$version/odoo/requirements.txt
-    git -C $SRC_MULTI/$version/odoo stash
-    sed -i "" "/psycopg2/d" $ST/requirements.txt
-    pip install -r $ST/requirements.txt
-    git -C $ST stash
+    cp $SRC_MULTI/$version/odoo/requirements.txt /tmp/requirements.txt
+    sed -i "" "/psycopg2/d" /tmp/requirements.txt
+    pip install -r /tmp/requirements.txt
+    cp $ST/requirements.txt /tmp/requirements.txt
+    sed -i "" "/psycopg2/d" /tmp/requirements.txt
+    pip install -r /tmp/requirements.txt
     # adding my custom requirements (includes psycopg2-binary)
     pip install -r $AP/python_scripts/requirements.txt
     pip install -r $AP/python_scripts/other_requirements.txt
