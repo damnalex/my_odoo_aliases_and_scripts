@@ -113,7 +113,7 @@ def clear_pyc(*args):
     --all : also cover the multiverse"""
     sh_run(f"find {env.SRC} -type d -name __pycache__ | xargs rm -rf")
     sh_run(f"find {env.SRC} -name '*.pyc' -delete")
-    if args and args[0] == "--all":
+    if "--all" in args:
         sh_run(f"find {env.SRC_MULTI} -type d -name __pycache__ | xargs rm -rf")
         sh_run(f"find {env.SRC_MULTI} -name '*.pyc' -delete")
 
@@ -149,7 +149,7 @@ def _so_checker(*args):
             _dd(
                 """\
                 At least give me a name :(
-                so dbname [port] [other_parameters]
+                so <dbname> [port] [other_parameters]
                 note: port is mandatory if you want to add other parameters"""
             )
         )
@@ -230,11 +230,11 @@ def _so_builder(db_name, port_number=8069, *args):
 @call_from_shell
 def so(*args):
     """start an odoo db"""
-    if len(args) and args[0] == "--help":
+    _so_checker(*args)
+    if args[0] == "--help":
         so("fakeDBname", 678, "--help")
         # fakeDBname & 678 don't mean anything here
         return
-    _so_checker(*args)
     cmd = _so_builder(*args)
     try:
         out = sh_run(cmd)
@@ -359,8 +359,9 @@ def goso(db_name, *args):
 @shell_end_hook
 @call_from_shell
 def dropodoo(*dbs):
-    """drop the given DBs and remove its filestore,
-    also removes it from meta if it was a local saas db"""
+    """drop the given DB(s) and remove its filestore,
+    also removes it from meta if it was a local saas db
+    dropodoo <db_name(s)> """
     import appdirs
     from shutil import rmtree
 
