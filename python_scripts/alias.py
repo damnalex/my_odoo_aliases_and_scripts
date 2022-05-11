@@ -482,25 +482,27 @@ def o_emp(*trigrams):
         "hr.employee.public",
         "search_read",
         [domain],
-        {"fields": ["id", "name"]},
+        {"fields": ["id", "name", "create_date"]},
     )
-    emps = {emp["id"]: emp["name"] for emp in employees_data}
     url_template = "https://www.odoo.com/web?debug=1#id={id}&model=hr.employee.public&view_type=form"
-    urls = (url_template.format(id=uid) for uid in emps)
-    for url in urls:
+    for emp in employees_data:
+        print(f"name : {emp['name']}\ncreate date : {emp['create_date']}")
+        url = url_template.format(id=emp['id'])
+        print("--> ", url)
         webbrowser.open(url)
-        print(url)
-    if len(emps) != len(trigrams):
-        if len(emps) < len(trigrams):
-            msg = "\n\n\nLooks like some employee(s) could not be found"
-        else:
-            msg = "\n\n\nLooks like some trigram(s) matches multiple employees"
-        debug_info = f"""
-            requested trigrams: {trigrams}
-            domain of the request: {domain}
-            results: {emps}
-            """
-        raise Invalid_params(msg + debug_info)
+    if len(employees_data) == len(trigrams):
+        return
+    # something went wrong
+    if len(employees_data) < len(trigrams):
+        msg = "\n\n\nLooks like some employee(s) could not be found"
+    else:
+        msg = "\n\n\nLooks like some trigram(s) matches multiple employees"
+    debug_info = f"""
+        requested trigrams: {trigrams}
+        domain of the request: {domain}
+        results: {employees_data}
+        """
+    raise Invalid_params(msg + debug_info)
 
 
 @call_from_shell
