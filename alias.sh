@@ -59,6 +59,11 @@ eza() {
         eza py typos_and_simple_aliases
         return
         ;;
+    .)
+        # open the folder itself
+        file_to_load="."
+        file_type="other"
+        ;;
     *)
         echo "eza shell --> alias.sh"
         echo "eza loader --> alias_loader.sh"
