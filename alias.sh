@@ -4,6 +4,7 @@
 
 reload_zshrc() {
     # don't modify this one from eza to avoid headaches
+    ap_compile
     source ~/.zshrc
     deactivate >/dev/null 2>&1
 }
@@ -97,7 +98,8 @@ eza() {
     fi
     cd "$current_dir"
     # editing is done, applying changes
-    source $AP/alias_loader.sh
+    # source $AP/alias_loader.sh
+    reload_zshrc
 }
 
 ###################################
