@@ -516,7 +516,7 @@ start_local_saas_db() {
 # pythonable
 local_saas_config_files_set() {
     # modify the source code of internal to allow me to run db with start_local_saas_db
-    sed -i "" "s|OAUTH_BASE_URL = 'http://accounts.127.0.0.1.xip.io:8369'|OAUTH_BASE_URL = 'https://accounts.odoo.com' #tempcomment|" $INTERNAL/default/saas_worker/const.py
+    sed -i "" "s|OAUTH_BASE_URL = 'http://accounts.127.0.0.1.nip.io:8369'|OAUTH_BASE_URL = 'https://accounts.odoo.com' #tempcomment|" $INTERNAL/default/saas_worker/const.py
     sed -i "" "s|if not has_role('trial'):|if not has_role('trial') and False: #tempcomment|" $INTERNAL/default/saas_worker/controllers/support.py
     # this following line only usefull on the mac until I find time to find the cause of the inconsistency
     sed -i "" "s|assert isnamedtuple(db)|#assert isnamedtuple(db) #tempcomment|" $INTERNAL/default/saas_worker/metabase.py
@@ -525,7 +525,7 @@ local_saas_config_files_set() {
 # pythonable
 local_saas_config_files_unset() {
     # fix what was done with local_saas_config_files_set
-    sed -i "" "s|OAUTH_BASE_URL = 'https://accounts.odoo.com' #tempcomment|OAUTH_BASE_URL = 'http://accounts.127.0.0.1.xip.io:8369'|" $INTERNAL/default/saas_worker/const.py
+    sed -i "" "s|OAUTH_BASE_URL = 'https://accounts.odoo.com' #tempcomment|OAUTH_BASE_URL = 'http://accounts.127.0.0.1.nip.io:8369'|" $INTERNAL/default/saas_worker/const.py
     sed -i "" "s|if not has_role('trial') and False: #tempcomment|if not has_role('trial'):|" $INTERNAL/default/saas_worker/controllers/support.py
     # this following line only usefull on the mac until I find time to find the cause of the inconsistency
     sed -i "" "s|#assert isnamedtuple(db) #tempcomment|assert isnamedtuple(db)|" $INTERNAL/default/saas_worker/metabase.py
