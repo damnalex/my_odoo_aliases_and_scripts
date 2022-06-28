@@ -650,6 +650,7 @@ def typos_and_simple_aliases():
         "ezatig": "tig -C $AP",
         "python3.7": "/usr/local/opt/python@3.7/bin/python3.7",
         "python3.9": "/usr/local/opt/python@3.9/bin/python3.9",
+        "python3.10": "/usr/local/opt/python@3.10/bin/python3.10",
         "thingsToDiscussAtNextSquadMeeting": "e ~/Documents/meetings_notes/thingsToDiscussAtNextSquadMeeting.txt",
     }
 
