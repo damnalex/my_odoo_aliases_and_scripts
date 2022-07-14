@@ -652,6 +652,7 @@ def typos_and_simple_aliases():
         "python3.9": "/usr/local/opt/python@3.9/bin/python3.9",
         "python3.10": "/usr/local/opt/python@3.10/bin/python3.10",
         "thingsToDiscussAtNextSquadMeeting": "e ~/Documents/meetings_notes/thingsToDiscussAtNextSquadMeeting.txt",
+        "file_server": "$SRC/misc_gists/simple_file_server/http_server_auth.py",
     }
 
     # reverse mappping (and remove duplicates)
