@@ -188,9 +188,8 @@ def odoo_repos_pull(version=None, fast=False):
     repos = VERSIONED_REPOS[:]
     if not fast:
         repos += SINGLE_VERSION_REPOS
-    if failed_checkouts:
-        for fc in failed_checkouts:
-            repos.remove(fc)
+    for fc in failed_checkouts:
+        repos.remove(fc)
 
     def pull(*args, **kwargs):
         kwargs["remote"].pull()
@@ -226,7 +225,7 @@ def odoo_repos_checkout(versions):
     """
     if len(versions) > 1:
         odoo_repos_checkout_multi(versions)
-        return
+        return []
     else:
         version = versions[0]
     # 1 version given, use it for the main standard odoo repos
