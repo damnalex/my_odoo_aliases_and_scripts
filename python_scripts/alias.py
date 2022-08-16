@@ -361,7 +361,7 @@ def goso(db_name, *args):
 def dropodoo(*dbs):
     """drop the given DB(s) and remove its filestore,
     also removes it from meta if it was a local saas db
-    dropodoo <db_name(s)> """
+    dropodoo <db_name(s)>"""
     import appdirs
     from shutil import rmtree
 
@@ -487,7 +487,7 @@ def o_emp(*trigrams):
     url_template = "https://www.odoo.com/web?debug=1#id={id}&model=hr.employee.public&view_type=form"
     for emp in employees_data:
         print(f"name : {emp['name']}\ncreate date : {emp['create_date']}")
-        url = url_template.format(id=emp['id'])
+        url = url_template.format(id=emp["id"])
         print("--> ", url)
         webbrowser.open(url)
     if len(employees_data) == len(trigrams):

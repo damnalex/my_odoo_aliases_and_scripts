@@ -541,7 +541,6 @@ list_local_saas() {
     echo "to drop --> dropodoo db-name"
 }
 
-
 #psql aliases
 # pythonable
 pl() {

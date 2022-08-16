@@ -67,7 +67,7 @@ fi
 # compile/generate non-bash aliases
 ap_compile() {
     python3 $AP/python_scripts/alias.py --generate
- }
+}
 
 # pure shell functions and aliases
 source $AP/alias.sh
