@@ -61,6 +61,7 @@
     "workbench.settings.useSplitJSON": true,
     "files.defaultLanguage": "${activeEditorLanguage}",
     "workbench.editor.historyBasedLanguageDetection": true,
+    "editor.experimental.stickyScroll.enabled": true,
     // language specific settings
     "[python]": {
         "editor.rulers": [
