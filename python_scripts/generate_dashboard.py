@@ -351,3 +351,7 @@ def my_generator():
 
 if __name__ == "__main__":
     my_generator()
+    # TODO
+    # dynamically generate agents (varia, not_varia) list
+    # automatically backup the current dashboard on odoo.com
+    # automaticlaly push the newly generated dashboard to odoo.com
