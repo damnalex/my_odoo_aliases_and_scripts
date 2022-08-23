@@ -109,6 +109,14 @@
     ],
     "tabnine.experimentalAutoImports": true,
     "trailing-spaces.deleteModifiedLinesOnly": true,
+    "highlight-matching-tag.highlightSelfClosing": true,
+    "highlight-matching-tag.styles": {
+        "opening": {
+            "full": {
+                "surround": "yellow",
+            },
+        },
+    },
     // end of settings
     "dummy.setting": "Anything under this line should be moved to another section.",
 }
