@@ -109,7 +109,6 @@
     ],
     "tabnine.experimentalAutoImports": true,
     "trailing-spaces.deleteModifiedLinesOnly": true,
-    "highlight-matching-tag.highlightSelfClosing": true,
     "highlight-matching-tag.styles": {
         "opening": {
             "full": {
