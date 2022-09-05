@@ -18,6 +18,7 @@
     "debug.toolBarLocation": "docked",
     "editor.cursorSurroundingLines": 4,
     "editor.guides.bracketPairs": "active",
+    "editor.stickyScroll.enabled": true,
     // special styles
     "editor.tokenColorCustomizations": {
         "textMateRules": [
@@ -61,7 +62,6 @@
     "workbench.settings.useSplitJSON": true,
     "files.defaultLanguage": "${activeEditorLanguage}",
     "workbench.editor.historyBasedLanguageDetection": true,
-    "editor.experimental.stickyScroll.enabled": true,
     // language specific settings
     "[python]": {
         "editor.rulers": [
