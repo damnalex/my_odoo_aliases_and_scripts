@@ -37,6 +37,9 @@ def shell_end_hook(func):
     return func
 
 
+# FIX_ME : if commands using `differed_sh_run` are called concurrently in seperate we get a race condition where one will override the other.
+# the second to call `differed_sh_run` overrides the first and the first to call loses the differed run
+# possible way to fix: store the differed calls in a postgres db, the table could be : id, command_to_run, unique_id_defined_in_python, state
 def differed_sh_run(cmd):
     # prepare a command to be executed after the end of the python script
     # can only work in functions decorated with `shell_end_hook` and `call_from_shell`
