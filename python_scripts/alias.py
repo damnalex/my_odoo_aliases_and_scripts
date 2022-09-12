@@ -20,6 +20,7 @@ CALLABLE_FROM_SHELL = dict()
 SHELL_END_HOOK = set()
 SHELL_DIFFERED_COMMANDS_FILE = f"{env.AP}/differed_commands.txt"
 differed_sh_run_new_batch = True
+SHELL_DIFFERED_COMMANDS_DATABASE = "my_alias_meta"
 
 
 def call_from_shell(func):
@@ -39,16 +40,68 @@ def shell_end_hook(func):
 
 # FIX_ME : if commands using `differed_sh_run` are called concurrently in seperate we get a race condition where one will override the other.
 # the second to call `differed_sh_run` overrides the first and the first to call loses the differed run
-# possible way to fix: store the differed calls in a postgres db, the table could be : id, command_to_run, unique_id_defined_in_python, state
+# possible way to fix: store the differed calls in a postgres db, the table could be : id, command_to_run, name of the calling python command, state
+# BETTER ALTERNATIVE (that will also allow concurrent calls of the same python alias): generate uuid in calling shell alias, and pass it to this script
 def differed_sh_run(cmd):
     # prepare a command to be executed after the end of the python script
     # can only work in functions decorated with `shell_end_hook` and `call_from_shell`
     # or called by functions decorated with `shell_end_hook` and `call_from_shell`
+    check_and_create_differed_commands_database()
+    prepare_differed_command(cmd)
+
+
+def check_and_create_differed_commands_database():
+    pass
+    # TODO:
+    # check that the database SHELL_DIFFERED_COMMANDS_DATABASE exist
+    #           --> create it if it doesnt
+    #                   --> create the right table(s)
+    #    else   --> check that the right table(s) exist(s)
+    #                   --> create the right table(s) if it doesn't
+
+
+def prepare_differed_command(cmd):
+    pass
+    # TODO:
+    # Inspect stack to find the first function decorated with `shell_end_hook` and `call_from_shell`
+    # Write in SHELL_DIFFERED_COMMANDS_DATABASE the command to execute, name of the "top function" and state `pending`
+
+    # BETTER ALTERNATIVE (that will also allow concurrent calls of the same python alias): generate uuid in calling shell alias, and pass it to this script
+
+    # TODO : remove bellow
     global differed_sh_run_new_batch
     write_mode = "w" if differed_sh_run_new_batch else "a"
     with open(SHELL_DIFFERED_COMMANDS_FILE, write_mode) as f:
         f.write(cmd + "\n")
     differed_sh_run_new_batch = False
+
+
+def cancel_pending_commands(func_name):
+    pass
+    # TODO:
+    # set state of differed commands in SHELL_DIFFERED_COMMANDS_DATABASE to `cancelled``
+
+    # BETTER ALTERNATIVE (that will also allow concurrent calls of the same python alias): generate uuid in calling shell alias, and pass it to this script
+
+
+def differed_code_execution_generator(func_name):
+    # TODO : generate shell code that :
+    # Read from SHELL_DIFFERED_COMMANDS_DATABASE database rather than file
+    # Only the pending commands, associated to the specific python function
+    # Then set their state to `done`
+
+    # BETTER ALTERNATIVE (that will also allow concurrent calls of the same python alias): generate uuid in calling shell alias, and pass it to this script
+
+    # TODO : remove below
+    differed_execution_code = f"""
+        while read l; do
+            eval $l;
+        done <{SHELL_DIFFERED_COMMANDS_FILE}
+        date >> $AP/differed_commands_history.txt
+        cat {SHELL_DIFFERED_COMMANDS_FILE} >> $AP/differed_commands_history.txt
+        cp /dev/null {SHELL_DIFFERED_COMMANDS_FILE}
+    """
+    return differed_execution_code
 
 
 def ignore_help(func):
@@ -559,12 +612,22 @@ def our_modules_update_and_compare(*args):
     differed_sh_run(cmds)
 
 
+# -----  simple tests -----
+
+
 @shell_end_hook
 @call_from_shell
 def dummy_command(*args):
     """Just a dummy command"""
     print("in python")
     differed_sh_run("echo 'in shell'")
+    dummy_nested_function()
+
+
+@shell_end_hook
+@call_from_shell
+def dummy_nested_function():
+    differed_sh_run("echo 'in shell, from nested'")
 
 
 # ^^^^^^^^^^^ aliasable functions above this line ^^^^^^^^^
@@ -654,17 +717,10 @@ def generate_aliases():
         {diff_exec}
     }}
 \n"""
-    differed_execution_code = f"""
-        while read l; do
-            eval $l;
-        done <{SHELL_DIFFERED_COMMANDS_FILE}
-        date >> $AP/differed_commands_history.txt
-        cat {SHELL_DIFFERED_COMMANDS_FILE} >> $AP/differed_commands_history.txt
-        cp /dev/null {SHELL_DIFFERED_COMMANDS_FILE}
-    """
 
     aliases = []
     for fname in CALLABLE_FROM_SHELL:
+        differed_execution_code = differed_code_execution_generator(fname)
         diff_exec = differed_execution_code if fname in SHELL_END_HOOK else ""
         aliases.append(shell_function_template.format(fname=fname, diff_exec=diff_exec))
 
@@ -699,4 +755,8 @@ if __name__ == "__main__":
     try:
         CALLABLE_FROM_SHELL[method_name](*method_params)
     except (Invalid_params, UserAbort) as nice_e:
+        cancel_pending_commands(method_name)
         print(nice_e)
+    except Exception as bad_e:
+        cancel_pending_commands(method_name)
+        raise
