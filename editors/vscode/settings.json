@@ -2,10 +2,9 @@
     // general style
     "workbench.colorTheme": "Monokai",
     "workbench.iconTheme": "material-icon-theme",
-    "editor.fontFamily": "'Operator Mono','Monaco','Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
+    "editor.fontFamily": "'Operator Mono','Fira Code','Monocraft','Monaco','Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
     "terminal.integrated.fontFamily": "'Monaco','Operator mono large','Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
     "editor.fontSize": 12,
-    "window.zoomLevel": -1,
     "editor.cursorBlinking": "expand",
     "workbench.editor.highlightModifiedTabs": true,
     "editor.renderWhitespace": "all",
