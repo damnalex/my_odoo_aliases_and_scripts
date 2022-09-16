@@ -10,6 +10,7 @@ phonenumbers
 prettytable
 ptvsd
 pudb
+pydevd-odoo
 pyldap
 pyopenssl
 pyserial
