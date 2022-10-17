@@ -554,7 +554,8 @@ pl() {
         local db_version=$(_db_version $db_name 2>/dev/null)
         if [ "$db_version" != "" ]; then #ignore non-odoo DBs
             local db_size=$(psql -tAqX -d $db_name -c "SELECT pg_size_pretty(pg_database_size('$db_name'));" 2>/dev/null)
-            echo "$db_version:    \t $db_name \t($db_size)"
+            local filestore_size=$(du -sh  $ODOO_STORAGE/filestore/$db_name 2>/dev/null | awk '{print $1}')
+            echo "$db_version:    \t $db_name \t($db_size + $filestore_size)"
         fi
     done
 }
