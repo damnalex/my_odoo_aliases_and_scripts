@@ -16,10 +16,10 @@ allowed_companies = [1, 2, 3, 4, 5, 14, 17, 18]
 company_ids_str = ",".join(str(e) for e in allowed_companies)
 help_project = 49
 squad_to_leader_employee = {
-    "varia": 136783,
-    "account": 399740,
-    "pos": 715807,
-    "stock": 885,
+    "varia": 136783,  # mao
+    "account": 1490367,  # tbs
+    "pos": 715807,  # lse
+    "stock": 885,  # nci
 }
 varia = [
     "bve",
@@ -34,15 +34,15 @@ varia = [
 ]
 
 not_varia = [
+    # BE
     "alt",
     "amay",
     "andu",
-    "angv",
+    "arsi",
     "asm",
     "crm",
     "dafr",
     "flhu",
-    "huog",
     "khah",
     "lse",
     "mvw",
@@ -50,11 +50,21 @@ not_varia = [
     "nea",
     "pebr",
     "pno",
-    "snd",
+    "quvb",
     "tbs",
     "thco",
+    "wama",
     "was",
     "yla",
+    # US
+    "adda",
+    "andg",
+    "cyro",
+    "dhs",
+    "evko",
+    "myhy",
+    "pca",
+    "qung",
 ]
 
 base_context = {
