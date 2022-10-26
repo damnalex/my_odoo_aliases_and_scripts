@@ -646,6 +646,9 @@ test-dump() {
     psql -d $db_name <$dump_f || return 1
     # neutralize db for local testing
     $ST/lib/neuter.py $db_name --filestore || $ST/lib/neuter.py $db_name
+    # start the database just long enough to check if there are custom modules
+    godb $db_name
+    so $db_name 12345 --stop-after-init
     # show DB version and size
     pl | grep $db_name
 }
