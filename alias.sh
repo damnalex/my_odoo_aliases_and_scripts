@@ -581,7 +581,7 @@ db_age() {
     psql -c "$query" -d postgres
 }
 
-export POSTGRES_LOC="$HOME/Library/Application Support/Postgres/var-11"
+export POSTGRES_LOC="$HOME/Library/Application Support/Postgres/var-14"
 pgbadger_compute() {
     # create the pgbadger result from $POSTGRES_LOC into pgbdager_output.html
     pgbadger -o /tmp/pgbadger_output.html "$POSTGRES_LOC/postgresql.log" && open /tmp/pgbadger_output.html
