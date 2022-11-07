@@ -82,6 +82,9 @@ def cancel_pending_commands(func_name):
     # set state of differed commands in SHELL_DIFFERED_COMMANDS_DATABASE to `cancelled``
 
     # BETTER ALTERNATIVE (that will also allow concurrent calls of the same python alias): generate uuid in calling shell alias, and pass it to this script
+    # TODO : remove below
+    # empty the planned differed actions
+    open(SHELL_DIFFERED_COMMANDS_FILE, "w").close()
 
 
 def differed_code_execution_generator(func_name):
