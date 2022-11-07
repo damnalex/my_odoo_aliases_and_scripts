@@ -242,6 +242,19 @@ wait_for_pid() {
     while kill -0 "$1" 2>/dev/null; do sleep 0.2; done
 }
 
+rename_underscore() {
+    # rename all the file in the current directory that have space in them
+    # to use underscore instead.
+    for file in *' '*; do
+        if [ -e "${file// /_}" ]; then
+            printf >&2 '%s\n' "Warning, skipping $file as the renamed version already exists"
+            continue
+        fi
+
+        mv -- "$file" "${file// /_}"
+    done
+}
+
 ##############################################
 #############  python  stuffs  ###############
 ##############################################
@@ -554,7 +567,7 @@ pl() {
         local db_version=$(_db_version $db_name 2>/dev/null)
         if [ "$db_version" != "" ]; then #ignore non-odoo DBs
             local db_size=$(psql -tAqX -d $db_name -c "SELECT pg_size_pretty(pg_database_size('$db_name'));" 2>/dev/null)
-            local filestore_size=$(du -sh  $ODOO_STORAGE/filestore/$db_name 2>/dev/null | awk '{print $1}')
+            local filestore_size=$(du -sh $ODOO_STORAGE/filestore/$db_name 2>/dev/null | awk '{print $1}')
             echo "$db_version:    \t $db_name \t($db_size + $filestore_size)"
         fi
     done
@@ -591,7 +604,6 @@ pgbadger_clean() {
     # empty the postgresql logs
     echo "" >"$POSTGRES_LOC/postgresql.log"
 }
-
 
 test-dump() {
     # test dump (in the current folder, by default) for safety
