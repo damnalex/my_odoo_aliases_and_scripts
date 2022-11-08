@@ -284,7 +284,10 @@ ssho() {
     echo "Could not connect to screen"
     echo "---------------------------"
     echo "---------------------------"
-    ssh odoo@$1.odoo.com
+    ssh odoo@$1.odoo.com && return
+    if [[ $1 = "test.upgrade" ]] || [[ $1 = "upgrade" ]]; then
+        ssh mao@test.upgrade.odoo.com -A && return
+    fi
 }
 
 # git stuffs
