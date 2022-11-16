@@ -613,15 +613,25 @@ test-dump() {
     local dump_parent_folder=${2:-$(pwd)}
     local dump_f=$dump_parent_folder/dump.sql
     $PSS/saas/test_dump_safety.py $dump_f || return 1
+    echo "Safety check OK"
     # create a DB using the dump.sql file in the current folder
     local db_name="$1-test"
     createdb $db_name || return 1
-    psql -d $db_name <$dump_f || return 1
+    echo "building DB"
+    psql -d $db_name <$dump_f &> /dev/null || return 1
     # neutralize db for local testing
     $ST/lib/neuter.py $db_name --filestore || $ST/lib/neuter.py $db_name
     # start the database just long enough to check if there are custom modules
     godb $db_name
+    # "does it even start" check
     so $db_name 12345 --stop-after-init
+    # check for custom modules
+    local current_dir=$(pwd)
+    cd $SRC/all_standard_odoo_apps_per_version
+    local db_version=$(psql -tAqX -d $db_name -c "select replace((regexp_matches(latest_version, '^\d+\.0|^saas~\d+\.\d+|saas~\d+'))[1], '~', '-') from ir_module_module where name='base'")
+    ./is_my_module_standard.py $db_version -m $(psql -tAqX -d $db_name -c "SELECT name from ir_module_module where state not in ('uninstalled', 'uninstallable');") | grep -A100 "Non Standard Modules"
+    echo "------------"
+    cd $current_dir
     # show DB version and size
     pl | grep $db_name
 }
