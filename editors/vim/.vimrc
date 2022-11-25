@@ -10,9 +10,10 @@ set nowrap  "don't wrap long lines
 set scrolloff=5  "don't let the cursor be at the very top or very bottom of the screen, helps have enough code context at all time
 set lazyredraw  "don't redraw the screen during macros --> makes them a slightly bit faster I guess ?
 set showcmd
-colorscheme default
-colorscheme darkblue
-colorscheme elflord
+" colorscheme default
+" colorscheme darkblue
+" colorscheme elflord
+colorscheme codedark
 
 " uncomment this if ntpeters/vim-better-whitespace is not installed
 " set list
@@ -115,6 +116,7 @@ Plug 'tomtom/tcomment_vim'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'tpope/vim-fugitive'
+Plug 'jam1garner/vim-code-monokai'
 call plug#end()
 " run :source ~/.vimrc  to reload vimrc
 " run :PlugInstall to install declared plugins
