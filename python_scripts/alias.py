@@ -505,7 +505,7 @@ def o_emp(*trigrams):
     usage:
         o_emp trigrams...
     """
-    import webbrowser
+    # import webbrowser
 
     if not trigrams:
         raise Invalid_params("`trigrams` parameter is mandatory. check --help")
@@ -517,14 +517,60 @@ def o_emp(*trigrams):
         "hr.employee.public",
         "search_read",
         [domain],
-        {"fields": ["id", "name", "create_date"]},
+        {
+            "fields": [
+                "id",
+                "name",
+                "create_date",
+                "department_id",
+                "job_title",
+                "company_id",
+                "parent_id",
+            ]
+        },
     )
+    # get data of all managers chains
+    managers_data = {
+        e["id"]: {"name": e["name"], "parent_id": e["parent_id"][0]}
+        for e in employees_data
+    }
+    while managers_to_do := [
+        e["parent_id"]
+        for _, e in managers_data.items()
+        if e["parent_id"] and e["parent_id"] not in managers_data
+    ]:
+        new_managers = r_exec(
+            "hr.employee.public",
+            "search_read",
+            [[["id", "in", managers_to_do]]],
+            {"fields": ["id", "name", "parent_id"]},
+        )
+        for m in new_managers:
+            mm = m["parent_id"] and m["parent_id"][0]
+            managers_data[m["id"]] = {"name": m["name"], "parent_id": mm}
+    # build manager chains
+    chains = {id: [e["parent_id"]] for id, e in managers_data.items()}
+    while chains_to_do := [id for id, c in chains.items() if c[-1]]:
+        for c in reversed(chains_to_do):
+            chains[c] += chains[chains[c][-1]]
+    chains_str = dict()
+    for e_id, c in chains.items():
+        c.pop()
+        chains_str[e_id] = " > ".join(managers_data[id]["name"] for id in c)
+    # output
     url_template = "https://www.odoo.com/web?debug=1#id={id}&model=hr.employee.public&view_type=form"
     for emp in employees_data:
-        print(f"name : {emp['name']}\ncreate date : {emp['create_date']}")
+        print(
+            f"""name : {emp['name']}
+        create date : {emp['create_date']}
+        company : {emp['company_id'][1]}
+        department : {emp['department_id'][1]}
+        Job title : {emp['job_title']}
+        managers : {chains_str[emp['id']]}"""
+        )
         url = url_template.format(id=emp["id"])
         print("--> ", url)
-        webbrowser.open(url)
+        # webbrowser.open(url)
     if len(employees_data) == len(trigrams):
         return
     # something went wrong

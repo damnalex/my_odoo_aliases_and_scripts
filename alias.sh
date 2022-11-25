@@ -618,7 +618,7 @@ test-dump() {
     local db_name="$1-test"
     createdb $db_name || return 1
     echo "building DB"
-    psql -d $db_name <$dump_f &> /dev/null || return 1
+    psql -d $db_name <$dump_f &>/dev/null || return 1
     # neutralize db for local testing
     $ST/lib/neuter.py $db_name --filestore || $ST/lib/neuter.py $db_name
     # start the database just long enough to check if there are custom modules
