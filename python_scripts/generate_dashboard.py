@@ -12,7 +12,7 @@ def uuid_gen():
 #####################    generics    ###########################
 ################################################################
 uid = 963957
-allowed_companies = [1, 2, 3, 4, 5, 14, 17, 18]
+allowed_companies = [1, 2, 3, 4, 5, 14, 17]
 company_ids_str = ",".join(str(e) for e in allowed_companies)
 help_project = 49
 squad_to_leader_employee = {
@@ -24,18 +24,17 @@ squad_to_leader_employee = {
 varia = [
     "bve",
     "frc",
-    "krha",
     "lrfd",
     "mao",
     "ofa",
     "pco",
+    "quvb",
     "syf",
     "thc",
 ]
 
 not_varia = [
     # BE
-    "alt",
     "amay",
     "andu",
     "arsi",
@@ -50,7 +49,6 @@ not_varia = [
     "nea",
     "pebr",
     "pno",
-    "quvb",
     "tbs",
     "thco",
     "wama",
