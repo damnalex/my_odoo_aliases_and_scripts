@@ -315,15 +315,15 @@ def my_generator():
         [
             """
             <action
-                context="{'lang': 'en_US', 'tz': 'Europe/Brussels', 'uid': 963957, 'allowed_company_ids': [1, 2, 3, 4, 5, 14, 17, 18], 'group_by': ['company_id'], 'orderedBy': [], 'dashboard_merge_domains_contexts': False}"
+                context="{'lang': 'en_US', 'tz': 'Europe/Brussels', 'uid': 963957, 'allowed_company_ids': [1, 2, 3, 4, 5, 14, 17], 'group_by': ['company_id'], 'orderedBy': [], 'dashboard_merge_domains_contexts': False}"
                 domain="['&amp;', ['share', '=', False], ['employee_id.department_id.id', '=', 153]]" name="17"
                 string="Tech Support Team" view_mode="list" modifiers="{}" id="action_1_2"></action>
             <action
-                context="{'lang': 'en_US', 'tz': 'Europe/Brussels', 'uid': 963957, 'allowed_company_ids': [1, 2, 3, 4, 5, 14, 17, 18], 'group_by': ['company_id'], 'orderedBy': [], 'dashboard_merge_domains_contexts': False}"
+                context="{'lang': 'en_US', 'tz': 'Europe/Brussels', 'uid': 963957, 'allowed_company_ids': [1, 2, 3, 4, 5, 14, 17], 'group_by': ['company_id'], 'orderedBy': [], 'dashboard_merge_domains_contexts': False}"
                 domain="['&amp;', ['share', '=', False], ['employee_id.department_id.id', '=', 152]]" name="17"
                 string="Functionnal Support Team" view_mode="list" modifiers="{}" id="action_1_3"></action>
             <action
-                context="{'lang': 'en_US', 'tz': 'Europe/Brussels', 'uid': 963957, 'allowed_company_ids': [1, 2, 3, 4, 5, 14, 17, 18], 'group_by': ['company_id'], 'orderedBy': [], 'dashboard_merge_domains_contexts': False}"
+                context="{'lang': 'en_US', 'tz': 'Europe/Brussels', 'uid': 963957, 'allowed_company_ids': [1, 2, 3, 4, 5, 14, 17], 'group_by': ['company_id'], 'orderedBy': [], 'dashboard_merge_domains_contexts': False}"
                 domain="['&amp;', ['share', '=', False], ['employee_id.department_id.id', '=', 164]]" name="17"
                 string="Bugfix Team" view_mode="list" modifiers="{}" id="action_1_4"></action>
             <action
