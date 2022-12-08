@@ -286,6 +286,7 @@ ssho() {
     echo "---------------------------"
     ssh odoo@$1.odoo.com && return
     if [[ $1 = "test.upgrade" ]] || [[ $1 = "upgrade" ]]; then
+        echo '\n\n\n\n\n `sudo odoo-upgrade-get-request <request_id>` to get the dump\n\n\n\n\n\n\n'
         ssh mao@test.upgrade.odoo.com -A && return
     fi
 }
