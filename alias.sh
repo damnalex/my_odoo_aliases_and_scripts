@@ -303,7 +303,7 @@ go_update_and_clean_all_branches() {
     local current_working_dir=$(pwd)
     our_modules_update_and_compare
     cd $current_working_dir
-    clear_pyc --all
+    clear_pyc --all 2>/dev/null
     run 5 echo "#############################"
     echo "updated and cleaned all branches of multiverse and universe"
     go_venv_current
