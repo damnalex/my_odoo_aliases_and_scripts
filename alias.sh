@@ -630,7 +630,7 @@ test-dump() {
     local current_dir=$(pwd)
     cd $SRC/all_standard_odoo_apps_per_version
     local db_version=$(psql -tAqX -d $db_name -c "select replace((regexp_matches(latest_version, '^\d+\.0|^saas~\d+\.\d+|saas~\d+'))[1], '~', '-') from ir_module_module where name='base'")
-    ./is_my_module_standard.py $db_version -m $(psql -tAqX -d $db_name -c "SELECT name from ir_module_module where state not in ('uninstalled', 'uninstallable');") | grep -A100 "Non Standard Modules"
+    ./is_my_module_standard.py $db_version -m $(psql -tAqX -d $db_name -c "SELECT name from ir_module_module where state not in ('uninstalled', 'uninstallable');") | grep -A100 "Third-party Modules"
     echo "------------"
     cd $current_dir
     # show DB version and size
