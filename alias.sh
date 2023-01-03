@@ -373,7 +373,7 @@ oes() {
     # start odoo support
     # echo " $ST/oe-support.py $@ "
     eval $ST/oe-support.py $@
-    (clear_pyc &)
+    # (clear_pyc &)
 }
 source $ST/scripts/completion/oe-support-completion.sh
 complete -o default -F _oe-support oes
