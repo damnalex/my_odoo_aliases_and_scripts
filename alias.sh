@@ -265,6 +265,16 @@ retry_rsync() {
     done
 }
 
+lldu() {
+    # a combination of ls -rt and du -sh *
+    # shows the creation date and the actual folder size
+    ll -rt | while read line; do
+        local t=$(echo $line | awk '{print $6, $7, $8}')
+        local s=$(echo $line | awk '{print $9}' | xargs du -sh)
+        echo "$t \t $s"
+    done
+}
+
 ##############################################
 #############  python  stuffs  ###############
 ##############################################
