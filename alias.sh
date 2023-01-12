@@ -255,6 +255,16 @@ rename_underscore() {
     done
 }
 
+retry_rsync() {
+    # a simple wrapper around rsync that will relaunch it as long as the work is not done
+    # usefull for very long running rsyncs where the network could potentially be lost at some point
+    # and where I'm not monitoring the progress (overnight for example)
+    local finished='No'
+    while [[ $finished == 'No' ]]; do
+        rsync $@ && finished='Yes'
+    done
+}
+
 ##############################################
 #############  python  stuffs  ###############
 ##############################################
