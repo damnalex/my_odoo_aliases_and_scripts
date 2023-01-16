@@ -268,6 +268,8 @@ retry_rsync() {
 lldu() {
     # a combination of ls -rt and du -sh *
     # shows the creation date and the actual folder size
+    # TODO : accept a flag to sort on date, size or name (+ revert)
+    # Would probably be easier as a python script in that case
     ll -rt | while read line; do
         local t=$(echo $line | awk '{print $6, $7, $8}')
         local s=$(echo $line | awk '{print $9}' | xargs du -sh)

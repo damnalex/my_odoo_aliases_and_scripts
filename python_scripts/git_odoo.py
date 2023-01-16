@@ -20,16 +20,16 @@ import git
 
 from utils import env
 
-# relevant_saas_versions = ["12.3"]
+# relevant_saas_versions = ["15.2"]
 # RELEVANT_BRANCHES = [f"saas-{s}" for s in relevant_saas_versions]
-# RELEVANT_BRANCHES += ["12.0", "13.0", "14.0"]
+# RELEVANT_BRANCHES += ["14.0", "15.0", "16.0"]
 
 # optimize for smaller checkout between versions on git_odoo pull --all
 RELEVANT_BRANCHES = [
-    "12.0",
-    "saas-12.3",
-    "13.0",
     "14.0",
+    "15.0",
+    "saas-15.2"
+    "16.0",
 ]
 
 VERSIONED_REPOS = [env.ODOO, env.ENTERPRISE, env.DESIGN_THEMES, env.USER_DOC]
@@ -247,7 +247,7 @@ def odoo_repos_checkout(versions):
 
 
 def odoo_repos_checkout_multi(versions, raise_on_error=False):
-    repos = [env.ODOO, env.ENTERPRISE, env.DESIGN_THEMES, env.INTERNAL]
+    repos = ALL_REPOS
     if len(versions) > len(repos):
         if raise_on_error:
             raise TooManyVersions(
