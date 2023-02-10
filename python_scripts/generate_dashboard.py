@@ -20,16 +20,16 @@ squad_to_leader_employee = {
     "account": 1490367,  # tbs
     "pos": 715807,  # lse
     "stock": 885,  # nci
+    "sm": 317943,  # bve
 }
 varia = [
-    "bve",
-    "frc",
-    "jorv",
+    "jula",
     "lrfd",
     "mao",
     "ofa",
     "pco",
     "peso",
+    "sigo",
     "syf",
     "thc",
 ]
@@ -37,21 +37,23 @@ varia = [
 not_varia = [
     # BE
     "amay",
-    "andu",
     "arsi",
     "asm",
+    "bve",
     "crm",
     "dafr",
+    "elkr",
     "flhu",
-    "jula",
+    "frc",
+    "jorv",
     "khah",
     "lse",
+    "mege",
     "mvw",
     "nci",
     "nea",
     "pebr",
     "pno",
-    "sigo",
     "tbs",
     "thco",
     "wama",
@@ -60,12 +62,17 @@ not_varia = [
     # US
     "adda",
     "andg",
+    "bikh",
     "cyro",
     "dhs",
     "evko",
+    "iada",
+    "jelu",
+    "maje",
     "myhy",
     "pca",
     "qung",
+    "ryce",
 ]
 
 base_context = {
@@ -127,7 +134,7 @@ groupby_ticket_rot = {
 help_domain = [
     ["display_project_id", "=", help_project],
     ["stage_id", "not ilike", "Cancelled"],
-    ["create_date", "&gt;", "2018-03-01 00:00:00"],
+    ["create_date", "&gt;", "2020-01-01 00:00:00"],
 ]
 
 ################################################################
@@ -319,16 +326,22 @@ def my_generator():
             """
             <action
                 context="{'lang': 'en_US', 'tz': 'Europe/Brussels', 'uid': 963957, 'allowed_company_ids': [1, 2, 3, 4, 5, 14, 17], 'group_by': ['company_id'], 'orderedBy': [], 'dashboard_merge_domains_contexts': False}"
-                domain="['&amp;', ['share', '=', False], ['employee_id.department_id.id', '=', 153]]" name="17"
+                domain="['&amp;', ['share', '=', False], '|', ['employee_id.department_id.id', '=', 153], '|', '|','|', ['employee_id.parent_id.parent_id.parent_id.id', '=', 1313226], ['employee_id.parent_id.parent_id.id', '=', 1313226], ['employee_id.parent_id.id', '=', 1313226], ['employee_id.id', '=', 1313226]]" name="17"
                 string="Tech Support Team" view_mode="list" modifiers="{}" id="action_1_2"></action>
+            """, # not everyone in tech BE is in the right departement, filtering on the manager hierachy (with some future proofing)
+            """
             <action
                 context="{'lang': 'en_US', 'tz': 'Europe/Brussels', 'uid': 963957, 'allowed_company_ids': [1, 2, 3, 4, 5, 14, 17], 'group_by': ['company_id'], 'orderedBy': [], 'dashboard_merge_domains_contexts': False}"
                 domain="['&amp;', ['share', '=', False], ['employee_id.department_id.id', '=', 152]]" name="17"
                 string="Functionnal Support Team" view_mode="list" modifiers="{}" id="action_1_3"></action>
+            """,
+            """
             <action
                 context="{'lang': 'en_US', 'tz': 'Europe/Brussels', 'uid': 963957, 'allowed_company_ids': [1, 2, 3, 4, 5, 14, 17], 'group_by': ['company_id'], 'orderedBy': [], 'dashboard_merge_domains_contexts': False}"
                 domain="['&amp;', ['share', '=', False], ['employee_id.department_id.id', '=', 164]]" name="17"
                 string="Bugfix Team" view_mode="list" modifiers="{}" id="action_1_4"></action>
+            """,
+            """
             <action
                 context="{'lang': 'en_GB', 'tz': 'Europe/Brussels', 'uid': 963957, 'allowed_company_ids': [1], 'active_model': 'project.project', 'active_id': 250, 'active_ids': [250], 'pivot_row_groupby': ['user_ids'], 'default_project_id': 250, 'group_by': ['write_date:month'], 'orderedBy': [], 'dashboard_merge_domains_contexts': False}"
                 domain="['&amp;', ['project_id', '=', 250], '&amp;', ['project_id', '=', 250], ['message_is_follower', '=', True]]"
@@ -343,6 +356,9 @@ def my_generator():
             ),
             *squad_helper(
                 "stock", x_unassigned, x_new, x_processed, x_in_tech_per_agent, x_rot
+            ),
+            *squad_helper(
+                "sm", x_unassigned, x_new, x_processed, x_in_tech_per_agent, x_rot
             ),
             *squad_helper("sh", x_unassigned, x_new, x_processed),
             *squad_helper("perf", x_unassigned, x_new, x_processed),
