@@ -28,7 +28,7 @@ from utils import env
 RELEVANT_BRANCHES = [
     "14.0",
     "15.0",
-    "saas-15.2"
+    "saas-15.2",
     "16.0",
 ]
 
