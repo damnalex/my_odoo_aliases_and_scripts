@@ -328,7 +328,7 @@ def my_generator():
                 context="{'lang': 'en_US', 'tz': 'Europe/Brussels', 'uid': 963957, 'allowed_company_ids': [1, 2, 3, 4, 5, 14, 17], 'group_by': ['company_id'], 'orderedBy': [], 'dashboard_merge_domains_contexts': False}"
                 domain="['&amp;', ['share', '=', False], '|', ['employee_id.department_id.id', '=', 153], '|', '|','|', ['employee_id.parent_id.parent_id.parent_id.id', '=', 1313226], ['employee_id.parent_id.parent_id.id', '=', 1313226], ['employee_id.parent_id.id', '=', 1313226], ['employee_id.id', '=', 1313226]]" name="17"
                 string="Tech Support Team" view_mode="list" modifiers="{}" id="action_1_2"></action>
-            """, # not everyone in tech BE is in the right departement, filtering on the manager hierachy (with some future proofing)
+            """,  # not everyone in tech BE is in the right departement, filtering on the manager hierachy (with some future proofing)
             """
             <action
                 context="{'lang': 'en_US', 'tz': 'Europe/Brussels', 'uid': 963957, 'allowed_company_ids': [1, 2, 3, 4, 5, 14, 17], 'group_by': ['company_id'], 'orderedBy': [], 'dashboard_merge_domains_contexts': False}"

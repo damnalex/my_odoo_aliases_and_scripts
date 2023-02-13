@@ -658,3 +658,32 @@ test-dump() {
     # show DB version and size
     pl | grep $db_name
 }
+
+dump_to_sql() {
+    # transform a postgres .dump file in a .sql file
+    local dump_file=${1:-'no file'}
+    local sql_file=${2:-'dump.sql'}
+    if [[ "$dump_file" == "no file" ]]; then
+        echo "dump_to_sql <source.dump> [<destination.sql>]"
+        echo "<destination.sql> defaults to dump.sql"
+        return 1
+    fi
+    pg_restore -f - $1 >$sql_file
+}
+
+sql_to_dump() {
+    # transform a postgres .sql file in a .dump file
+    local sql_file=${1:-'dump.sql'}
+    local dump_file=${2:-'dump.dump'}
+    if [ -f "$sql_file" ]; then
+        createdb xoxo_to_delete &
+        psql -d xoxo_to_delete <$sql_file >/dev/null &
+        pg_dump -F c -f $2 xoxo_to_delete &
+        dropdb xoxo_to_delete
+    else
+        echo "sql_to_dump [<source.sql>] [<destination.dump>]"
+        echo "<source.sql> defaults to dump.sql"
+        echo "<destination.dump> defaults to dump.dump"
+        return 1
+    fi
+}
