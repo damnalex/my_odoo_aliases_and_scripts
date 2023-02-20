@@ -457,7 +457,7 @@ update_all_multiverse_branches() {
 
 build_odoo_virtualenv() {
     # (re)create a new virtual env, using the corresponding multiverse branch as a reference
-    # stores the virtual env in the multiverse branche, under the o_XXX folder
+    # stores the virtual env in the multiverse branch, under the o_XXX folder
     deactivate # I don't want virtual envs being based on other virtual envs
     local version=$1
     local python_inter
@@ -499,7 +499,7 @@ build_odoo_virtualenv() {
 rebuild_main_virtualenvs() {
     # recreate the main virtual envs
     # usefull when I add something to other_requirements.txt
-    local main_versions=("13.0" "14.0" "15.0")
+    local main_versions=("14.0" "15.0" "16.0")
     for version in $main_versions; do {
         build_odoo_virtualenv $version
     }; done
