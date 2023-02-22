@@ -33,8 +33,8 @@ def _get_xmlrpc_executer(dburl, dbname, login, password):
 def _xmlrpc_odoo_com():
     import keyring
 
-    api_key = keyring.get_password("oe-support", "mao-2FA")
-    api_login = "mao"
+    api_key = keyring.get_password("oe-support", "mao@odoo.com-2FA")
+    api_login = "mao@odoo.com"
     assert all((api_key, api_login))
     dburl = "https://www.odoo.com"
     db = "openerp"
