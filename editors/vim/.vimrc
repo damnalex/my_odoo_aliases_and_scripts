@@ -13,7 +13,7 @@ set showcmd
 " colorscheme default
 " colorscheme darkblue
 " colorscheme elflord
-colorscheme codedark
+" colorscheme codedark
 
 " uncomment this if ntpeters/vim-better-whitespace is not installed
 " set list
