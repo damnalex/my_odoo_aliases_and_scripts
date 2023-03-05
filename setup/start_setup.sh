@@ -9,7 +9,7 @@ if [[ $1 == "base" ]]; then
     # desktop apps
     echo "installing desktop apps"
     echo "-----------------------"
-    curl -s 'https://api.macapps.link/en/firefox-chrome-torbrowser-bettertouchtool-vscode-iterm-transmission-spectacle-spotify-vlc-thunderbird-adium' | sh
+    curl -s 'https://api.macapps.link/en/firefox-chrome-torbrowser-bettertouchtool-vscode-docker-iterm-transmission-spectacle-discord' | sh
     # install ohmyzsh
     echo "setting up terminal to use Zsh and oh-my-zsh"
     echo "--------------------------------------------"
