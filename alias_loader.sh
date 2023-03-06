@@ -2,9 +2,10 @@
 ########################  PATHS  ##########################
 ###########################################################
 
-export AP="$HOME/src/my_odoo_aliases_and_scripts"
-
 export SRC="$HOME/src"
+
+export AP="$SRC/my_odoo_aliases_and_scripts"
+
 export ODOO="$SRC/odoo"
 export ENTERPRISE="$SRC/enterprise"
 export DESIGN_THEMES="$SRC/design-themes"
@@ -12,7 +13,7 @@ export INTERNAL="$SRC/internal"
 export PAAS="$SRC/paas"
 export ST="$SRC/support-tools"
 export USER_DOC="$SRC/documentation-user"
-export SRC_MULTI="$HOME/multi_src"
+export SRC_MULTI="$HOME/odoo/versions"
 
 if [[ $OSTYPE =~ ^darwin ]]; then
     # macos specific stuffs

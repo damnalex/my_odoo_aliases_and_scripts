@@ -411,98 +411,30 @@ droplike() {
     fi
 }
 
-# pythonable
 build_multiverse_branch() {
     # create a new mutliverse branche in $SRC_MULTI
-    local version=$1
-    # building branch
-    local repos=("odoo" "enterprise" "design-themes")
-    for rep in $repos; do {
-        echo ${rep}
-        git -C $SRC_MULTI/master/${rep} fetch
-        git -C $SRC_MULTI/master/${rep} worktree prune
-        git -C $SRC_MULTI/master/${rep} worktree add $SRC_MULTI/${version}/${rep} ${version}
-    }; done
+    build_odoo_virtualenv $1
 }
 
-# pythonable
 update_multiverse_branch() {
     # git pull the repos of the given mutliverse branche
-    local version=$1
-    local repos=("odoo" "enterprise" "design-themes")
-    for rep in $repos; do {
-        if [[ $version != "8.0" ]] || [[ $rep != "enterprise" ]]; then
-            echo ${rep}
-            git -C $SRC_MULTI/${version}/${rep} pull --rebase
-        fi
-    }; done
+    odev pull -f $1
 }
 
-# pythonable
 update_all_multiverse_branches() {
     # git pull the repos of all the multivers branches
-    echo "###########################################"
-    echo "starting to pull multiverse branches"
-    echo " -----> master multiverse"
-    update_multiverse_branch master
-    for version in $(echo $SRC_MULTI/*/ | xargs basename); do {
-        if [[ "$version" != "master" ]]; then
-            echo " -----> $version multiverse"
-            update_multiverse_branch "$version"
-        fi
-    }; done
-    echo "mutliverse branches are up to date"
-    echo "###########################################"
+    odev pull -f
 }
 
 build_odoo_virtualenv() {
-    # (re)create a new virtual env, using the corresponding multiverse branch as a reference
-    # stores the virtual env in the multiverse branch, under the o_XXX folder
-    deactivate # I don't want virtual envs being based on other virtual envs
-    local version=$1
-    local python_inter
-    if [[ $# -gt 1 ]]; then
-        python_inter="-p$(which $2)"
-    else
-        # default to python 3
-        python_inter="-p$(which python3)"
-    fi
-    local start_dir=$(pwd)
-    if [ ! -d "$SRC_MULTI/$version " ]; then
-        build_multiverse_branch $version # existance of the multiverse branch is mandatory
-    fi
-    cd $SRC_MULTI/$version
-    if [ -d "o_${version}" ]; then
-        echo "virtualenv already exist, rebuilding"
-        rm -rf "o_${version}"
-    fi
-    virtualenv "$python_inter" "o_${version}"
+    odev init "TA_$1" $1 || return 1
     go_venv $version
-    # ignoring in the standard requirements for psycopg2
-    cp $SRC_MULTI/$version/odoo/requirements.txt /tmp/requirements.txt
-    sed -i "" "/psycopg2/d" /tmp/requirements.txt
-    pip install -r /tmp/requirements.txt
     cp $ST/requirements.txt /tmp/requirements.txt
     sed -i "" "/psycopg2/d" /tmp/requirements.txt
     pip install -r /tmp/requirements.txt
     # adding my custom requirements (includes psycopg2-binary)
     pip install -r $AP/python_scripts/requirements.txt
     pip install -r $AP/python_scripts/other_requirements.txt
-    cd "$start_dir"
-    echo "\n\n\n\n"
-    echo "--------------------------------"
-    echo "virtualenv o_${version} is ready"
-    echo "--------------------------------"
-    echo "\n\n\n\n"
-}
-
-rebuild_main_virtualenvs() {
-    # recreate the main virtual envs
-    # usefull when I add something to other_requirements.txt
-    local main_versions=("14.0" "15.0" "16.0")
-    for version in $main_versions; do {
-        build_odoo_virtualenv $version
-    }; done
 }
 
 go_venv() {
@@ -510,8 +442,8 @@ go_venv() {
     deactivate 2>/dev/null
     if [[ $# -eq 1 ]]; then
         local version=$1
-        source $SRC_MULTI/$version/o_$version/bin/activate &&
-            echo "virtualenv o_$version activated"
+        source $SRC_MULTI/$version/venv/bin/activate &&
+            echo "virtualenv for $version activated"
     else
         echo "no virtualenv name provided, falling back to standard python env"
     fi
@@ -635,7 +567,7 @@ test-dump() {
     # test dump (in the current folder, by default) for safety
     local dump_parent_folder=${2:-$(pwd)}
     local dump_f=$dump_parent_folder/dump.sql
-    $PSS/saas/test_dump_safety.py $dump_f || return 1
+    $PSS/test_dump_safety.py $dump_f || return 1
     echo "Safety check OK"
     # create a DB using the dump.sql file in the current folder
     local db_name="$1-test"
@@ -645,9 +577,8 @@ test-dump() {
     # neutralize db for local testing
     $ST/lib/neuter.py $db_name --filestore || $ST/lib/neuter.py $db_name
     # start the database just long enough to check if there are custom modules
-    godb $db_name
     # "does it even start" check
-    so $db_name 12345 --stop-after-init
+    odev run $db_name --stop-after-init --limit-memory-hard 0
     # check for custom modules
     local current_dir=$(pwd)
     cd $SRC/all_standard_odoo_apps_per_version
