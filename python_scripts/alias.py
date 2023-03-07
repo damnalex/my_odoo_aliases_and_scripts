@@ -503,16 +503,16 @@ def o_emp(*trigrams):
     """open the employee page for the given trigrams
 
     usage:
-        o_emp trigrams...
+        o_emp <trigrams>...
     """
     # import webbrowser
 
     if not trigrams:
         raise Invalid_params("`trigrams` parameter is mandatory. check --help")
     r_exec = _xmlrpc_odoo_com()
-    f_trigrams = (f"({trigram.lower()})" for trigram in trigrams)
+    f_trigrams = (f"{trigram.lower()}@odoo.com" for trigram in trigrams)
     domain = ["|"] * (len(trigrams) - 1)
-    domain += [["name", "like", tri] for tri in f_trigrams]
+    domain += [["work_email", "=", tri] for tri in f_trigrams]
     employees_data = r_exec(
         "hr.employee.public",
         "search_read",
@@ -604,7 +604,7 @@ def o_user(*trigrams):
             return False
 
     uids = [uid for uid in trigrams if _isint(uid)]
-    f_trigrams = [f"{trigram.lower()}" for trigram in trigrams if not _isint(trigram)]
+    f_trigrams = [f"{trigram.lower()}@odoo.com" for trigram in trigrams if not _isint(trigram)]
     users = {}
     if f_trigrams:
         domain = ["|"] * (len(f_trigrams) - 1)
