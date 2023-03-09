@@ -3,6 +3,7 @@ import sys
 import os
 import collections
 import subprocess
+from configparser import ConfigParser
 from textwrap import dedent as _dd
 from psycopg2 import OperationalError, ProgrammingError, connect
 from inspect import signature
@@ -433,6 +434,10 @@ def dropodoo(*dbs):
     protection_file = f"{env.AP}/drop_protected_dbs.txt"
     with open(protection_file, "r") as f:
         drop_protected_dbs = [db.strip() for db in f]
+    odev_dbs_file = os.path.expanduser("~/.config/odev/databases.cfg")
+    odev_dbs_config = ConfigParser()
+    odev_dbs_config.read(odev_dbs_file)
+    odev_dbs = odev_dbs_config.sections()
     for db in dbs:
         if db in drop_protected_dbs:
             raise Invalid_params(
@@ -443,7 +448,10 @@ def dropodoo(*dbs):
         # remove from meta
         psql("meta", f"DELETE FROM databases WHERE name = '{db}'", ignore_error=True)
         # dropping
-        if db.startswith("oes_"):
+        if db in odev_dbs:
+            print(f"Dropping the DB {db} using odev")
+            differed_sh_run(f"odev remove {db} -y")
+        elif db.startswith("oes_"):
             print(f"Dropping the DB {db} using oe-support")
             differed_sh_run(f"oes cleanup {db[4:]}")
         else:
