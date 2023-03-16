@@ -400,6 +400,14 @@ oes() {
 source $ST/scripts/completion/oe-support-completion.sh
 complete -o default -F _oe-support oes
 
+odef() {
+    # download restore and start in one command with odev
+    local dbname=$1
+    local dburl=${2:-"$dbname.odoo.com"}
+    odev quickstart $dbname $dburl --stop-after-init
+    odev run $dbname
+}
+
 # pythonable
 droplike() {
     # drop the DBs with the given patern (sql style patern)
