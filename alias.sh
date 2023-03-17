@@ -262,6 +262,7 @@ retry_rsync() {
     local finished='No'
     while [[ $finished == 'No' ]]; do
         rsync $@ && finished='Yes'
+        sleep 3  # This is to allow manual abort
     done
 }
 

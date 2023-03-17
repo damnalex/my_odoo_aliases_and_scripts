@@ -48,6 +48,12 @@
         },
         "**/__pycache__": true,
     },
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/bower_components": true,
+        "**/*.code-search": true,
+        "**/venv": true,
+    },
     "files.associations": {
         "*.xml": "html",
     },
@@ -55,7 +61,7 @@
     "git.autofetch": true,
     "git.autofetchPeriod": 300,
     "git.openRepositoryInParentFolders": "never",
-    "telemetry.enableTelemetry": false,
+    "telemetry.telemetryLevel": "off",
     "editor.accessibilitySupport": "off",
     "editor.dragAndDrop": false,
     "editor.inlineSuggest.enabled": true,
