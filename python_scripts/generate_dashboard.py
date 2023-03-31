@@ -21,8 +21,10 @@ squad_to_leader_employee = {
     "pos": 715807,  # lse
     "stock": 885,  # nci
     "sm": 317943,  # bve
+    "perf": 1206319  # avd
 }
 varia = [
+    "gavb",
     "jula",
     "lrfd",
     "mao",
@@ -39,6 +41,7 @@ not_varia = [
     "amay",
     "arsi",
     "asm",
+    "avd",
     "bve",
     "crm",
     "dafr",
@@ -50,10 +53,12 @@ not_varia = [
     "lse",
     "mege",
     "mvw",
+    "nasg",
     "nci",
     "nea",
     "pebr",
     "pno",
+    "sold",
     "tbs",
     "thco",
     "wama",
@@ -348,20 +353,14 @@ def my_generator():
                 name="333" string="RD VALUE DEVs I follow" view_mode="kanban" modifiers="{}" id="action_1_5" fold="1">
             </action>
             """,
-            *squad_helper(
-                "account", x_unassigned, x_new, x_processed, x_in_tech_per_agent, x_rot
-            ),
-            *squad_helper(
-                "pos", x_unassigned, x_new, x_processed, x_in_tech_per_agent, x_rot
-            ),
-            *squad_helper(
-                "stock", x_unassigned, x_new, x_processed, x_in_tech_per_agent, x_rot
-            ),
-            *squad_helper(
-                "sm", x_unassigned, x_new, x_processed, x_in_tech_per_agent, x_rot
-            ),
+            *[
+                card
+                for squad_name in squad_to_leader_employee
+                if squad_name != "varia"
+                for card in squad_helper(squad_name, x_unassigned, x_new, x_processed, x_in_tech_per_agent, x_rot)
+            ],
             *squad_helper("sh", x_unassigned, x_new, x_processed),
-            *squad_helper("perf", x_unassigned, x_new, x_processed),
+            *squad_helper("infra", x_unassigned, x_new, x_processed),
             *tags_helper(["apps"], x_unassigned, x_new, x_processed),
             *x_agent_helper(not_varia),
         ],
