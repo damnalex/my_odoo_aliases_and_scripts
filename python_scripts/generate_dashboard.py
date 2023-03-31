@@ -253,7 +253,7 @@ AGENT_PROCESSED_PER_MONTH = graph_grouping(groupby_assigned_time_and_prio)
 def x_agent(trigram):
     domain = help_domain.copy()
     name = f"{trigram} - tickets per month"
-    domain.append(["user_ids", "ilike", f"({trigram})"])
+    domain.append(["user_ids.login", "=", f"{trigram}@odoo.com"])
     return AGENT_PROCESSED_PER_MONTH % (domain, name, uuid_gen())
 
 
