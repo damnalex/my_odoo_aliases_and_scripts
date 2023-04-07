@@ -329,7 +329,7 @@ go_update_and_clean_all_branches() {
     clear_pyc --all 2>/dev/null
     run 5 echo "#############################"
     echo "updated and cleaned all branches of multiverse and universe"
-    go_venv_current
+    # go_venv_current
 }
 
 # pythonable
@@ -444,6 +444,7 @@ build_odoo_virtualenv() {
     # adding my custom requirements (includes psycopg2-binary)
     pip install -r $AP/python_scripts/requirements.txt
     pip install -r $AP/python_scripts/other_requirements.txt
+    deactivate
 }
 
 go_venv() {

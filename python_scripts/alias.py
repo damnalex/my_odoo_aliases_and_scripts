@@ -376,8 +376,8 @@ def go(*args):
     clear_pyc()
     params = {"checkout": True, "<version>": args}
     _git_odoo_app(**params)
-    if len(args) == 1:
-        differed_sh_run(f"go_venv {args[0]}")
+    # if len(args) == 1:
+    #     differed_sh_run(f"go_venv {args[0]}")
     print("-----------")
     differed_sh_run("golist")
 
@@ -389,7 +389,7 @@ def go_update_and_clean(version=None):
     params = {"pull": True, "--version": version}
     _git_odoo_app(**params)
     clear_pyc()
-    differed_sh_run("go_venv_current")
+    # differed_sh_run("go_venv_current")
     differed_sh_run("echo '--------'")
     differed_sh_run("golist")
 
@@ -405,7 +405,7 @@ def godb(db_name):
     else:
         params = {"checkout": True, "--dbname": db_name}
         _git_odoo_app(**params)
-        differed_sh_run(f"go_venv {version}")
+        # differed_sh_run(f"go_venv {version}")
 
 
 @shell_end_hook
