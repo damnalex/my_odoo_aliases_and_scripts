@@ -588,7 +588,7 @@ test-dump() {
     $ST/lib/neuter.py $db_name --filestore || $ST/lib/neuter.py $db_name
     # start the database just long enough to check if there are custom modules
     # "does it even start" check
-    odev run $db_name --stop-after-init --limit-memory-hard 0
+    odev run -y $db_name --stop-after-init --limit-memory-hard 0
     # check for custom modules
     local current_dir=$(pwd)
     cd $SRC/all_standard_odoo_apps_per_version
