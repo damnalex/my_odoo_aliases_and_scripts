@@ -137,7 +137,7 @@ groupby_ticket_rot = {
 }
 
 help_domain = [
-    ["display_project_id", "=", help_project],
+    ["project_id", "=", help_project],
     ["stage_id", "not ilike", "Cancelled"],
     ["create_date", "&gt;", "2020-01-01 00:00:00"],
 ]
