@@ -612,7 +612,9 @@ def o_user(*trigrams):
             return False
 
     uids = [uid for uid in trigrams if _isint(uid)]
-    f_trigrams = [f"{trigram.lower()}@odoo.com" for trigram in trigrams if not _isint(trigram)]
+    f_trigrams = [
+        f"{trigram.lower()}@odoo.com" for trigram in trigrams if not _isint(trigram)
+    ]
     users = {}
     if f_trigrams:
         domain = ["|"] * (len(f_trigrams) - 1)

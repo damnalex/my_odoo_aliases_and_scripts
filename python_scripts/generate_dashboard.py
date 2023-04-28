@@ -21,7 +21,7 @@ squad_to_leader_employee = {
     "pos": 715807,  # lse
     "stock": 885,  # nci
     "sm": 317943,  # bve
-    "perf": 1206319  # avd
+    "perf": 1206319,  # avd
 }
 varia = [
     "gavb",
@@ -357,7 +357,14 @@ def my_generator():
                 card
                 for squad_name in squad_to_leader_employee
                 if squad_name != "varia"
-                for card in squad_helper(squad_name, x_unassigned, x_new, x_processed, x_in_tech_per_agent, x_rot)
+                for card in squad_helper(
+                    squad_name,
+                    x_unassigned,
+                    x_new,
+                    x_processed,
+                    x_in_tech_per_agent,
+                    x_rot,
+                )
             ],
             *squad_helper("sh", x_unassigned, x_new, x_processed),
             *squad_helper("infra", x_unassigned, x_new, x_processed),

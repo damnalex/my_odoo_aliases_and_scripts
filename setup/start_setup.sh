@@ -25,7 +25,6 @@ if [[ $1 == "step2" ]]; then
     echo "###################"
     source ../alias_loader.sh
 
-
     run 15 echo " "
     echo "Settings up editors"
     echo "###################"

@@ -262,7 +262,7 @@ retry_rsync() {
     local finished='No'
     while [[ $finished == 'No' ]]; do
         rsync $@ && finished='Yes'
-        sleep 3  # This is to allow manual abort
+        sleep 3 # This is to allow manual abort
     done
 }
 
@@ -436,7 +436,7 @@ update_all_multiverse_branches() {
 }
 
 build_odoo_virtualenv() {
-    odev init "TA_$1" $1 || return 1
+    odev init "TA_$1" $1 ||  return 1
     go_venv $version
     cp $ST/requirements.txt /tmp/requirements.txt
     sed -i "" "/psycopg2/d" /tmp/requirements.txt
