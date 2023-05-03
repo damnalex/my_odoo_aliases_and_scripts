@@ -628,3 +628,13 @@ sql_to_dump() {
         return 1
     fi
 }
+
+public_file_server_autokill() {
+    # start a file server at the current location
+    # create a cloudflare tunnel to it
+    # kill both at once
+    python3 -m http.server &
+    local PY_SERV_PID=$!
+    cloudflared tunnel --url http://localhost:8000
+    kill $PY_SERV_PID
+}
