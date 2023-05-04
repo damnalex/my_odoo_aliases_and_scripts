@@ -632,9 +632,23 @@ sql_to_dump() {
 public_file_server_autokill() {
     # start a file server at the current location
     # create a cloudflare tunnel to it
-    # kill both at once
-    python3 -m http.server &
-    local PY_SERV_PID=$!
+    # kill both when cloudflare tunnel receives a termination signal
+    args=("$@")
+    ELEMENTS=${#args[@]}
+    if [[ $ELEMENTS -ge 2  ]]; then
+        # with authentication
+        file_server $@ &
+    else
+        # without authentication
+        python3 -m http.server &
+    fi
+    # checking that the file server is properly running
+    sleep 2
+    local PY_SERV_PID="$(listport 8000 | sed -n '2p' | awk '{print $2}')"
+    kill -0 "${PY_SERV_PID:-111111111111}" 2>/dev/null || return 1   # lets hope I never stumble upon that PID
+    # opening the tunnel
     cloudflared tunnel --url http://localhost:8000
-    kill $PY_SERV_PID
+    # killing the file server, this line is reached
+    # only once a termination signal has been sent to cloudflared
+    killport 8000
 }
