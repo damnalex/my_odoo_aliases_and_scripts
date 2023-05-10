@@ -301,11 +301,15 @@ ap_format_files() {
 
 ssho() {
     # connect to odoo servers
-    echo "Connecting to tmux or screen"
+    echo "Connecting to tmux"
     echo "---------------------------"
-    ssh -o "StrictHostKeyChecking no" $1.odoo.com -t 'tmux new -t0' || ssh -o "StrictHostKeyChecking no" $1.odoo.com -t 'screen -rx' && return
+    ssh -o "StrictHostKeyChecking no" $1.odoo.com -t 'tmux new -t0' && return
     echo "---------------------------"
-    echo "Could not connect to tmux nor screen"
+    echo " fall back: Connecting to Screen"
+    echo "---------------------------"
+    ssh -o "StrictHostKeyChecking no" $1.odoo.com -t 'screen -rx' && return
+    echo "---------------------------"
+    echo " fall back: standard ssh connection"
     echo "---------------------------"
     ssh odoo@$1.odoo.com && return
     if [[ $1 = "test.upgrade" ]] || [[ $1 = "upgrade" ]]; then
