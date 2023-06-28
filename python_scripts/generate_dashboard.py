@@ -22,12 +22,15 @@ squad_to_leader_employee = {
     "stock": 885,  # nci
     "sm": 317943,  # bve
     "perf": 1206319,  # avd
+    "webjs": 1001546  # pco
 }
 varia = [
     "gavb",
     "jula",
+    "lole",
     "lrfd",
     "mao",
+    "nasg",
     "ofa",
     "pco",
     "peso",
@@ -41,11 +44,13 @@ not_varia = [
     "amay",
     "arsi",
     "asm",
+    "auma",
     "avd",
     "bve",
+    "bebo",
+    "beha",
     "crm",
     "dafr",
-    "elkr",
     "flhu",
     "frc",
     "jorv",
@@ -53,7 +58,6 @@ not_varia = [
     "lse",
     "mege",
     "mvw",
-    "nasg",
     "nci",
     "nea",
     "pebr",
@@ -71,13 +75,20 @@ not_varia = [
     "cyro",
     "dhs",
     "evko",
+    "guba",
     "iada",
+    "jrbr",
     "jelu",
     "maje",
     "myhy",
+    "deni",
+    "orzh",
     "pca",
     "qung",
+    "prri",
     "ryce",
+    "vasu",
+    "zaha",
 ]
 
 base_context = {
@@ -309,10 +320,11 @@ def x_agent_helper(trigrams):
 
 
 def my_generator():
-    top_four = [
+    top = [
         [
             x_unassigned(squad_name="varia"),
             x_processed(squad_name="varia"),
+            x_new(squad_name="varia"),
         ],
         [
             x_in_tech_per_agent(squad_name="varia"),
@@ -321,7 +333,6 @@ def my_generator():
     ]
     the_rest = [
         [
-            x_new(squad_name="varia"),
             *tags_helper(["Technical"], x_unassigned, x_new, x_processed),
             # x_unassigned(stage=None),
             *squad_helper(None, x_new, x_processed),
@@ -373,7 +384,7 @@ def my_generator():
         ],
     ]
     components = []
-    for col_top, col_bot in zip(top_four, the_rest):
+    for col_top, col_bot in zip(top, the_rest):
         components.append(col_top + col_bot)
 
     col1 = COLUMN.format(slot="".join(components[0]))
