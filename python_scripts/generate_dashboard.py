@@ -123,8 +123,8 @@ help_context.update(
 )
 
 groupby_stage_update_and_create = {
-    "group_by": ["date_last_stage_update:month", "create_date:month"],
-    "graph_groupbys": ["date_last_stage_update:month", "create_date:month"],
+    "group_by": ["date_last_stage_update:week", "create_date:month"],
+    "graph_groupbys": ["date_last_stage_update:week", "create_date:month"],
 }
 
 groupby_stage_update_and_stage = {
@@ -202,14 +202,14 @@ def x_unassigned(stage="tech", squad_name=None, tags=None, title=None):
     name = "unassigned tickets"
     if stage:
         domain.append(["stage_id", "ilike", stage])
-        name = f"{stage} unasigned tickets"
+        name = f"{stage} unasigned tickets (week)"
     if squad_name:
         tag = f"tech_squad_{squad_name}"
         domain.append(("tag_ids", "ilike", tag))
-        name = f"{squad_name} unasigned tickets"
+        name = f"{squad_name} unasigned tickets (week)"
     if tags:
         domain += tags_domain_builder(tags)
-        name = f"unasigned {'-'.join(tags)} tickets"
+        name = f"unasigned {'-'.join(tags)} tickets (week)"
     # keep just unassigned tickets
     domain.append(("user_ids", "=", False))
     if title:
@@ -379,6 +379,7 @@ def my_generator():
             ],
             *squad_helper("sh", x_unassigned, x_new, x_processed),
             *squad_helper("infra", x_unassigned, x_new, x_processed),
+            *tags_helper(["saas-ops"], x_unassigned, x_new, x_processed),
             *tags_helper(["apps"], x_unassigned, x_new, x_processed),
             *x_agent_helper(not_varia),
         ],
