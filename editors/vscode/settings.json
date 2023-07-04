@@ -92,6 +92,7 @@
     "git-graph.commitDetailsView.location": "Docked to Bottom",
     "git-graph.date.format": "Relative",
     "git-graph.date.type": "Commit Date",
+    "githubPullRequests.pullBranch": "never",
     "vim.visualstar": true,
     "vim.insertModeKeyBindings": [
         {
