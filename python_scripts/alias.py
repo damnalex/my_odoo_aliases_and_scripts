@@ -539,7 +539,7 @@ def o_emp(*trigrams):
     )
     # get data of all managers chains
     managers_data = {
-        e["id"]: {"name": e["name"], "parent_id": e["parent_id"][0]}
+        e["id"]: {"name": e["name"], "parent_id": e["parent_id"] and e["parent_id"][0]}
         for e in employees_data
     }
     while managers_to_do := [
