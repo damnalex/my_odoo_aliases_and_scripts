@@ -61,6 +61,17 @@ if ! grep -q "source $0" ~/.zshrc; then
     echo "source $0" >>~/.zshrc
 fi
 
+########################################
+######   terminal customizations   #####
+########################################
+
+PROMPT="[%D|%T] $PROMPT"
+TMOUT=10
+TRAPALRM() {
+    zle reset-prompt
+}
+
+
 ##################################################
 ### load all the other files in the $AP folder ###
 ##################################################
