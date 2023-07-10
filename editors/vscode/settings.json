@@ -61,6 +61,7 @@
     "git.autofetch": true,
     "git.autofetchPeriod": 300,
     "git.openRepositoryInParentFolders": "never",
+    "git.confirmSync": false,
     "telemetry.telemetryLevel": "off",
     "editor.accessibilitySupport": "off",
     "editor.dragAndDrop": false,
