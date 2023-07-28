@@ -203,6 +203,28 @@ def odoo_repos_pull(version=None, fast=False):
         _try_for_all_remotes(repo, pull, raise_on_exception=False)
 
 
+def odoo_repos_pull_all():
+    repos = VERSIONED_REPOS[:]
+    for repo_name, repo in zip(repos, _repos(repos)):
+        repo_name = shorten_path(repo_name)
+        print(f"updating {repo_name}")
+        print(f"updating in place {repo.active_branch.name}")
+        repo.remotes.origin.pull()
+        for version in RELEVANT_BRANCHES:
+            if version != repo.active_branch.name:
+                print(f"processing {version}")
+                repo.remotes.origin.fetch(f"{version}:{version}")
+    repos = SINGLE_VERSION_REPOS + SUPPORT_REPOS
+    for repo_name, repo in zip(repos, _repos(repos)):
+        repo_name = shorten_path(repo_name)
+        print(f"updating {repo_name}")
+        print(f"updating in place {repo.active_branch.name}")
+        repo.remotes.origin.pull()
+        if "master" != repo.active_branch.name:
+            print(f"processing master")
+            repo.remotes.origin.fetch(f"master:master")
+
+
 def _get_version_from_db(dbname):
     """get the odoo version of the given DB"""
     with psycopg2.connect(f"dbname='{dbname}'") as conn, conn.cursor() as cr:
@@ -276,8 +298,9 @@ def App(**opt):
     if opt.get("pull"):
         version = opt.get("--version")
         if opt.get("--all"):
-            version = RELEVANT_BRANCHES
-        odoo_repos_pull(version)
+            odoo_repos_pull_all()
+        else:
+            odoo_repos_pull(version)
         return
 
     if opt.get("checkout"):
