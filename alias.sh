@@ -449,8 +449,8 @@ update_all_multiverse_branches() {
 }
 
 build_odoo_virtualenv() {
-    odev init "TA_$1" $1 ||  return 1
-    go_venv $version
+    odev init -y  "TA_$1" $1 || return 1
+    go_venv $1
     cp $ST/requirements.txt /tmp/requirements.txt
     sed -i "" "/psycopg2/d" /tmp/requirements.txt
     pip install -r /tmp/requirements.txt
