@@ -61,7 +61,7 @@ eza() {
         return
         ;;
     .)
-        # open the folder itself
+        # open this repo rather than a specific file in it
         file_to_load="."
         file_type="other"
         ;;
@@ -78,27 +78,32 @@ eza() {
         return
         ;;
     esac
-    # change the current directory while editing the files to have a better experience with my vim config
-    local current_dir=$(pwd)
-    cd $AP
-    if [[ $2 == "" ]]; then
-        e $AP/$file_to_load || return
-    else
+    # open vim with an option prepared search
+    local search_cmd=""
+    if [[ $2 != "" ]]; then
         case $file_type in
         sh)
-            e -c "/.*$2.*(" $AP/$file_to_load || return
+            search_cmd='-c "/.*$2.*("'
             ;;
         py)
-            e -c "/def $2" $AP/$file_to_load || return
+            search_cmd='-c "/def $2"'
             ;;
         other)
-            e -c "/$2" $AP/$file_to_load || return
+            search_cmd='-c "/$2"'
             ;;
         esac
     fi
+    # change the current directory while editing the files to have a better experience with my vim config
+    local current_dir=$(pwd)
+    cd $AP
+    local skip_reload="No"
+    eval  "e $search_cmd $AP/$file_to_load" || skip_reload="Yes"
     cd "$current_dir"
+    # if vim exits with an error (existing with :cq for example) do not reload
+    # this can speed things up a bit especially if I use `eza` many times in a given tab
+    # (not sure why, but each reload gets longer and longer)
+    [[ $skip_reload == "Yes" ]] && return
     # editing is done, applying changes
-    # source $AP/alias_loader.sh
     reload_zshrc
 }
 
