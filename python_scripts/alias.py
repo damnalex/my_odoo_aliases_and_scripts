@@ -748,6 +748,7 @@ def typos_and_simple_aliases():
         "govcur": "go_venv_current",
         "runbot": "build_runbot",
         "oe-support": "oes",
+        "ewq": "eza",
         "ezagit": "git -C $AP",
         "ezatig": "tig -C $AP",
         "python3.7": "/usr/local/opt/python@3.7/bin/python3.7",
