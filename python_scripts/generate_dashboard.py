@@ -22,7 +22,7 @@ squad_to_leader_employee = {
     "stock": 885,  # nci
     "sm": 317943,  # bve
     "perf": 1206319,  # avd
-    "webjs": 1001546  # pco
+    "website_js": 1001546  # pco
 }
 varia = [
     "gavb",
