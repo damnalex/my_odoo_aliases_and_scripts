@@ -202,14 +202,14 @@ def x_unassigned(stage="tech", squad_name=None, tags=None, title=None):
     name = "unassigned tickets"
     if stage:
         domain.append(["stage_id", "ilike", stage])
-        name = f"{stage} unasigned tickets (week)"
+        name = f"{stage} unassigned tickets (week)"
     if squad_name:
         tag = f"tech_squad_{squad_name}"
         domain.append(("tag_ids", "ilike", tag))
-        name = f"{squad_name} unasigned tickets (week)"
+        name = f"{squad_name} unassigned tickets (week)"
     if tags:
         domain += tags_domain_builder(tags)
-        name = f"unasigned {'-'.join(tags)} tickets (week)"
+        name = f"unassigned {'-'.join(tags)} tickets (week)"
     # keep just unassigned tickets
     domain.append(("user_ids", "=", False))
     if title:
