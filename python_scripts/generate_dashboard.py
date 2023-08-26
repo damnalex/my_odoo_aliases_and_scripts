@@ -26,48 +26,62 @@ squad_to_leader_employee = {
 }
 varia = [
     "gavb",
-    "jula",
     "lole",
     "lrfd",
     "mao",
     "nasg",
     "ofa",
-    "pco",
     "peso",
     "sigo",
     "syf",
-    "thc",
 ]
-
-not_varia = [
-    # BE
+account = [
     "amay",
     "arsi",
     "asm",
-    "auma",
-    "avd",
-    "bve",
     "bebo",
-    "beha",
     "crm",
-    "dafr",
     "flhu",
-    "frc",
-    "jorv",
-    "khah",
-    "lse",
     "mege",
-    "mvw",
-    "nci",
-    "nea",
-    "pebr",
-    "pno",
     "sold",
     "tbs",
     "thco",
+]
+pos = [
+    "khah",
+    "lse",
+    "pebr",
+]
+stock = [
+    "dafr",
+    "nci",
+    "pno",
     "wama",
     "was",
+]
+sm = [
+    "bve",
+    "frc",
+    "jorv",
     "yla",
+]
+perf = [
+    "auma",
+    "avd",
+    "beha",
+    "nea",
+]
+website_js = [
+    "jula",
+    "pco",
+    "thc",
+]
+
+other = [
+    # BE
+    "mvw",
+    "jmfa",
+    "quvb",
     # US
     "adda",
     "andg",
@@ -90,6 +104,22 @@ not_varia = [
     "vasu",
     "zaha",
 ]
+
+match_name_to_squad = {
+    "varia": varia,
+    "account": account,
+    "pos": pos,
+    "stock": stock,
+    "sm": sm,
+    "perf": perf,
+    "website_js": website_js,
+    "other": other,
+}
+
+def get_from_squad(main, not_in=False):
+    for name, squad in match_name_to_squad.items():
+        if (name == main and not not_in) or (name != main and not_in):
+            yield from squad
 
 base_context = {
     "lang": "en_US",
@@ -319,16 +349,16 @@ def x_agent_helper(trigrams):
     return [x_agent(trigram) for trigram in trigrams]
 
 
-def my_generator():
+def my_generator(main_squad):
     top = [
         [
-            x_unassigned(squad_name="varia"),
-            x_processed(squad_name="varia"),
-            x_new(squad_name="varia"),
+            x_unassigned(squad_name=main_squad),
+            x_processed(squad_name=main_squad),
+            x_new(squad_name=main_squad),
         ],
         [
-            x_in_tech_per_agent(squad_name="varia"),
-            x_rot(squad_name="varia"),
+            x_in_tech_per_agent(squad_name=main_squad),
+            x_rot(squad_name=main_squad),
         ],
     ]
     the_rest = [
@@ -336,7 +366,7 @@ def my_generator():
             *tags_helper(["Technical"], x_unassigned, x_new, x_processed),
             # x_unassigned(stage=None),
             *squad_helper(None, x_new, x_processed),
-            *x_agent_helper(varia),
+            *x_agent_helper(get_from_squad(main_squad)),
         ],
         [
             """
@@ -367,7 +397,7 @@ def my_generator():
             *[
                 card
                 for squad_name in squad_to_leader_employee
-                if squad_name != "varia"
+                if squad_name != main_squad
                 for card in squad_helper(
                     squad_name,
                     x_unassigned,
@@ -381,7 +411,7 @@ def my_generator():
             *squad_helper("infra", x_unassigned, x_new, x_processed),
             *tags_helper(["saas-ops"], x_unassigned, x_new, x_processed),
             *tags_helper(["apps"], x_unassigned, x_new, x_processed),
-            *x_agent_helper(not_varia),
+            *x_agent_helper(get_from_squad(main_squad, not_in=True)),
         ],
     ]
     components = []
@@ -395,7 +425,10 @@ def my_generator():
 
 
 if __name__ == "__main__":
-    my_generator()
+    print("What's your squad ? [v]aria / [a]ccount / [po]s / [st]ock / [sm] / [pe]rf / [w]ebsite_js / [o]ther")
+    pick = input()
+    pic_match = {'v': 'varia', 'a': 'account', 'po': 'pos', 'st': 'stock', 'sm':'sm', 'pe': 'perf',  'w': 'website_js', 'o': 'other'}
+    my_generator(pic_match[pick])
     # TODO
     # dynamically generate agents (varia, not_varia) list
     # automatically backup the current dashboard on odoo.com
