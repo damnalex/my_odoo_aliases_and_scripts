@@ -451,6 +451,10 @@ update_multiverse_branch() {
 update_all_multiverse_branches() {
     # git pull the repos of all the multivers branches
     odev pull -f
+    echo 'multiverse master pull'
+    git -C $SRC_MULTI/master/odoo pull
+    git -C $SRC_MULTI/master/enterprise pull
+    git -C $SRC_MULTI/master/design-themes pull
 }
 
 build_odoo_virtualenv() {
