@@ -69,6 +69,7 @@ _eza() {
     fi
 }
 complete -o default -F _eza eza
+complete -o default -F _eza ewq
 
 _so() {
     _complete_db_name_on_first_param
