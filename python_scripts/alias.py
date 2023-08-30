@@ -758,6 +758,7 @@ def typos_and_simple_aliases():
         "file_server": "$SRC/misc_gists/simple_file_server/http_server_auth.py",
         "xdg-open": "open",
         "date": "gdate",
+        "dbd": "cd $DBD",
     }
 
     # reverse mappping (and remove duplicates)
