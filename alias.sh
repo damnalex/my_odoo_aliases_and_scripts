@@ -97,7 +97,7 @@ eza() {
     local current_dir=$(pwd)
     cd $AP
     local skip_reload="No"
-    eval  "e $search_cmd $AP/$file_to_load" || skip_reload="Yes"
+    eval "e $search_cmd $AP/$file_to_load" || skip_reload="Yes"
     cd "$current_dir"
     # if vim exits with an error (existing with :cq for example) do not reload
     # this can speed things up a bit especially if I use `eza` many times in a given tab
@@ -283,7 +283,7 @@ lldu() {
     done
 }
 
-fix_dbd(){
+fix_dbd() {
     echo "unplug external drive"
     echo "(press enter when ready)"
     read ready
@@ -458,7 +458,7 @@ update_all_multiverse_branches() {
 }
 
 build_odoo_virtualenv() {
-    odev init -y  "TA_$1" $1 || return 1
+    odev init -y "TA_$1" $1 || return 1
     go_venv $1
     cp $ST/requirements.txt /tmp/requirements.txt
     sed -i "" "/psycopg2/d" /tmp/requirements.txt
@@ -640,9 +640,9 @@ sql_to_dump() {
     local dump_file=${2:-'dump.dump'}
     if [ -f "$sql_file" ]; then
         createdb xoxo_to_delete &&
-        psql -d xoxo_to_delete <$sql_file >/dev/null &&
-        pg_dump -F c -f $2 xoxo_to_delete &&
-        dropdb xoxo_to_delete
+            psql -d xoxo_to_delete <$sql_file >/dev/null &&
+            pg_dump -F c -f $2 xoxo_to_delete &&
+            dropdb xoxo_to_delete
     else
         echo "sql_to_dump [<source.sql>] [<destination.dump>]"
         echo "<source.sql> defaults to dump.sql"
@@ -657,7 +657,7 @@ public_file_server_autokill() {
     # kill both when cloudflare tunnel receives a termination signal
     args=("$@")
     ELEMENTS=${#args[@]}
-    if [[ $ELEMENTS -ge 2  ]]; then
+    if [[ $ELEMENTS -ge 2 ]]; then
         # with authentication
         file_server $@ &
     else
@@ -667,7 +667,7 @@ public_file_server_autokill() {
     # checking that the file server is properly running
     sleep 2
     local PY_SERV_PID="$(listport 8000 | sed -n '2p' | awk '{print $2}')"
-    kill -0 "${PY_SERV_PID:-111111111111}" 2>/dev/null || return 1   # lets hope I never stumble upon that PID
+    kill -0 "${PY_SERV_PID:-111111111111}" 2>/dev/null || return 1 # lets hope I never stumble upon that PID
     # opening the tunnel
     cloudflared tunnel --url http://localhost:8000
     # killing the file server, this line is reached

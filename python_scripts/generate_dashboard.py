@@ -22,7 +22,7 @@ squad_to_leader_employee = {
     "stock": 885,  # nci
     "sm": 317943,  # bve
     "perf": 1206319,  # avd
-    "website_js": 1001546  # pco
+    "website_js": 1001546,  # pco
 }
 varia = [
     "gavb",
@@ -116,10 +116,12 @@ match_name_to_squad = {
     "other": other,
 }
 
+
 def get_from_squad(main, not_in=False):
     for name, squad in match_name_to_squad.items():
         if (name == main and not not_in) or (name != main and not_in):
             yield from squad
+
 
 base_context = {
     "lang": "en_US",
@@ -425,9 +427,20 @@ def my_generator(main_squad):
 
 
 if __name__ == "__main__":
-    print("What's your squad ? [v]aria / [a]ccount / [po]s / [st]ock / [sm] / [pe]rf / [w]ebsite_js / [o]ther")
+    print(
+        "What's your squad ? [v]aria / [a]ccount / [po]s / [st]ock / [sm] / [pe]rf / [w]ebsite_js / [o]ther"
+    )
     pick = input()
-    pic_match = {'v': 'varia', 'a': 'account', 'po': 'pos', 'st': 'stock', 'sm':'sm', 'pe': 'perf',  'w': 'website_js', 'o': 'other'}
+    pic_match = {
+        "v": "varia",
+        "a": "account",
+        "po": "pos",
+        "st": "stock",
+        "sm": "sm",
+        "pe": "perf",
+        "w": "website_js",
+        "o": "other",
+    }
     my_generator(pic_match[pick])
     # TODO
     # dynamically generate agents (varia, not_varia) list

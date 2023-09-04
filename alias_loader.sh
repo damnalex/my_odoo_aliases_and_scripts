@@ -71,7 +71,6 @@ TRAPALRM() {
     zle reset-prompt
 }
 
-
 ##################################################
 ### load all the other files in the $AP folder ###
 ##################################################
