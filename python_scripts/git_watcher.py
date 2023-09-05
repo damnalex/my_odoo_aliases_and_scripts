@@ -101,7 +101,7 @@ css = """
 
 .content {
     padding: 0 18px;
-    display: none;
+    display: block;
     overflow: hidden;
     background-color: #f1f1f1;
 }
