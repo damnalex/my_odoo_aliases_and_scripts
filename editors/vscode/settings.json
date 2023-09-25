@@ -94,6 +94,8 @@
     "git-graph.date.format": "Relative",
     "git-graph.date.type": "Commit Date",
     "githubPullRequests.pullBranch": "never",
+    "vim.incsearch": true,
+    "vim.hlsearch": true,
     "vim.visualstar": true,
     "vim.insertModeKeyBindings": [
         {
