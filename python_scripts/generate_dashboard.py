@@ -25,13 +25,13 @@ squad_to_leader_employee = {
     "website_js": 1001546,  # pco
 }
 varia = [
+    "angv",
     "gavb",
     "lole",
     "lrfd",
     "mao",
     "nasg",
     "ofa",
-    "peso",
     "sigo",
     "syf",
 ]
@@ -79,9 +79,13 @@ website_js = [
 
 other = [
     # BE
+    "alha",
+    "axte",
     "mvw",
     "jmfa",
-    "quvb",
+    "jond",
+    "juse",
+
     # US
     "adda",
     "andg",
@@ -94,6 +98,7 @@ other = [
     "jrbr",
     "jelu",
     "maje",
+    "jobl",
     "myhy",
     "deni",
     "orzh",
@@ -101,7 +106,6 @@ other = [
     "qung",
     "prri",
     "ryce",
-    "vasu",
     "zaha",
 ]
 
