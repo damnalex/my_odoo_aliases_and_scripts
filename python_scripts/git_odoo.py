@@ -30,9 +30,9 @@ RELEVANT_BRANCHES = [
     "15.0",
     "saas-15.2",
     "16.0",
-    "saas-16.1",
     "saas-16.2",
     "saas-16.3",
+    "saas-16.4",
 ]
 
 VERSIONED_REPOS = [env.ODOO, env.ENTERPRISE, env.DESIGN_THEMES, env.USER_DOC]
