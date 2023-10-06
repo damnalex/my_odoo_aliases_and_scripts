@@ -71,6 +71,7 @@
         git branch -D $branch; \
         git remote remove $remote; \
     }; f"
+	push-check = "! git fetch $(git rev-parse --symbolic-full-name --abbrev-ref @{upstream} | sed \"s|/| |\")  ; echo \"<<<<< only on remote:\\n$(git log HEAD..HEAD@{upstream} --pretty=format:\"%h%x09%ae%x09%ar%x09%s\")\"; echo \">>>>>> only on local:\\n$(git log HEAD@{upstream}..HEAD --pretty=format:\"%h%x09%ae%x09%ar%x09%s\")\""
 [commit]
 	verbose = true
 	gpgsign = false
