@@ -2,10 +2,9 @@
 ########################  PATHS  ##########################
 ###########################################################
 
+export AP=$(dirname "$0")
+
 export SRC="$HOME/src"
-
-export AP="$SRC/my_odoo_aliases_and_scripts"
-
 export ODOO="$SRC/odoo"
 export ENTERPRISE="$SRC/enterprise"
 export DESIGN_THEMES="$SRC/design-themes"
