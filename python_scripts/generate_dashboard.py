@@ -85,7 +85,6 @@ other = [
     "jmfa",
     "jond",
     "juse",
-
     # US
     "adda",
     "andg",

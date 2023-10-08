@@ -117,6 +117,7 @@ Plug 'nathanaelkane/vim-indent-guides'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'tpope/vim-fugitive'
 Plug 'jam1garner/vim-code-monokai'
+Plug 'editorconfig/editorconfig-vim'
 call plug#end()
 " run :source ~/.vimrc  to reload vimrc
 " run :PlugInstall to install declared plugins
@@ -142,4 +143,3 @@ let g:indent_guides_enable_on_vim_startup = 1
 " noremap j <NOP>
 " noremap k <NOP>
 " noremap l <NOP>
-

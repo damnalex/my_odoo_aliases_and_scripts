@@ -17,5 +17,3 @@ This is made to work on my personnal machine, with it's shitty config and idiosy
 
 * 2018-10-04: repo creation (it was just aliases to copy past in .zshrc at the time)
 * 2020-08-17: tranfer of the repo ownership to github.com/damnalex
-
-
