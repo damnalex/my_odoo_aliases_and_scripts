@@ -81,6 +81,7 @@
         "--ignore=E501,E301,E302,E126,E123,E127,E128,E265,E305,W605",
     ],
     "python.showStartPage": false,
+    "python.languageServer": "Jedi",
     // extension settings
     "extensions.ignoreRecommendations": false,
     "gitlens.advanced.messages": {
