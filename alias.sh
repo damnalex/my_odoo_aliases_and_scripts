@@ -287,7 +287,7 @@ fix_dbd() {
     echo "unplug external drive"
     echo "(press enter when ready)"
     read ready
-    sudo rm -r /Volumes/Lokhlass /Volumes/Lokhlass\ 1 /Volumes/Lokhlass\ 2
+    sudo rm -r /Volumes/Lokhlass*
     echo "you can plug exterenal drive back in"
 }
 
