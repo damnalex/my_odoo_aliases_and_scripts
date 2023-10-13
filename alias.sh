@@ -291,6 +291,12 @@ fix_dbd() {
     echo "you can plug exterenal drive back in"
 }
 
+eject_dbd(){
+    for v in /Volumes/Lokhlas*; do
+        diskutil eject "$v"
+    done
+}
+
 ##############################################
 #############  python  stuffs  ###############
 ##############################################
