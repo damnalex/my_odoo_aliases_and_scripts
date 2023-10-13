@@ -27,7 +27,7 @@ repos:
         language_version: python3.11
 
   - repo: https://github.com/pecigonzalo/pre-commit-shfmt
-    rev: master
+    rev: v2.1.0
     hooks:
         - id: shell-fmt
           args:
