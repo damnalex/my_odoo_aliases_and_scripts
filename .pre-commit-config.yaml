@@ -26,10 +26,10 @@ repos:
         # https://pre-commit.com/#top_level-default_language_version
         language_version: python3.11
 
-  - repo: https://github.com/pecigonzalo/pre-commit-shfmt
-    rev: v2.1.0
+  - repo: https://github.com/cisagov/pre-commit-shfmt
+    rev: v0.0.2
     hooks:
-        - id: shell-fmt
+        - id: shfmt
           args:
             - -l
             - -i
