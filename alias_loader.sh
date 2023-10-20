@@ -16,8 +16,6 @@ export UPGR_PLAT="$SRC/upgrade-platform"
 export OQOL="$SRC/misc_gists/odoo-qol"
 export SRC_MULTI="$HOME/odoo/versions"
 
-# test
-
 if [[ $OSTYPE =~ ^darwin ]]; then
     # macos specific stuffs
     export ODOO_STORAGE="$HOME/Library/Application Support/Odoo"
