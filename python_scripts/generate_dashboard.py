@@ -25,6 +25,7 @@ squad_to_leader_employee = {
     "website_js": 1001546,  # pco
 }
 varia = [
+    "alha",
     "angv",
     "gavb",
     "lole",
@@ -42,6 +43,7 @@ account = [
     "bebo",
     "crm",
     "flhu",
+    "jmfa",
     "mege",
     "sold",
     "tbs",
@@ -69,6 +71,7 @@ perf = [
     "auma",
     "avd",
     "beha",
+    "juse",
     "nea",
 ]
 website_js = [
@@ -79,12 +82,8 @@ website_js = [
 
 other = [
     # BE
-    "alha",
-    "axte",
     "mvw",
-    "jmfa",
     "jond",
-    "juse",
     # US
     "adda",
     "andg",
