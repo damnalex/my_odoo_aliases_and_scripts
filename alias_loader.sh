@@ -13,6 +13,7 @@ export PAAS="$SRC/paas"
 export ST="$SRC/support-tools"
 export USER_DOC="$SRC/documentation-user"
 export UPGR_PLAT="$SRC/upgrade-platform"
+export UPGR_UTIL="$SRC/upgrade-util"
 export OQOL="$SRC/misc_gists/odoo-qol"
 export SRC_MULTI="$HOME/odoo/versions"
 
