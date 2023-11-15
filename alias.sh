@@ -362,7 +362,7 @@ go_prune_all() {
     # prune universe, internal and paas
     echo "----"
     echo "pruning the universe"
-    local repos=("$ODOO" "$ENTERPRISE" "$SRC/design-themes" "$INTERNAL" "$SRC/paas")
+    local repos=("$ODOO" "$ENTERPRISE" "$DESIGN_THEMES" "$ST" "$INTERNAL" "$PAAS" "$UPGR_PLAT")
     for repo in $repos; do {
         git_prune_branches $repo
     }; done
