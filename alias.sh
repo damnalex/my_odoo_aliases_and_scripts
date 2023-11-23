@@ -291,7 +291,7 @@ fix_dbd() {
     echo "you can plug exterenal drive back in"
 }
 
-eject_dbd(){
+eject_dbd() {
     for v in /Volumes/Lokhlas*; do
         diskutil eject "$v"
     done
@@ -679,4 +679,17 @@ public_file_server_autokill() {
     # killing the file server, this line is reached
     # only once a termination signal has been sent to cloudflared
     killport 8000
+}
+
+odoo_alive_check() {
+    # check for an odoo database to come back online
+    local db_url=${1:-'www.odoo.com'}
+    clear
+    echo "waiting for $db_url to come back since:"
+    date
+    while ! o_ver $db_url 2>/dev/null; do
+        sleep 10
+    done
+    echo "$db_url is back online since:"
+    date
 }
