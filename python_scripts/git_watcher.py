@@ -23,11 +23,11 @@ usage:
         - optionally autofetch the new commits (not pulling the branch to get them , just fecth origin/xxxx  to not potentially break local changes)
 """
 
-import sys
+import hashlib
+import json
 import os
 import subprocess
-import json
-import hashlib
+import sys
 
 # const ------------------------------------------------------------------------------------------
 
@@ -152,8 +152,7 @@ def _link(url, text):
 
 def _one_watcher(name, new_commits, repo):
     ul = "<ul>%s</ul>" % "\n".join(
-        "<li>%s</li>" % _link(repo + "commit/" + commit[0], commit[1])
-        for commit in new_commits
+        "<li>%s</li>" % _link(repo + "commit/" + commit[0], commit[1]) for commit in new_commits
     )
     if not new_commits:
         ul = "<p>Nothing new over here</p>"
@@ -161,10 +160,7 @@ def _one_watcher(name, new_commits, repo):
 
 
 def _build_html_report(watchers, new_commits):
-    body = "\n".join(
-        _one_watcher(name, commits, watchers[name]["URL"])
-        for name, commits in new_commits.items()
-    )
+    body = "\n".join(_one_watcher(name, commits, watchers[name]["URL"]) for name, commits in new_commits.items())
     return page.format(title="git_watcher report", css=css, js=js, body=body)
 
 
@@ -182,12 +178,8 @@ def app_setup():
 def add_watcher(path):
     dir_path = _path_to_first_parent_dir(path)
     cmd = f"git -C {dir_path} remote get-url origin".split()
-    git_repo_url = (
-        subprocess.run(cmd, capture_output=True).stdout.decode("utf-8").strip()
-    )
-    web_repo_url = (
-        git_repo_url.replace(":", "/").replace("git@", "https://").replace(".git", "/")
-    )
+    git_repo_url = subprocess.run(cmd, capture_output=True, check=True).stdout.decode("utf-8").strip()
+    web_repo_url = git_repo_url.replace(":", "/").replace("git@", "https://").replace(".git", "/")
     watchers = _get_data_old()
     name = path.split("/")[-1]
     watchers[name] = {
@@ -225,7 +217,7 @@ def app_run_check():
     for name, w_info in watchers.items():
         print("processing :", name)
         report[name] = []
-        path, url, known_commits = (
+        path, _, known_commits = (
             w_info["path"],
             w_info["URL"],
             set(w_info["known_commits"]),
@@ -233,9 +225,7 @@ def app_run_check():
         path = os.path.expanduser(path)
         dir_path = _path_to_first_parent_dir(path)
         cmd = ["git", "-C", dir_path, "log", "--pretty=format:%h!|!%s", path]
-        git_log = (
-            subprocess.run(cmd, capture_output=True).stdout.decode("utf-8").strip()
-        )
+        git_log = subprocess.run(cmd, capture_output=True, check=True).stdout.decode("utf-8").strip()
         for log_line in (line for line in git_log.split("\n") if line):
             commit, title = log_line.split("!|!", maxsplit=1)
             if commit not in known_commits:
@@ -246,9 +236,7 @@ def app_run_check():
         return
     # create html report
     html = _build_html_report(watchers, report)
-    report_name = (
-        "git_watcher_report_%s.html" % hashlib.md5(html.encode("utf-8")).hexdigest()
-    )
+    report_name = "git_watcher_report_%s.html" % hashlib.md5(html.encode("utf-8")).hexdigest()
     report_path = os.path.expanduser(_get_config()["output_folder"]) + report_name
     with open(report_path, "w") as f_report:
         f_report.write(html)

@@ -429,9 +429,7 @@ def my_generator(main_squad):
 
 
 if __name__ == "__main__":
-    print(
-        "What's your squad ? [v]aria / [a]ccount / [po]s / [st]ock / [sm] / [pe]rf / [w]ebsite_js / [o]ther"
-    )
+    print("What's your squad ? [v]aria / [a]ccount / [po]s / [st]ock / [sm] / [pe]rf / [w]ebsite_js / [o]ther")
     pick = input()
     pic_match = {
         "v": "varia",

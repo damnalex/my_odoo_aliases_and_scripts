@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
-import sys
-import os
 import collections
+import os
 import subprocess
+import sys
 from configparser import ConfigParser
-from textwrap import dedent as _dd
-from psycopg2 import OperationalError, ProgrammingError, connect
 from inspect import signature
+from textwrap import dedent as _dd
 
-from utils import env, _get_xmlrpc_executer, _xmlrpc_odoo_com
-from git_odoo import _repos, _get_version_from_db, App as _git_odoo_app
+from git_odoo import App as _git_odoo_app
+from git_odoo import _get_version_from_db, _repos
+from psycopg2 import OperationalError, ProgrammingError, connect
+from utils import _get_xmlrpc_executer, _xmlrpc_odoo_com, env
 
+PYTHON3, PYTHON2 = 3, 2
 
 ########################
 #   decorators stuff   #
@@ -149,7 +151,7 @@ def git_branch_version(path):
 def _check_file_exists(path):
     # returns True if the file :path exists, False otherwize
     try:
-        with open(path) as f:
+        with open(path) as _:
             return True
     except IOError:
         return False
@@ -161,7 +163,7 @@ def sh_run(cmd, **kwargs):
         kwargs["stdout"] = subprocess.PIPE
     if "|" not in cmd:
         cmd = cmd.split()
-        return subprocess.run(cmd, **kwargs).stdout.decode("utf-8")
+        return subprocess.run(cmd, **kwargs, check=True).stdout.decode("utf-8")
     else:
         process = subprocess.Popen(cmd, shell=True, **kwargs)
         return process.communicate()[0].decode("utf-8")
@@ -203,6 +205,7 @@ def _so_checker(*args):
     # check that the params given to 'so' are correct,
     # check that I am not trying to start a protected DB,
     # check that I am sure to want to start a DB with the wrong branch checked out (only check $ODOO)
+    args_pattern = ["<db_name:string>", "<port:int>"]
 
     if len(args) == 0:
         raise Invalid_params(
@@ -243,14 +246,12 @@ def _so_checker(*args):
                 print("I hope you know what you're doing...")
             else:
                 raise UserAbort("Yeah, that's probably safer :D")
-    if len(args) >= 2:
+    if len(args) >= len(args_pattern):
         try:
             int(args[1])
         except ValueError as ve:
             bad_port = str(ve).split(":")[1][2:-1]
-            raise Invalid_params(
-                f"""The port number must be an integer. Provided value : {bad_port}"""
-            )
+            raise Invalid_params(f"""The port number must be an integer. Provided value : {bad_port}""") from None
 
 
 @call_from_shell
@@ -258,9 +259,7 @@ def _so_builder(db_name, port_number=8069, *args):
     ODOO_BIN_PATH = f"{env.ODOO}/odoo-bin"
     ODOO_PY_PATH = f"{env.ODOO}/odoo.py"
     PATH_COMMUNITY = f"--addons-path={env.ODOO}/addons"
-    PATH_ENTERPRISE = (
-        f"--addons-path={env.ENTERPRISE},{env.ODOO}/addons,{env.SRC}/design-themes"
-    )
+    PATH_ENTERPRISE = f"--addons-path={env.ENTERPRISE},{env.ODOO}/addons,{env.SRC}/design-themes"
     PARAMS_NORMAL = f"--db-filter=^{db_name}$ -d {db_name} --xmlrpc-port={port_number}"
     additional_params = " ".join(args)
     if _check_file_exists(ODOO_BIN_PATH):
@@ -275,13 +274,11 @@ def _so_builder(db_name, port_number=8069, *args):
                 Note:
                 `so` does not work with DBs < 10.0, unless it already exists
                 This will probably never be fixed."""
-            raise Invalid_params(msg)
+            raise Invalid_params(msg) from e
         if version == "8.0":
             cmd = f"{ODOO_PY_PATH} {PATH_COMMUNITY} {PARAMS_NORMAL} {additional_params}"
         else:
-            cmd = (
-                f"{ODOO_PY_PATH} {PATH_ENTERPRISE} {PARAMS_NORMAL} {additional_params}"
-            )
+            cmd = f"{ODOO_PY_PATH} {PATH_ENTERPRISE} {PARAMS_NORMAL} {additional_params}"
     print(cmd)
     return cmd
 
@@ -338,13 +335,13 @@ def sou(db_name, *apps):
 @call_from_shell
 def ptvsd2(*args):
     cmd = "python2 -m ptvsd --host localhost --port 5678".split() + list(args)
-    subprocess.run(cmd)
+    subprocess.run(cmd, check=True)
 
 
 @call_from_shell
 def ptvsd3(*args):
     cmd = "python3 -m ptvsd --host localhost --port 5678".split() + list(args)
-    subprocess.run(cmd)
+    subprocess.run(cmd, check=True)
 
 
 def _ptvsd_so(python_version, *args):
@@ -352,7 +349,7 @@ def _ptvsd_so(python_version, *args):
     _so_checker(*args)
     cmd = _so_builder(*args)
     cmd = cmd.split()
-    if python_version == 3:
+    if python_version == PYTHON3:
         ptvsd3(*cmd)
     else:
         ptvsd2(*cmd)
@@ -360,12 +357,12 @@ def _ptvsd_so(python_version, *args):
 
 @call_from_shell
 def ptvsd2_so(*args):
-    _ptvsd_so(2, *args)
+    _ptvsd_so(PYTHON2, *args)
 
 
 @call_from_shell
 def ptvsd3_so(*args):
-    _ptvsd_so(3, *args)
+    _ptvsd_so(PYTHON3, *args)
 
 
 @shell_end_hook
@@ -399,7 +396,7 @@ def go_update_and_clean(version=None):
 def godb(db_name):
     """switch repos branch to the version of the given DB"""
     try:
-        version = _get_version_from_db(db_name)
+        _ = _get_version_from_db(db_name)
     except OperationalError:
         print(f"DB {db_name} does not exist")
     else:
@@ -422,8 +419,9 @@ def dropodoo(*dbs):
     """drop the given DB(s) and remove its filestore,
     also removes it from meta if it was a local saas db
     dropodoo <db_name(s)>"""
-    import appdirs
     from shutil import rmtree
+
+    import appdirs
 
     if not dbs:
         raise Invalid_params(
@@ -465,9 +463,7 @@ def dropodoo(*dbs):
             try:
                 rmtree(filestore_path)
             except FileNotFoundError:
-                print(
-                    "failed to delete the filestore, looks like it doesn't exist anymore"
-                )
+                print("failed to delete the filestore, looks like it doesn't exist anymore")
 
 
 @call_from_shell
@@ -539,13 +535,10 @@ def o_emp(*trigrams):
     )
     # get data of all managers chains
     managers_data = {
-        e["id"]: {"name": e["name"], "parent_id": e["parent_id"] and e["parent_id"][0]}
-        for e in employees_data
+        e["id"]: {"name": e["name"], "parent_id": e["parent_id"] and e["parent_id"][0]} for e in employees_data
     }
     while managers_to_do := [
-        e["parent_id"]
-        for _, e in managers_data.items()
-        if e["parent_id"] and e["parent_id"] not in managers_data
+        e["parent_id"] for _, e in managers_data.items() if e["parent_id"] and e["parent_id"] not in managers_data
     ]:
         new_managers = r_exec(
             "hr.employee.public",
@@ -612,9 +605,7 @@ def o_user(*trigrams):
             return False
 
     uids = [uid for uid in trigrams if _isint(uid)]
-    f_trigrams = [
-        f"{trigram.lower()}@odoo.com" for trigram in trigrams if not _isint(trigram)
-    ]
+    f_trigrams = [f"{trigram.lower()}@odoo.com" for trigram in trigrams if not _isint(trigram)]
     users = {}
     if f_trigrams:
         domain = ["|"] * (len(f_trigrams) - 1)
@@ -647,12 +638,14 @@ def o_user(*trigrams):
 @call_from_shell
 def o_ver(domain, verbose=True):
     """returns versions information about an odoo database, given a domain name"""
-    from xmlrpc.client import ServerProxy as server, ProtocolError
+    from xmlrpc.client import ProtocolError
+    from xmlrpc.client import ServerProxy as server
+
     from requests import get
 
     try:
         version_info = server(f"https://{domain}/xmlrpc/2/common").version()
-    except ProtocolError as pe:
+    except ProtocolError:
         # probably redirected
         url = get(f"https://{domain}").url  # requests follows redirections
         version_info = server(f"{url}xmlrpc/2/common").version()
@@ -822,6 +815,6 @@ if __name__ == "__main__":
     except (Invalid_params, UserAbort) as nice_e:
         cancel_pending_commands(method_name)
         print(nice_e)
-    except Exception as bad_e:
+    except Exception:
         cancel_pending_commands(method_name)
         raise
