@@ -14,26 +14,15 @@ options:
     --all                   pull all relevant branches
 
 """
-from docopt import docopt
 import psycopg2
-import git
-
+from docopt import docopt
 from utils import env
 
-# relevant_saas_versions = ["15.2"]
-# RELEVANT_BRANCHES = [f"saas-{s}" for s in relevant_saas_versions]
-# RELEVANT_BRANCHES += ["14.0", "15.0", "16.0"]
+import git
 
-# optimize for smaller checkout between versions on git_odoo pull --all
-RELEVANT_BRANCHES = [
-    "14.0",
-    "15.0",
-    "saas-15.2",
-    "16.0",
-    "saas-16.2",
-    "saas-16.3",
-    "saas-16.4",
-]
+relevant_saas_versions = ["16.3", "16.4"]
+RELEVANT_BRANCHES = [f"saas-{s}" for s in relevant_saas_versions]
+RELEVANT_BRANCHES += ["15.0", "16.0", "17.0"]
 
 VERSIONED_REPOS = [env.ODOO, env.ENTERPRISE, env.DESIGN_THEMES, env.USER_DOC]
 SINGLE_VERSION_REPOS = [
@@ -53,9 +42,8 @@ def _repos(repos_names):
     for rn in repos_names:
         # assuming repos_names is either a list of full paths
         # or folders in ~/src
-        if "/" not in rn:
-            rn = f"{env.SRC}/{rn}"
-        yield git.Repo(rn)
+        repo_name = rn if "/" in rn else f"{env.SRC}/{rn}"
+        yield git.Repo(repo_name)
 
 
 def _try_for_all_remotes(
@@ -74,9 +62,7 @@ def _try_for_all_remotes(
     # the git errors are simply printed.
     # if :stop_on_success is True, the process stops as soon as a succesful
     # execution of :F happens.
-    remotes = [repo.remotes.origin] + [
-        rem for rem in repo.remotes if rem != repo.remotes.origin
-    ]
+    remotes = [repo.remotes.origin] + [rem for rem in repo.remotes if rem != repo.remotes.origin]
     # storing all errors to help debugging
     git_errors = []
     res = []
@@ -121,7 +107,7 @@ def _nbr_commits_ahead_and_behind(repo):
         branch_name = repo.active_branch.name
     except TypeError as e:
         if str(e).startswith("HEAD is a detached symbolic reference"):
-            raise DetachedHeadError
+            raise DetachedHeadError from e
         raise
 
     def count_commits(remote_name="origin", ahead=True):
@@ -133,9 +119,7 @@ def _nbr_commits_ahead_and_behind(repo):
 
     def commits_aheads_and_behind(*args, **kwargs):
         nbr_commit_ahead = count_commits(remote_name=kwargs["remote"].name, ahead=True)
-        nbr_commit_behind = count_commits(
-            remote_name=kwargs["remote"].name, ahead=False
-        )
+        nbr_commit_behind = count_commits(remote_name=kwargs["remote"].name, ahead=False)
         return (nbr_commit_ahead, nbr_commit_behind)
 
     return _try_for_all_remotes(repo, commits_aheads_and_behind)[0]
@@ -156,7 +140,8 @@ def list_all_repos_info():
         except DetachedHeadError:
             print(f"  HEAD --> {repo.head.commit}")
         else:
-            nb_tabul = 3 if len(repo.active_branch.name) < 6 else 2
+            tabulation_over_flow_limit = 6
+            nb_tabul = 3 if len(repo.active_branch.name) < tabulation_over_flow_limit else 2
             tabuls = "\t" * nb_tabul
             print(f"  {repo.active_branch.name}{tabuls}↓ {nbr_behind} ↑ {nbr_ahead}")
         if repo.index.diff(None):
@@ -177,9 +162,7 @@ def fetch_all_repos_info():
     for repo_name, repo in zip(repos, _repos(repos)):
         repo_name = shorten_path(repo_name)
         print(f"fetching {repo_name}")
-        _try_for_all_remotes(
-            repo, fetch, raise_on_exception=False, stop_on_success=False, verbose=True
-        )
+        _try_for_all_remotes(repo, fetch, raise_on_exception=False, stop_on_success=False, verbose=True)
 
 
 def odoo_repos_pull(version=None, fast=False):
@@ -228,14 +211,14 @@ def odoo_repos_pull_all():
         print(f"updating in place {repo.active_branch.name}")
         repo.remotes.origin.pull()
         if "master" != repo.active_branch.name:
-            print(f"processing master")
-            repo.remotes.origin.fetch(f"master:master")
+            print("processing master")
+            repo.remotes.origin.fetch("master:master")
 
 
 def _get_version_from_db(dbname):
     """get the odoo version of the given DB"""
     with psycopg2.connect(f"dbname='{dbname}'") as conn, conn.cursor() as cr:
-        query = "SELECT replace((regexp_matches(latest_version, '^\d+\.0|^saas~\d+\.\d+|saas~\d+'))[1], '~', '-') FROM ir_module_module WHERE name='base'"
+        query = r"SELECT replace((regexp_matches(latest_version, '^\d+\.0|^saas~\d+\.\d+|saas~\d+'))[1], '~', '-') FROM ir_module_module WHERE name='base'"
         cr.execute(query)
         return cr.fetchone()[0]
 
@@ -282,9 +265,7 @@ def odoo_repos_checkout_multi(versions, raise_on_error=False):
     repos = ALL_REPOS
     if len(versions) > len(repos):
         if raise_on_error:
-            raise TooManyVersions(
-                f"There are too many version given ({len(versions)}). Maximum is {len(repos)}."
-            )
+            raise TooManyVersions(f"There are too many version given ({len(versions)}). Maximum is {len(repos)}.")
         print(f"too many params, ignoring the following {versions[len(repos):]}")
     for version, repo_name, repo in zip(versions, repos, _repos(repos)):
         repo_name = shorten_path(repo_name)
