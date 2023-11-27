@@ -422,8 +422,8 @@ oes() {
     eval $ST/oe-support.py $@
     # (clear_pyc &)
 }
-source $ST/scripts/completion/oe-support-completion.sh
-complete -o default -F _oe-support oes
+# source $ST/scripts/completion/oe-support-completion.sh
+# complete -o default -F _oe-support oes
 
 odef() {
     # download restore and start in one command with odev
