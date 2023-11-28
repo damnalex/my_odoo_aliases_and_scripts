@@ -2,20 +2,25 @@
 ########################  PATHS  ##########################
 ###########################################################
 
+# this repo
 export AP=$(dirname "$0")
 
 export SRC="$HOME/src"
+# odoo repos
 export ODOO="$SRC/odoo"
 export ENTERPRISE="$SRC/enterprise"
 export DESIGN_THEMES="$SRC/design-themes"
+export USER_DOC="$SRC/documentation-user"
+export SRC_MULTI="$HOME/odoo/versions"
+# odoo internal repos
 export INTERNAL="$SRC/internal"
 export PAAS="$SRC/paas"
 export ST="$SRC/support-tools"
-export USER_DOC="$SRC/documentation-user"
 export UPGR_PLAT="$SRC/upgrade-platform"
 export UPGR_UTIL="$SRC/upgrade-util"
+# third party repo
 export OQOL="$SRC/misc_gists/odoo-qol"
-export SRC_MULTI="$HOME/odoo/versions"
+export ODYSSEY="$SRC/misc_gists/odyssey-gpt"
 
 if [[ $OSTYPE =~ ^darwin ]]; then
     # macos specific stuffs

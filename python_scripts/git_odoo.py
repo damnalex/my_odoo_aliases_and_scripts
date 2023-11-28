@@ -30,8 +30,9 @@ SINGLE_VERSION_REPOS = [
     env.PAAS,
     env.UPGR_PLAT,
     env.UPGR_UTIL,
+    env.AP,  # this repo
     env.OQOL,
-    env.AP,
+    env.ODYSSEY,
 ]
 SUPPORT_REPOS = [env.ST]
 ALL_REPOS = VERSIONED_REPOS + SINGLE_VERSION_REPOS + SUPPORT_REPOS
