@@ -6,14 +6,11 @@ repos:
         args: [--fix, --exit-non-zero-on-fix]
       - id: ruff-format
 
-  - repo: https://github.com/pecigonzalo/pre-commit-shfmt
-    rev: v2.1.0
+  - repo: https://github.com/scop/pre-commit-shfmt
+    rev: v3.7.0-4
     hooks:
-        - id: shell-fmt
-          args:
-            - -l
-            - -i
-            - "4"
+      - id: shfmt
+        args: [-l, -w, -i, "4"]
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
