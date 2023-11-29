@@ -694,7 +694,6 @@ def typos_and_simple_aliases():
         "git": ["gti"],
         "python3": ["pyhton3"],
         "python": ["pyhton"],
-        "l": ["l$"],
         "ssh": ["shh"],
         "which": ["whicj"],
         "htop": ["hotp"],

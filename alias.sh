@@ -307,11 +307,9 @@ eject_dbd() {
 
 ap_format_files() {
     # do some automatic style formating for the .py and .sh files of the $AP folder
-    python3 -m black $AP
+    python3 -m ruff format $AP
     # shfmt -l -i 4 -s -ci -sr -w $AP
     shfmt -l -i 4 -w $AP
-    sort_and_remove_duplicate $AP/python_scripts/requirements.txt
-    sort_and_remove_duplicate $AP/python_scripts/other_requirements.txt
 }
 
 ###########################################################
