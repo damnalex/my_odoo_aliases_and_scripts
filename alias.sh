@@ -220,7 +220,7 @@ git_prune_branches() {
     local repo=${1:-$(pwd)}
     git -C $repo fetch --prune --all
     git -C $repo branch -vv | grep ': gone] ' | awk '{print $1}' | xargs git -C $repo branch -D
-    git -C $repo gc --prune=now
+    git -C $repo gc --prune
 }
 
 git_push_to_all_remotes() {
@@ -356,15 +356,13 @@ go_update_and_clean_all_branches() {
 
 # pythonable
 go_prune_all() {
-    # git prune on all the repos of the the universe, multiverse, and on internal and support tools
-    # prune universe, internal and paas
+    # git prune (ish) on all the repos of the the universe, multiverse, platforms and support tools
     echo "----"
     echo "pruning the universe"
     local repos=("$ODOO" "$ENTERPRISE" "$DESIGN_THEMES" "$ST" "$INTERNAL" "$PAAS" "$UPGR_PLAT")
     for repo in $repos; do {
         git_prune_branches $repo
     }; done
-    # prune multiverse
     echo "----"
     echo "pruning the multiverse"
     repos=("odoo" "enterprise" "design-themes")
