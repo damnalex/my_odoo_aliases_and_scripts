@@ -218,9 +218,12 @@ git_prune_branches() {
     # remove local reference to remote branches that don't exist anymore
     # then remove the local branches that don't exists on the remote ANYMORE
     local repo=${1:-$(pwd)}
-    git -C $repo fetch --prune --all
+    echo "fetch prune..."
+    git -C $repo fetch --prune --all --quiet
+    echo "deleting old branches..."
     git -C $repo branch -vv | grep ': gone] ' | awk '{print $1}' | xargs git -C $repo branch -D
-    git -C $repo gc --prune
+    echo "gc prune..."
+    git -C $repo gc --prune --quiet
 }
 
 git_push_to_all_remotes() {
@@ -343,11 +346,14 @@ go_update_and_clean_all_branches() {
     # go through all main branches of the universe and mutliverse and pull them
     # It also checks for new modules using the our_module_generator helper
     update_all_multiverse_branches
+    echo 'universe pull:'
     git_odoo pull --all
     go_prune_all
+    echo "updating 'our_modules' list:"
     local current_working_dir=$(pwd)
     our_modules_update_and_compare
     cd $current_working_dir
+    echo "finsihing with a bit of cleanup..."
     clear_pyc --all 2>/dev/null
     run 5 echo "#############################"
     echo "updated and cleaned all branches of multiverse and universe"
@@ -361,12 +367,14 @@ go_prune_all() {
     echo "pruning the universe"
     local repos=("$ODOO" "$ENTERPRISE" "$DESIGN_THEMES" "$ST" "$INTERNAL" "$PAAS" "$UPGR_PLAT")
     for repo in $repos; do {
+        echo "$repo :"
         git_prune_branches $repo
     }; done
     echo "----"
     echo "pruning the multiverse"
     repos=("odoo" "enterprise" "design-themes")
     for repo in $repos; do {
+        echo "$repo :"
         git -C "$SRC_MULTI/master/$repo" worktree prune
         git_prune_branches "$SRC_MULTI/master/$repo"
     }; done
@@ -454,9 +462,9 @@ update_all_multiverse_branches() {
     # git pull the repos of all the multivers branches
     odev pull -f
     echo 'multiverse master pull'
-    git -C $SRC_MULTI/master/odoo pull
-    git -C $SRC_MULTI/master/enterprise pull
-    git -C $SRC_MULTI/master/design-themes pull
+    git -C $SRC_MULTI/master/odoo pull --quiet && echo 'pulled odoo master'
+    git -C $SRC_MULTI/master/enterprise pull --quiet && echo 'pulled enterprise master'
+    git -C $SRC_MULTI/master/design-themes pull --quiet && echo 'pulled design themes master'
 }
 
 build_odoo_virtualenv() {
