@@ -475,16 +475,27 @@ build_odoo_virtualenv() {
         pip install -r $SRC_MULTI/master/odoo/requirements.txt
     else
         odev init -y "TA_$1" $1 || return 1
+        dropodoo "TA_$1"
     fi
     go_venv $1
-    # support-tools
+    # support specific requirements
     cp $ST/requirements.txt /tmp/requirements.txt
     sed -i "" "/psycopg2/d" /tmp/requirements.txt
     pip install -r /tmp/requirements.txt
+    pip install -r $PSS/requirements.txt
     # adding my custom requirements (includes psycopg2-binary)
     pip install -r $AP/python_scripts/requirements.txt
     pip install -r $AP/python_scripts/other_requirements.txt
     deactivate
+}
+
+rebuild_virtualenvs() {
+    # recreate the main virtual envs
+    # usefull when I add something to other_requirements.txt
+    for version in $(ls $SRC_MULTI); do {
+        echo "--> $version"
+        build_odoo_virtualenv $version
+    }; done
 }
 
 go_venv() {
