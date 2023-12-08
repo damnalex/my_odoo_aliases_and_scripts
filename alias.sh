@@ -468,8 +468,16 @@ update_all_multiverse_branches() {
 }
 
 build_odoo_virtualenv() {
-    odev init -y "TA_$1" $1 || return 1
+    if [[ $1 == "master" ]]; then
+        # odev does not support master
+        deactivate 2>/dev/null
+        virtualenv --clear "$SRC_MULTI/master/venv"
+        pip install -r $SRC_MULTI/master/odoo/requirements.txt
+    else
+        odev init -y "TA_$1" $1 || return 1
+    fi
     go_venv $1
+    # support-tools
     cp $ST/requirements.txt /tmp/requirements.txt
     sed -i "" "/psycopg2/d" /tmp/requirements.txt
     pip install -r /tmp/requirements.txt
