@@ -345,9 +345,10 @@ alias git_odoo="$AP/python_scripts/git_odoo.py"
 go_update_and_clean_all_branches() {
     # go through all main branches of the universe and mutliverse and pull them
     # It also checks for new modules using the our_module_generator helper
-    update_all_multiverse_branches
-    echo 'universe pull:'
-    git_odoo pull --all
+    echo "updating universe and multiverse in parallel, weird looking logs incoming!"
+    update_all_multiverse_branches &
+    git_odoo pull --all &
+    wait
     go_prune_all
     echo "updating 'our_modules' list:"
     local current_working_dir=$(pwd)
@@ -364,7 +365,7 @@ go_update_and_clean_all_branches() {
 go_prune_all() {
     # git prune (ish) on all the repos of the the universe, multiverse, platforms and support tools
     echo "----"
-    echo "pruning the universe and the mulitverse (in parallel, let's get reading for some nasty logs!)"
+    echo "pruning the universe and the multiverse (in parallel, let's get reading for some nasty logs!)"
     local repos=("$ODOO" "$ENTERPRISE" "$DESIGN_THEMES" "$ST" "$INTERNAL" "$PAAS" "$UPGR_PLAT")
     for repo in $repos; do {
         git_prune_branches $repo &
