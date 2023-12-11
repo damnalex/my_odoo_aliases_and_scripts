@@ -364,18 +364,17 @@ go_update_and_clean_all_branches() {
 go_prune_all() {
     # git prune (ish) on all the repos of the the universe, multiverse, platforms and support tools
     echo "----"
-    echo "pruning the universe"
+    echo "pruning the universe and the mulitverse (in parallel, let's get reading for some nasty logs!)"
     local repos=("$ODOO" "$ENTERPRISE" "$DESIGN_THEMES" "$ST" "$INTERNAL" "$PAAS" "$UPGR_PLAT")
     for repo in $repos; do {
-        git_prune_branches $repo
-    }; done
-    echo "----"
-    echo "pruning the multiverse"
+        git_prune_branches $repo &
+    } done
     repos=("odoo" "enterprise" "design-themes")
     for repo in $repos; do {
-        git -C "$SRC_MULTI/master/$repo" worktree prune
-        git_prune_branches "$SRC_MULTI/master/$repo"
-    }; done
+        git -C "$SRC_MULTI/master/$repo" worktree prune # explicitly not put in the background
+        git_prune_branches "$SRC_MULTI/master/$repo" &
+    } done
+    wait
     echo "----"
     echo "All repos have been pruned"
 }
