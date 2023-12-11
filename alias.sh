@@ -218,12 +218,12 @@ git_prune_branches() {
     # remove local reference to remote branches that don't exist anymore
     # then remove the local branches that don't exists on the remote ANYMORE
     local repo=${1:-$(pwd)}
-    echo "fetch prune..."
+    echo "gc [$repo]..."
+    git -C $repo gc --quiet
+    echo "fetch prune [$repo]..."
     git -C $repo fetch --prune --all --quiet
-    echo "deleting old branches..."
+    echo "deleting old branches [$repo]..."
     git -C $repo branch -vv | grep ': gone] ' | awk '{print $1}' | xargs git -C $repo branch -D
-    echo "gc prune..."
-    git -C $repo gc --prune --quiet
 }
 
 git_push_to_all_remotes() {
@@ -367,14 +367,12 @@ go_prune_all() {
     echo "pruning the universe"
     local repos=("$ODOO" "$ENTERPRISE" "$DESIGN_THEMES" "$ST" "$INTERNAL" "$PAAS" "$UPGR_PLAT")
     for repo in $repos; do {
-        echo "$repo :"
         git_prune_branches $repo
     }; done
     echo "----"
     echo "pruning the multiverse"
     repos=("odoo" "enterprise" "design-themes")
     for repo in $repos; do {
-        echo "$repo :"
         git -C "$SRC_MULTI/master/$repo" worktree prune
         git_prune_branches "$SRC_MULTI/master/$repo"
     }; done
