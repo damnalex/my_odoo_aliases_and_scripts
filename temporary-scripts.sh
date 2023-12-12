@@ -8,3 +8,14 @@ update_my_beta() {
     fi
     echo "not curently running 'my_beta' branch, no changes done "
 }
+
+minimum_viable_filestore() {
+    local db_name=$1
+    local original_filestore_path=$2
+    local destination_path=${3:-$(pwd)}
+    mkdir "$destination_path/filestore"
+    for f in $(psql -tAqX -d $db_name -c "select store_fname from ir_attachment where url like '%asset%';"); do
+        mkdir $(dirname "$destination_path/filestore/$f") 2>/dev/null
+        rsync -r "$original_filestore_path/$f" "$destination_path/filestore/$f"
+    done
+}
