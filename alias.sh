@@ -372,7 +372,7 @@ go_prune_all() {
     } done
     repos=("odoo" "enterprise" "design-themes")
     for repo in $repos; do {
-        git -C "$SRC_MULTI/master/$repo" worktree prune # explicitly not put in the background
+        git -C "$SRC_MULTI/master/$repo" worktree prune &
         git_prune_branches "$SRC_MULTI/master/$repo" &
     } done
     wait
