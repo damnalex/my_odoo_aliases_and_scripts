@@ -476,6 +476,7 @@ build_odoo_virtualenv() {
         dropodoo "TA_$1"
     fi
     go_venv $1
+    pip install --upgrade pip
     # support specific requirements
     cp $ST/requirements.txt /tmp/requirements.txt
     sed -i "" "/psycopg2/d" /tmp/requirements.txt
