@@ -284,6 +284,7 @@ lldu() {
         local s=$(echo $line | awk '{print $9}' | xargs du -sh)
         echo "$t \t $s"
     done
+    echo "Total: $(du -sh . | awk '{print $1}')"
 }
 
 fix_dbd() {
