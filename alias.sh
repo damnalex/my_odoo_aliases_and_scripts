@@ -296,6 +296,7 @@ fix_dbd() {
 }
 
 eject_dbd() {
+    [[ $(pwd) =~ ^/Volumes/Lokhlas ]] && cd # move out of the folder i'm trying to eject
     for v in /Volumes/Lokhlas*; do
         diskutil eject "$v"
     done
