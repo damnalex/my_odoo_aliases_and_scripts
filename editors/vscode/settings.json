@@ -1,23 +1,26 @@
 {
     // general style
-    "workbench.colorTheme": "Monokai",
+    "workbench.colorTheme": "Default High Contrast",
     "workbench.iconTheme": "material-icon-theme",
-    "editor.fontFamily": "'Operator Mono','Fira Code','Monocraft','Monaco','Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
+    "workbench.editor.highlightModifiedTabs": true,
+    "workbench.activityBar.location": "top",
+    "editor.fontFamily": "'Operator Mono','Monaco','Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
     "terminal.integrated.fontFamily": "'Monaco','Operator mono large','Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
     "editor.fontSize": 12,
     "editor.cursorBlinking": "expand",
-    "workbench.editor.highlightModifiedTabs": true,
     "editor.renderWhitespace": "all",
     "editor.renderLineHighlight": "all",
+    "editor.lineNumbers": "relative",
     "editor.smoothScrolling": true,
     "editor.cursorSmoothCaretAnimation": "on",
     "editor.minimap.enabled": true,
     "editor.minimap.renderCharacters": false,
-    "zenMode.fullScreen": false,
     "debug.toolBarLocation": "docked",
     "editor.cursorSurroundingLines": 4,
     "editor.guides.bracketPairs": "active",
     "editor.stickyScroll.enabled": true,
+    "window.zoomLevel": -1,
+    "zenMode.fullScreen": false,
     // special styles
     "editor.tokenColorCustomizations": {
         "textMateRules": [
@@ -76,10 +79,6 @@
             120,
         ],
     },
-    "python.linting.pycodestyleEnabled": true,
-    "python.linting.pycodestyleArgs": [
-        "--ignore=E501,E301,E302,E126,E123,E127,E128,E265,E305,W605",
-    ],
     "python.showStartPage": false,
     "python.languageServer": "Jedi",
     // extension settings
