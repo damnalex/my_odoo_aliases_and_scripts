@@ -1,6 +1,6 @@
 {
     // general style
-    "workbench.colorTheme": "Default High Contrast",
+    "workbench.colorTheme": "Monokai",
     "workbench.iconTheme": "material-icon-theme",
     "workbench.editor.highlightModifiedTabs": true,
     "workbench.activityBar.location": "top",
