@@ -448,6 +448,17 @@ droplike() {
     fi
 }
 
+dropall_odoo() {
+    # drop all odoo DBs
+    local where_clause="where t1.datname not like 'CLEAN_ODOO%' "
+    for db_name in $(psql -tAqX -d postgres -c "SELECT t1.datname AS db_name FROM pg_database t1 $where_clause ORDER BY LOWER(t1.datname);"); do
+        local db_version=$(_db_version $db_name 2>/dev/null)
+        if [ "$db_version" != "" ]; then #ignore non-odoo DBs
+            dropodoo $db_name
+        fi
+    done
+}
+
 build_multiverse_branch() {
     # create a new mutliverse branche in $SRC_MULTI
     build_odoo_virtualenv $1
