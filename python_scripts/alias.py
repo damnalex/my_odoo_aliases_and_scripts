@@ -553,10 +553,18 @@ def o_emp(*trigrams):
     chains = {id: [e["parent_id"]] for id, e in managers_data.items()}
     while chains_to_do := [id for id, c in chains.items() if c[-1]]:
         for c in reversed(chains_to_do):
-            chains[c] += chains[chains[c][-1]]
+            if c in chains[c]:
+                # end condition for employee that are their own manager
+                chains[c] += [None]
+            else:
+                chains[c] += chains[chains[c][-1]]
     chains_str = dict()
     for e_id, c in chains.items():
         c.pop()
+        parent_loop_min_length = 2
+        if len(c) >= parent_loop_min_length and c[-1] == c[-2]:
+            # remove last employee of the chain if they are their own manager
+            c.pop()
         chains_str[e_id] = " > ".join(managers_data[id]["name"] for id in c)
     # output
     url_template = "https://www.odoo.com/web?debug=1#id={id}&model=hr.employee.public&view_type=form"
