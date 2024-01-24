@@ -573,7 +573,7 @@ def o_emp(*trigrams):
             f"""name : {emp['name']}
         create date : {emp['create_date']}
         company : {emp['company_id'][1]}
-        department : {emp['department_id'][1]}
+        department : {emp['department_id'] and emp['department_id'][1]}
         Job title : {emp['job_title']}
         managers : {chains_str[emp['id']]}"""
         )
