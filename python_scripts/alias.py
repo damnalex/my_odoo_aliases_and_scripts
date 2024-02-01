@@ -618,7 +618,7 @@ def o_user(*trigrams):
     if f_trigrams:
         domain = ["|"] * (len(f_trigrams) - 1)
         domain += [["login", "=", tri] for tri in f_trigrams]
-        r_exec = _xmlrpc_odoo_com()
+        r_exec = _xmlrpc_odoo_com(fallback_to_test=False)
         users_data = r_exec(
             "res.users",
             "search_read",

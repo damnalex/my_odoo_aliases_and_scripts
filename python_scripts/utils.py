@@ -1,4 +1,6 @@
 import os
+import xmlrpc.client
+from functools import partial
 
 
 class EnvironmentExtractor:
@@ -20,9 +22,6 @@ env = EnvironmentExtractor()
 
 def _get_xmlrpc_executer(dburl, dbname, login, password):
     """return a function that executes xml_rpc calls on a given odoo db"""
-    import xmlrpc.client
-    from functools import partial
-
     common = xmlrpc.client.ServerProxy("{}/xmlrpc/2/common".format(dburl))
     models = xmlrpc.client.ServerProxy("{}/xmlrpc/2/object".format(dburl))
     uid = common.authenticate(dbname, login, password, {})
@@ -30,13 +29,36 @@ def _get_xmlrpc_executer(dburl, dbname, login, password):
     return r_exec
 
 
-def _xmlrpc_odoo_com():
+def _xmlrpc_odoo_com(fallback_to_test=True):
     import keyring
 
     api_key = keyring.get_password("oe-support", "mao@odoo.com-2FA")
     api_login = "mao@odoo.com"
     assert all((api_key, api_login))
-    dburl = "https://www.odoo.com"
     db = "openerp"
-    r_exec = _get_xmlrpc_executer(dburl, db, api_login, api_key)
-    return r_exec
+    fallbacks = [
+        "https://www.odoo.com",  # the prod
+        "https://www.test.odoo.com",
+        "https://staging1.test.odoo.com",
+        "https://staging2.test.odoo.com",
+        "https://staging3.test.odoo.com",
+        "https://staging4.test.odoo.com",
+        "https://staging5.test.odoo.com",
+        "https://staging6.test.odoo.com",
+        "https://staging7.test.odoo.com",
+    ]
+    for fallback in fallbacks:
+        dburl = fallback
+        r_exec = _get_xmlrpc_executer(dburl, db, api_login, api_key)
+        try:
+            # just a test request
+            r_exec("res.users", "search_read", [[["login", "=", "mao@odoo.com"]]], {"fields": ["id"]})
+        except xmlrpc.client.ProtocolError:
+            pass
+            if not fallback_to_test:
+                raise
+        else:
+            if fallback != fallbacks[0]:
+                print(f"WARNING : Using {fallback} as the xmlrpc connector")
+            return r_exec
+    raise xmlrpc.client.ProtocolError("all fallbacks failed")
