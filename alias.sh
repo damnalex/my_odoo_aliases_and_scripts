@@ -471,7 +471,9 @@ update_multiverse_branch() {
 
 update_all_multiverse_branches() {
     # git pull the repos of all the multivers branches
-    odev pull -f
+    echo 'updating odev first' # otherwise it may ask to update itself in an interactive way
+    git -C $SRC/ps-tech-odev pull --quiet
+    odev pull -f # updates all versions except master
     echo 'multiverse master pull'
     git -C $SRC_MULTI/master/odoo pull --quiet && echo 'pulled odoo master'
     git -C $SRC_MULTI/master/enterprise pull --quiet && echo 'pulled enterprise master'
