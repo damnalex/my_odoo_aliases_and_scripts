@@ -10,7 +10,7 @@ from textwrap import dedent as _dd
 from git_odoo import App as _git_odoo_app
 from git_odoo import _get_version_from_db, _repos
 from psycopg2 import OperationalError, ProgrammingError, connect
-from utils import _get_xmlrpc_executer, _xmlrpc_odoo_com, env
+from utils import _get_xmlrpc_executer, _xmlrpc_master, _xmlrpc_odoo_com, env
 
 PYTHON3, PYTHON2 = 3, 2
 
@@ -661,6 +661,28 @@ def o_ver(domain, verbose=True):
     if verbose:
         print(version_info)
     return version_info
+
+
+@call_from_shell
+def o_loc(db):
+    """Get the hosting location of the database, as well as the location of the backup servers"""
+    db = db.removesuffix(".odoo.com")
+    out = sh_run(f"dig {db}.odoo.com mx +short")
+    if out:
+        server = out.split()[-1].rstrip(".")
+    else:
+        print("assuming the server was directly given")
+        server = f"{db}.odoo.com"
+    r_exec = _xmlrpc_master()
+    domain = [["name", "=", server]]
+    odoo_server = r_exec("saas.server", "search_read", [domain], {"fields": ["backup_group_id", "dc_id"]})
+    print("\nodoo server:")
+    print(f"{server} --> {odoo_server[0]['dc_id'][1]}")
+    backup_group = odoo_server[0]["backup_group_id"]
+    bak_domain = [["backup_group_id", "=", backup_group[0]], ["mode", "like", "bak"]]
+    backup_servers = r_exec("saas.server", "search_read", [bak_domain], {"fields": ["name", "dc_id"]})
+    print("\nbackup servers:")
+    print("\n".join(f'{bak["name"]} --> {bak["dc_id"][1]}' for bak in backup_servers))
 
 
 @shell_end_hook

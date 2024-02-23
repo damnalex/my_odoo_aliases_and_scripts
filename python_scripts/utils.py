@@ -62,3 +62,15 @@ def _xmlrpc_odoo_com(fallback_to_test=True):
                 print(f"WARNING : Using {fallback} as the xmlrpc connector")
             return r_exec
     raise xmlrpc.client.ProtocolError("all fallbacks failed")
+
+
+def _xmlrpc_master():
+    import keyring
+
+    api_key = keyring.get_password("find_backup_master_2FA", "mao@odoo.com")
+    api_login = "mao@odoo.com"
+    assert all((api_key, api_login))
+    db_url = "https://master.odoo.com"
+    db_name = "saas_master"
+    r_exec = _get_xmlrpc_executer(db_url, db_name, api_login, api_key)
+    return r_exec
