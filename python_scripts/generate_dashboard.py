@@ -168,6 +168,16 @@ groupby_stage_update_and_stage = {
     "graph_groupbys": ["date_last_stage_update:month", "stage_id"],
 }
 
+groupby_arrived_in_tech_and_create = {
+    "group_by": ["x_date_support:week", "create_date:month"],
+    "graph_groupbys": ["x_date_support:week", "create_date:month"],
+}
+
+groupby_arrived_in_tech_and_stage = {
+    "group_by": ["x_date_support:month", "stage_id"],
+    "graph_groupbys": ["x_date_support:month", "stage_id"],
+}
+
 groupby_assigned_time_and_prio = {
     "group_by": ["date_assign:month", "priority"],
     "graph_groupbys": ["date_assign:month", "priority"],
@@ -230,6 +240,7 @@ def tags_domain_builder(tags):
 
 
 SQUAD_X_UNASSIGNED = graph_grouping(groupby_stage_update_and_create)
+SQUAD_X_UNASSIGNED_in_tech = graph_grouping(groupby_arrived_in_tech_and_create)
 # print(SQUAD_X_UNASSIGNED % ("WIP domain", "mon petit nom", "id_random"))
 
 
@@ -250,10 +261,12 @@ def x_unassigned(stage="tech", squad_name=None, tags=None, title=None):
     domain.append(("user_ids", "=", False))
     if title:
         name = title
-    return SQUAD_X_UNASSIGNED % (domain, name, uuid_gen())
+    template = SQUAD_X_UNASSIGNED_in_tech if stage == "tech" else SQUAD_X_UNASSIGNED
+    return template % (domain, name, uuid_gen())
 
 
 SQUAD_X_PER_MONTH = graph_grouping(groupby_stage_update_and_stage)
+SQUAD_X_PER_MONTH_in_tech = graph_grouping(groupby_arrived_in_tech_and_stage)
 # print(SQUAD_X_PER_MONTH)
 
 
