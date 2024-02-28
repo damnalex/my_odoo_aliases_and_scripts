@@ -42,7 +42,6 @@ account = [
     "asm",
     "crm",
     "flhu",
-    "jmfa",
     "jond",
     "mege",
     "tbs",
@@ -72,7 +71,6 @@ perf = [
     "beha",
     "juse",
     "kasem",
-    "nea",
     "pivi",
 ]
 website_js = [
@@ -84,15 +82,15 @@ website_js = [
 other = [
     # BE
     "mvw",
-    "stss",
+    "baar",
     # US
     "adda",
     "andg",
     "bikh",
     "cyro",
     "dhs",
+    "elct",
     "emub",
-    "evko",
     "guba",
     "iada",
     "jrbr",
@@ -106,6 +104,7 @@ other = [
     "qung",
     "prri",
     "ryce",
+    "liya",
     "zaha",
 ]
 
