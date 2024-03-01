@@ -169,12 +169,14 @@ def sh_run(cmd, **kwargs):
         process = subprocess.Popen(cmd, shell=True, **kwargs)
         return process.communicate()[0].decode("utf-8")
 
+
 def _ssh_executor(server):
     ssh = paramiko.SSHClient()
     ssh.load_host_keys(os.path.expanduser("~/.ssh/known_hosts"))
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     ssh.connect(f"{server}.odoo.com", username="odoo")
     return ssh.exec_command
+
 
 @call_from_shell
 def clear_pyc(*args):
@@ -669,6 +671,7 @@ def o_ver(domain, verbose=True):
         print(version_info)
     return version_info
 
+
 def _clean_db_name_and_server(name):
     name = name.removesuffix(".odoo.com")
     out = sh_run(f"dig {name}.odoo.com mx +short")
@@ -678,7 +681,8 @@ def _clean_db_name_and_server(name):
     else:
         db = None
         server = name
-    return (db , server)
+    return (db, server)
+
 
 @call_from_shell
 def o_loc(db):
@@ -716,17 +720,17 @@ def o_size(db):
 @call_from_shell
 def o_freespace(server):
     """get the availlable disk space of on saas server"""
-    _ , server = _clean_db_name_and_server(server)
+    _, server = _clean_db_name_and_server(server)
     ssh = _ssh_executor(server)
     _, stdout, _ = ssh("df -h")
     columns = stdout.readline()
     clean_columns = columns.replace("%", "").replace(" on", "_on")
-    df_line = namedtuple('df_line' , clean_columns.split())
+    df_line = namedtuple("df_line", clean_columns.split())
     print("Mounted on\t\tUsed\tAvail\tUse%")
     for line in stdout.readlines():
         line = df_line(*line.rstrip().split())
         if "home" in line.Mounted_on:
-            tabs_rules = {(0,6):3, (6,15): 2, (15,999):1}
+            tabs_rules = {(0, 6): 3, (6, 15): 2, (15, 999): 1}
             tabs_nb = next(v for k, v in tabs_rules.items() if k[0] < len(line.Mounted_on) < k[1])
             tabs = tabs_nb * "\t"
             print(f"{line.Mounted_on}{tabs}{line.Used}\t{line.Avail}\t{line.Use}")
