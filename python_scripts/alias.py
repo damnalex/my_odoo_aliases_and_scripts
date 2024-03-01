@@ -732,6 +732,17 @@ def o_freespace(server):
             print(f"{line.Mounted_on}{tabs}{line.Used}\t{line.Avail}\t{line.Use}")
 
 
+@call_from_shell
+def o_stat(db):
+    """Show location, and size of a db and disk usage stat of the server"""
+    db, server = _clean_db_name_and_server(db)
+    if db:
+        o_size(db)
+    o_loc(server)
+    print()
+    o_freespace(server)
+
+
 @shell_end_hook
 @call_from_shell
 def our_modules_update_and_compare(*args):
