@@ -6,6 +6,7 @@ from collections import namedtuple
 from configparser import ConfigParser
 from functools import cache
 from inspect import signature
+from socket import gaierror
 from textwrap import dedent as _dd
 
 import paramiko
@@ -668,6 +669,10 @@ def o_ver(domain, verbose=True):
         # probably redirected
         url = get(f"https://{domain}").url  # requests follows redirections
         version_info = server(f"{url}xmlrpc/2/common").version()
+    except gaierror:
+        # socket.gaierror: [Errno 8] nodename nor servname provided, or not known
+        domain = f"{domain}.odoo.com"
+        version_info = server(f"https://{domain}/xmlrpc/2/common").version()
 
     if verbose:
         print(version_info)
@@ -744,6 +749,7 @@ def o_stat(db):
     """Show location, and size of a db and disk usage stat of the server"""
     db, server = _clean_db_name_and_server(db)
     if db:
+        o_ver(db)
         o_size(db)
     o_loc(server)
     print()
