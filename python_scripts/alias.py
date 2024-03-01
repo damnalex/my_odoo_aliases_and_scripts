@@ -7,6 +7,7 @@ from configparser import ConfigParser
 from inspect import signature
 from textwrap import dedent as _dd
 
+import paramiko
 from git_odoo import App as _git_odoo_app
 from git_odoo import _get_version_from_db, _repos
 from psycopg2 import OperationalError, ProgrammingError, connect
@@ -168,6 +169,12 @@ def sh_run(cmd, **kwargs):
         process = subprocess.Popen(cmd, shell=True, **kwargs)
         return process.communicate()[0].decode("utf-8")
 
+def _ssh_executor(server):
+    ssh = paramiko.SSHClient()
+    ssh.load_host_keys(os.path.expanduser("~/.ssh/known_hosts"))
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    ssh.connect(f"{server}.odoo.com", username="odoo")
+    return ssh.exec_command
 
 @call_from_shell
 def clear_pyc(*args):
@@ -662,17 +669,22 @@ def o_ver(domain, verbose=True):
         print(version_info)
     return version_info
 
+def _clean_db_name_and_server(name):
+    name = name.removesuffix(".odoo.com")
+    out = sh_run(f"dig {name}.odoo.com mx +short")
+    if out:
+        db = name
+        server = out.split()[-1].rstrip(".").removesuffix(".odoo.com")
+    else:
+        db = None
+        server = name
+    return (db , server)
 
 @call_from_shell
 def o_loc(db):
     """Get the hosting location of the database, as well as the location of the backup servers"""
-    db = db.removesuffix(".odoo.com")
-    out = sh_run(f"dig {db}.odoo.com mx +short")
-    if out:
-        server = out.split()[-1].rstrip(".")
-    else:
-        print("assuming the server was directly given")
-        server = f"{db}.odoo.com"
+    _, server = _clean_db_name_and_server(db)
+    server = f"{server}.odoo.com"
     r_exec = _xmlrpc_master()
     domain = [["name", "=", server]]
     odoo_server = r_exec("saas.server", "search_read", [domain], {"fields": ["backup_group_id", "dc_id"]})
@@ -685,6 +697,20 @@ def o_loc(db):
     print("\n".join(f'{bak["name"]} --> {bak["dc_id"][1]}' for bak in backup_servers))
 
 
+@call_from_shell
+def o_size(db):
+    """get the size of a saas database"""
+    db, server = _clean_db_name_and_server(db)
+    ssh = _ssh_executor(server)
+    sql_query = f"SELECT pg_size_pretty(pg_database_size('{db}'));"
+    psql_cmd = f'psql -tAqX -d {db} -c "{sql_query}"'
+    _, stdout, _ = ssh(psql_cmd)
+    sql_size = stdout.readline().rstrip()
+    filestore_size_cmd = f"du -sh /home/odoo/filestore/{db}/"
+    _, stdout, _ = ssh(filestore_size_cmd)
+    filestore_size = stdout.readline().split()[0]
+    print("SQL Size:", sql_size)
+    print("Filestore Size:", filestore_size)
 @shell_end_hook
 @call_from_shell
 def our_modules_update_and_compare(*args):
