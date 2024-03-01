@@ -170,11 +170,12 @@ def sh_run(cmd, **kwargs):
         return process.communicate()[0].decode("utf-8")
 
 
-def _ssh_executor(server):
+def _ssh_executor(server, user="odoo"):
+    """returns a function that can be used to execute cli commands on the server :server with the user :user"""
     ssh = paramiko.SSHClient()
     ssh.load_host_keys(os.path.expanduser("~/.ssh/known_hosts"))
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.connect(f"{server}.odoo.com", username="odoo")
+    ssh.connect(f"{server}.odoo.com", username=user)
     return ssh.exec_command
 
 
