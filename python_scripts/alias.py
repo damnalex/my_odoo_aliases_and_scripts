@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-import collections
 import os
 import subprocess
 import sys
+from collections import namedtuple
 from configparser import ConfigParser
 from inspect import signature
 from textwrap import dedent as _dd
@@ -711,6 +711,27 @@ def o_size(db):
     filestore_size = stdout.readline().split()[0]
     print("SQL Size:", sql_size)
     print("Filestore Size:", filestore_size)
+
+
+@call_from_shell
+def o_freespace(server):
+    """get the availlable disk space of on saas server"""
+    _ , server = _clean_db_name_and_server(server)
+    ssh = _ssh_executor(server)
+    _, stdout, _ = ssh("df -h")
+    columns = stdout.readline()
+    clean_columns = columns.replace("%", "").replace(" on", "_on")
+    df_line = namedtuple('df_line' , clean_columns.split())
+    print("Mounted on\t\tUsed\tAvail\tUse%")
+    for line in stdout.readlines():
+        line = df_line(*line.rstrip().split())
+        if "home" in line.Mounted_on:
+            tabs_rules = {(0,6):3, (6,15): 2, (15,999):1}
+            tabs_nb = next(v for k, v in tabs_rules.items() if k[0] < len(line.Mounted_on) < k[1])
+            tabs = tabs_nb * "\t"
+            print(f"{line.Mounted_on}{tabs}{line.Used}\t{line.Avail}\t{line.Use}")
+
+
 @shell_end_hook
 @call_from_shell
 def our_modules_update_and_compare(*args):
