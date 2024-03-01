@@ -4,6 +4,7 @@ import subprocess
 import sys
 from collections import namedtuple
 from configparser import ConfigParser
+from functools import cache
 from inspect import signature
 from textwrap import dedent as _dd
 
@@ -673,6 +674,7 @@ def o_ver(domain, verbose=True):
     return version_info
 
 
+@cache
 def _clean_db_name_and_server(name):
     name = name.removesuffix(".odoo.com")
     out = sh_run(f"dig {name}.odoo.com mx +short")
