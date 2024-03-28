@@ -747,9 +747,15 @@ def o_freespace(server):
 @call_from_shell
 def o_stat(db):
     """Show location, and size of a db and disk usage stat of the server"""
+    from xmlrpc.client import ProtocolError
+
     db, server = _clean_db_name_and_server(db)
     if db:
-        o_ver(db)
+        try:
+            o_ver(db)
+        except ProtocolError:
+            # probably a timeout (redirections are already handled by o_ver)
+            print("failed to get database version")
         o_size(db)
     o_loc(server)
     print()
