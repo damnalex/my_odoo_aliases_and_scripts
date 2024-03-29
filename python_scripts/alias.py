@@ -177,8 +177,12 @@ def _ssh_executor(server, user="odoo"):
     ssh = paramiko.SSHClient()
     ssh.load_host_keys(os.path.expanduser("~/.ssh/known_hosts"))
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.connect(f"{server}.odoo.com", username=user)
-    return ssh.exec_command
+    try:
+        ssh.connect(f"{server}.odoo.com", username=user)
+    except Exception:
+        print(f"Failed to established an ssh connection against server `{server}` with user `{user}`")
+        return False, None
+    return True, ssh.exec_command
 
 
 @call_from_shell
@@ -713,7 +717,9 @@ def o_loc(db):
 def o_size(db):
     """get the size of a saas database"""
     db, server = _clean_db_name_and_server(db)
-    ssh = _ssh_executor(server)
+    ok, ssh = _ssh_executor(server)
+    if not ok:
+        return False
     sql_query = f"SELECT pg_size_pretty(pg_database_size('{db}'));"
     psql_cmd = f'psql -tAqX -d {db} -c "{sql_query}"'
     _, stdout, _ = ssh(psql_cmd)
@@ -723,13 +729,16 @@ def o_size(db):
     filestore_size = stdout.readline().split()[0]
     print("SQL Size:", sql_size)
     print("Filestore Size:", filestore_size)
+    return True
 
 
 @call_from_shell
 def o_freespace(server):
     """get the availlable disk space of on saas server"""
     _, server = _clean_db_name_and_server(server)
-    ssh = _ssh_executor(server)
+    ok, ssh = _ssh_executor(server)
+    if not ok:
+        return False
     _, stdout, _ = ssh("df -h")
     columns = stdout.readline()
     clean_columns = columns.replace("%", "").replace(" on", "_on")
@@ -742,6 +751,7 @@ def o_freespace(server):
             tabs_nb = next(v for k, v in tabs_rules.items() if k[0] < len(line.Mounted_on) < k[1])
             tabs = tabs_nb * "\t"
             print(f"{line.Mounted_on}{tabs}{line.Used}\t{line.Avail}\t{line.Use}")
+    return True
 
 
 @call_from_shell
