@@ -927,10 +927,13 @@ if __name__ == "__main__":
         sys.exit(0)
 
     try:
-        CALLABLE_FROM_SHELL[method_name](*method_params)
+        res = CALLABLE_FROM_SHELL[method_name](*method_params)
+        if res is False:
+            sys.exit(1)
     except (Invalid_params, UserAbort) as nice_e:
         cancel_pending_commands(method_name)
         print(nice_e)
+        sys.exit(1)
     except Exception:
         cancel_pending_commands(method_name)
         raise
