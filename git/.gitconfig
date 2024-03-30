@@ -1,17 +1,18 @@
 [user]
 	name = Moens Alexandre
 	email = mao@odoo.com
-	signingKey = DD1DCA797C7B5947
+	signingkey = /Users/alex/.ssh/id_ed25519_github_mao_odoo.pub
 [core]
 	excludesfile = /home/odoo/.gitignore_global
 	editor = vim
 [alias]
     hist = log --graph --all --date=short --pretty=format:'%C(dim white)%h%Creset%C(auto)%d%Creset %s %C(blue)<%an> %C(dim green)(%cd)%Creset%n'
     alias = ! sed -n '/^\\[alias]$/, /^\\[.*]$/p' ~/.gitconfig | sed '$d'
-	push-check = "! git fetch $(git rev-parse --symbolic-full-name --abbrev-ref @{upstream} | sed \"s|/| |\")  ; echo \"<<<<< only on remote:\\n$(git log HEAD..HEAD@{upstream} --pretty=format:\"%h%x09%ae%x09%ar%x09%s\")\"; echo \">>>>>> only on local:\\n$(git log HEAD@{upstream}..HEAD --pretty=format:\"%h%x09%ae%x09%ar%x09%s\")\""
+    push-check = "! git fetch $(git rev-parse --symbolic-full-name --abbrev-ref @{upstream} | sed \"s|/| |\")  ; echo \"<<<<< only on remote:\\n$(git log HEAD..HEAD@{upstream} --pretty=format:\"%h%x09%ae%x09%ar%x09%s\")\"; echo \">>>>>> only on local:\\n$(git log HEAD@{upstream}..HEAD --pretty=format:\"%h%x09%ae%x09%ar%x09%s\")\""
+	blamef = blame -w -C -C -C
 [commit]
 	verbose = true
-	gpgsign = false
+	gpgsign = true
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
@@ -20,8 +21,27 @@
 [checkout]
 	defaultRemote = origin
 [gpg]
-	program = gpg
+	format = ssh
 [rebase]
 	autoSquash = true
+	updateRefs = true
 [pull]
 	rebase = true
+[rerere]
+	enabled = true
+[maintenance]
+	repo = /Users/alex/src/all_standard_odoo_apps_per_version
+	repo = /Users/alex/src/design-themes
+	repo = /Users/alex/src/documentation-user
+	repo = /Users/alex/src/enterprise
+	repo = /Users/alex/src/internal
+	repo = /Users/alex/src/my_odoo_aliases_and_scripts
+	repo = /Users/alex/src/odoo
+	repo = /Users/alex/src/paas
+	repo = /Users/alex/src/ps-tech-odev
+	repo = /Users/alex/src/support-tools
+	repo = /Users/alex/src/upgrade-platform
+	repo = /Users/alex/src/upgrade-util
+	repo = /Users/alex/odoo/versions/master/design-themes
+	repo = /Users/alex/odoo/versions/master/enterprise
+	repo = /Users/alex/odoo/versions/master/odoo
