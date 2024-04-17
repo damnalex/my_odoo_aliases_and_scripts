@@ -97,6 +97,9 @@ set hidden      " hide buffers instead of closing them.
 " language specific settings
 let python_highlight_numbers = 1
 
+" git stuff
+autocmd FileType gitcommit setlocal spell spelllang=en_us
+
 " ###################################
 " ######     Plugins Zone    ########
 " ###################################
