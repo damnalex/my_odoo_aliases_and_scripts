@@ -19,3 +19,15 @@ minimum_viable_filestore() {
         rsync -r "$original_filestore_path/$f" "$destination_path/filestore/$f"
     done
 }
+
+go_update_and_hunter() {
+    # git stuff
+    go_update_and_clean_all_branches
+    cd $SRC/all_standard_odoo_apps_per_version
+    [[ $(git log --after="5 minute ago" --oneline) ]] && tig || echo '\n\n\n\n---------  nothing new under the sun -------------\n\n\n\n'
+    # apps hunter stuff
+    cd $PSS/../apps
+    ssh odoo@apps.odoo.com exit
+    ./hunter.py
+    cd $PSS
+}
