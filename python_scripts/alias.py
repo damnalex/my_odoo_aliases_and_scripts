@@ -521,6 +521,7 @@ def shurl(long_url):
 @call_from_shell
 def o_emp(*trigrams):
     """open the employee page for the given trigrams
+    also handles github account
 
     usage:
         o_emp <trigrams>...
@@ -531,8 +532,12 @@ def o_emp(*trigrams):
         raise Invalid_params("`trigrams` parameter is mandatory. check --help")
     r_exec = _xmlrpc_odoo_com()
     f_trigrams = (f"{trigram.lower()}@odoo.com" for trigram in trigrams)
-    domain = ["|"] * (len(trigrams) - 1)
-    domain += [["work_email", "=", tri] for tri in f_trigrams]
+    mail_domain = ["|"] * (len(trigrams) - 1)
+    mail_domain += [["work_email", "=", tri] for tri in f_trigrams]
+    github_domain = ["|"] * (len(trigrams) - 1)
+    github_domain += [["github_login", "=ilike", tri] for tri in trigrams]  # make it case insensitive
+    domain = ["|"] + mail_domain + github_domain
+    print(domain)
     employees_data = r_exec(
         "hr.employee.public",
         "search_read",
@@ -546,12 +551,14 @@ def o_emp(*trigrams):
                 "job_title",
                 "company_id",
                 "parent_id",
+                "github_login",
             ]
         },
     )
     # get data of all managers chains
     managers_data = {
-        e["id"]: {"name": e["name"], "parent_id": e["parent_id"] and e["parent_id"][0]} for e in employees_data
+        e["id"]: {"name": e["name"], "parent_id": e["parent_id"] and e["parent_id"][0], "github": e["github_login"]}
+        for e in employees_data
     }
     while managers_to_do := [
         e["parent_id"] for _, e in managers_data.items() if e["parent_id"] and e["parent_id"] not in managers_data
@@ -560,11 +567,11 @@ def o_emp(*trigrams):
             "hr.employee.public",
             "search_read",
             [[["id", "in", managers_to_do]]],
-            {"fields": ["id", "name", "parent_id"]},
+            {"fields": ["id", "name", "parent_id", "github_login"]},
         )
         for m in new_managers:
             mm = m["parent_id"] and m["parent_id"][0]
-            managers_data[m["id"]] = {"name": m["name"], "parent_id": mm}
+            managers_data[m["id"]] = {"name": m["name"], "parent_id": mm, "github": m["github_login"]}
     # build manager chains
     chains = {id: [e["parent_id"]] for id, e in managers_data.items()}
     while chains_to_do := [id for id, c in chains.items() if c[-1]]:
@@ -581,12 +588,13 @@ def o_emp(*trigrams):
         if len(c) >= parent_loop_min_length and c[-1] == c[-2]:
             # remove last employee of the chain if they are their own manager
             c.pop()
-        chains_str[e_id] = " > ".join(managers_data[id]["name"] for id in c)
+        chains_str[e_id] = " > ".join(f'{managers_data[id]["name"]} [{managers_data[id]["github"]}]' for id in c)
     # output
     url_template = "https://www.odoo.com/web?debug=1#id={id}&model=hr.employee.public&view_type=form"
     for emp in employees_data:
         print(
             f"""name : {emp['name']}
+        github account: {emp['github_login']}
         create date : {emp['create_date']}
         company : {emp['company_id'][1]}
         department : {emp['department_id'] and emp['department_id'][1]}
