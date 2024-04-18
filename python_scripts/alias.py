@@ -537,7 +537,6 @@ def o_emp(*trigrams):
     github_domain = ["|"] * (len(trigrams) - 1)
     github_domain += [["github_login", "=ilike", tri] for tri in trigrams]  # make it case insensitive
     domain = ["|"] + mail_domain + github_domain
-    print(domain)
     employees_data = r_exec(
         "hr.employee.public",
         "search_read",
