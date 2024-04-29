@@ -10,6 +10,7 @@ export SRC="$HOME/src"
 export ODOO="$SRC/odoo"
 export ENTERPRISE="$SRC/enterprise"
 export DESIGN_THEMES="$SRC/design-themes"
+export INDUSTRY="$SRC/industry"
 export USER_DOC="$SRC/documentation-user"
 export SRC_MULTI="$HOME/odoo/versions"
 # odoo internal repos

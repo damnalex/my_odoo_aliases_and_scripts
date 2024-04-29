@@ -20,11 +20,11 @@ from utils import env
 
 import git
 
-relevant_saas_versions = ["16.3", "16.4", "17.1"]
+relevant_saas_versions = ["16.3", "16.4", "17.1", "17.2"]
 RELEVANT_BRANCHES = [f"saas-{s}" for s in relevant_saas_versions]
 RELEVANT_BRANCHES += ["15.0", "16.0", "17.0", "master"]
 
-VERSIONED_REPOS = [env.ODOO, env.ENTERPRISE, env.DESIGN_THEMES, env.USER_DOC]
+VERSIONED_REPOS = [env.ODOO, env.ENTERPRISE, env.DESIGN_THEMES, env.INDUSTRY, env.USER_DOC]
 SINGLE_VERSION_REPOS = [
     env.INTERNAL,
     env.PAAS,
