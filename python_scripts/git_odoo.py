@@ -200,17 +200,29 @@ def odoo_repos_pull_all():
         repo_name = shorten_path(repo_name)
         print(f"updating {repo_name}")
         print(f"updating in place {repo.active_branch.name}")
-        repo.remotes.origin.pull()
+        try:
+            repo.remotes.origin.pull()
+        except git.exc.GitCommandError as e:
+            print(e)
+            pass
         for version in RELEVANT_BRANCHES:
             if version != repo.active_branch.name:
                 print(f"processing {version}")
-                repo.remotes.origin.fetch(f"{version}:{version}")
+                try:
+                    repo.remotes.origin.fetch(f"{version}:{version}")
+                except git.exc.GitCommandError:
+                    print(f"version {version} does not exist in {repo_name}, skipping")
+                    pass
     repos = SINGLE_VERSION_REPOS + SUPPORT_REPOS
     for repo_name, repo in zip(repos, _repos(repos)):
         repo_name = shorten_path(repo_name)
         print(f"updating {repo_name}")
         print(f"updating in place {repo.active_branch.name}")
-        repo.remotes.origin.pull()
+        try:
+            repo.remotes.origin.pull()
+        except git.exc.GitCommandError as e:
+            print(e)
+            pass
         if "master" != repo.active_branch.name:
             print("processing master")
             repo.remotes.origin.fetch("master:master")
