@@ -73,7 +73,7 @@ imap kkk <Esc>
 " things from 'dougblack.io/words/a-good-vimrc.html'
 " -------------------------------------------------
 " remap leader. by default it is a '\'
-let mapleader=","
+let mapleader=" "
 " turn off search highlight
 nnoremap <leader><space> :nohlsearch<CR>
 " highlight last inserted text
