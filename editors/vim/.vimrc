@@ -111,21 +111,24 @@ if empty(glob('~/.vim/autoload/plug.vim'))
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
-" plugin install
+" Plugin Managment
 call plug#begin('~/.vim/plugged')
+" feature plugins
+Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
-Plug 'itchyny/lightline.vim'
 Plug 'tomtom/tcomment_vim'
+" visual plugins
+Plug 'itchyny/lightline.vim'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'ntpeters/vim-better-whitespace'
-Plug 'tpope/vim-fugitive'
-Plug 'jam1garner/vim-code-monokai'
+" config plugins
 Plug 'editorconfig/editorconfig-vim'
 call plug#end()
 " run :source ~/.vimrc  to reload vimrc
 " run :PlugInstall to install declared plugins
 " run :PlugClean to uninstall undeclared plugins
 
+" Plugin specific configurations
 " vim-gitgutter
 set updatetime=100 " this is not a setting specific to gitgutter but necessary for it to be responsive
 
