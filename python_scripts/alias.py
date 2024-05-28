@@ -551,6 +551,7 @@ def o_emp(*trigrams):
                 "company_id",
                 "parent_id",
                 "github_login",
+                "user_id",
             ]
         },
     )
@@ -588,9 +589,24 @@ def o_emp(*trigrams):
             # remove last employee of the chain if they are their own manager
             c.pop()
         chains_str[e_id] = " > ".join(f'{managers_data[id]["name"]} [{managers_data[id]["github"]}]' for id in c)
+    # get support level
+    support_groups = r_exec(
+        "res.groups",
+        "search_read",
+        [[["category_id.name", "=", "Odoo Support Level"]]],
+        {"fields": ["id", "name", "users"]},
+    )
+    levels = [[sg["name"], sg["users"]] for sg in support_groups]
+    levels.sort(key=lambda x: len(x[1]))
     # output
     url_template = "https://www.odoo.com/web?debug=1#id={id}&model=hr.employee.public&view_type=form"
     for emp in employees_data:
+        for level_name, level_users in levels:
+            if emp["user_id"][0] in level_users:
+                employee_support_level = level_name
+                break
+        else:
+            employee_support_level = "None"
         print(
             f"""name : {emp['name']}
         github account: {emp['github_login']}
@@ -598,6 +614,7 @@ def o_emp(*trigrams):
         company : {emp['company_id'][1]}
         department : {emp['department_id'] and emp['department_id'][1]}
         Job title : {emp['job_title']}
+        Support Level : {employee_support_level}
         managers : {chains_str[emp['id']]}"""
         )
         url = url_template.format(id=emp["id"])
