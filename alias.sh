@@ -9,7 +9,7 @@ reload_zshrc() {
     deactivate >/dev/null 2>&1
 }
 
-alias e="vim"
+alias e="nvim"
 
 eza() {
     # edit and reload alias and various scripts
@@ -46,6 +46,10 @@ eza() {
         ;;
     vim)
         file_to_load="editors/vim/.vimrc"
+        file_type="other"
+        ;;
+    nvim)
+        file_to_load="editors/neovim"
         file_type="other"
         ;;
     tmp)

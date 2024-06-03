@@ -39,7 +39,7 @@ _complete_branch_name_on_repo_A() {
 
 _eza() {
     if [[ COMP_CWORD -eq 1 ]]; then
-        COMPREPLY=($(compgen -W "shell py loader drop git compl vim tig utils tmp typo" -- "${COMP_WORD[1]}"))
+        COMPREPLY=($(compgen -W "shell py loader drop git compl vim nvim tig utils tmp typo" -- "${COMP_WORD[1]}"))
     fi
     if [[ COMP_CWORD -eq 2 ]]; then
         local function_names=" "

@@ -49,7 +49,7 @@ autoload bashcompinit
 bashcompinit
 
 # use vim as default editor
-export EDITOR="vim"
+export EDITOR="nvim"
 
 # activate vi mode in the terminal
 bindkey -v
