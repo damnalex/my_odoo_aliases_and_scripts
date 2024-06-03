@@ -24,6 +24,7 @@ return require('packer').startup(function(use)
   use { "airblade/vim-gitgutter" }
   use { "ntpeters/vim-better-whitespace" }
   use "lukas-reineke/indent-blankline.nvim"
+  use 'tanvirtin/monokai.nvim'
 
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins
