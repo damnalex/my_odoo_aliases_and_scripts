@@ -391,10 +391,9 @@ go_prune_all() {
 golist() {
     # list all the main source folder repos, theire currently checked out branches and theire status
     git_odoo list
-    (go_fetch >/dev/null 2>&1 &)
+    # (go_fetch >/dev/null 2>&1 &)
 }
 
-(go_fetch >/dev/null 2>&1 &)
 # this is to fetch everytime a terminal is loaded, or sourced, so it happens often
 # `&` is especially important here
 
