@@ -47,5 +47,3 @@ vim.keymap.set('i', 'kkk', '<Esc>')
 
 -- other
 vim.o.wildmenu = true
--- TODO spell check on git commit only
---
