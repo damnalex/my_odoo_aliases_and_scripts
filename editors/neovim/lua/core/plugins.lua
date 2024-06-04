@@ -25,6 +25,7 @@ return require('packer').startup(function(use)
   use { "ntpeters/vim-better-whitespace" }
   use "lukas-reineke/indent-blankline.nvim"
   use 'tanvirtin/monokai.nvim'
+    use "nvim-treesitter/nvim-treesitter-context"
 
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins
