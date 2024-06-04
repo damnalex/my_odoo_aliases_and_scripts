@@ -4,7 +4,7 @@
 	signingkey = /Users/alex/.ssh/id_ed25519_github_mao_odoo.pub
 [core]
 	excludesfile = /home/odoo/.gitignore_global
-	editor = vim
+	editor = nvim
 [alias]
     hist = log --graph --all --date=short --pretty=format:'%C(dim white)%h%Creset%C(auto)%d%Creset %s %C(blue)<%an> %C(dim green)(%cd)%Creset%n'
     alias = ! sed -n '/^\\[alias]$/, /^\\[.*]$/p' ~/.gitconfig | sed '$d'
