@@ -35,6 +35,8 @@ vim.o.wrap = false
 vim.o.scrolloff = 8
 vim.o.showcmd = true
 vim.o.list = true
+-- with this, copying bits of code (with the mouse) includes dots as spaces,
+-- use "*y to cleanly (properly) copying to the clipboard
 vim.o.listchars = 'trail:+,tab:>-,nbsp:␣,space:.'
 
 
