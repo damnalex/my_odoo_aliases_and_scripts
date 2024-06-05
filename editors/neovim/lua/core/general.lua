@@ -41,9 +41,14 @@ vim.opt.listchars = 'trail:+,tab:>-,nbsp:␣,space:.'
 
 
 -- other remapping
+-- when my pinky is tired
 vim.keymap.set('i', 'jkjk', '<Esc>')
 vim.keymap.set('i', 'jjj', '<Esc>')
 vim.keymap.set('i', 'kkk', '<Esc>')
+-- buffers
+vim.keymap.set('n', '<leader>bl', vim.cmd.buffers, {})
+vim.keymap.set('n', '<leader>bn', vim.cmd.bnext, {})
+vim.keymap.set('n', '<leader>bp', vim.cmd.bprevious, {})
 
 -- other
 vim.opt.wildmenu = true
