@@ -492,8 +492,10 @@ build_odoo_virtualenv() {
         virtualenv --clear "$SRC_MULTI/master/venv"
         pip install -r $SRC_MULTI/master/odoo/requirements.txt
     else
-        odev init -y "TA_$1" $1 || return 1
-        dropodoo "TA_$1"
+        oe-support worktree add $1
+        deactivate 2>/dev/null
+        virtualenv --clear "$SRC_MULTI/$1/venv"
+        pip install -r "$SRC_MULTI/$1/odoo/requirements.txt"
     fi
     go_venv $1
     pip install --upgrade pip
