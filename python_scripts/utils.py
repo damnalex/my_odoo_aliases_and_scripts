@@ -1,6 +1,7 @@
 import os
 import xmlrpc.client
 from functools import partial
+from typing import Sequence
 
 
 class EnvironmentExtractor:
@@ -25,7 +26,10 @@ def _get_xmlrpc_executer(dburl, dbname, login, password):
     common = xmlrpc.client.ServerProxy("{}/xmlrpc/2/common".format(dburl))
     models = xmlrpc.client.ServerProxy("{}/xmlrpc/2/object".format(dburl))
     uid = common.authenticate(dbname, login, password, {})
-    r_exec = partial(models.execute_kw, dbname, uid, password)
+    # TODO: Find a better technically correct type hint for this
+    # but for now , it will do the job good enough to get linters
+    # to calm down in the rest of the scripts
+    r_exec: partial[Sequence] = partial(models.execute_kw, dbname, uid, password)
     return r_exec
 
 

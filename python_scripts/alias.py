@@ -169,7 +169,12 @@ def sh_run(cmd, **kwargs):
         return subprocess.run(cmd, **kwargs, check=True).stdout.decode("utf-8")
     else:
         process = subprocess.Popen(cmd, shell=True, **kwargs)
-        return process.communicate()[0].decode("utf-8")
+        res = process.communicate()[0]
+        match res:
+            case str():
+                return res
+            case bytes():
+                return res.decode("utf-8")
 
 
 def _ssh_executor(server, user="odoo"):
@@ -483,7 +488,7 @@ def dropodoo(*dbs):
 
 
 @call_from_shell
-def go_fetch(*args):
+def go_fetch():
     # git fetch on all the repos of the main source folder
     _git_odoo_app(fetch=True)
 
@@ -666,6 +671,8 @@ def o_user(*trigrams):
             {"fields": ["id", "login"]},
         )
         users = {user["id"]: user["login"] for user in users_data}
+    else:
+        domain = []
     url_template = "https://www.odoo.com/web?debug=1#id={id}&action=17&model=res.users&view_type=form"
     urls = [url_template.format(id=uid) for uid in list(users) + uids]
     print(users)
@@ -741,8 +748,8 @@ def o_loc(db):
 def o_size(db):
     """get the size of a saas database"""
     db, server = _clean_db_name_and_server(db)
-    ok, ssh = _ssh_executor(server)
-    if not ok:
+    _, ssh = _ssh_executor(server)
+    if not ssh:
         return False
     sql_query = f"SELECT pg_size_pretty(pg_database_size('{db}'));"
     psql_cmd = f'psql -tAqX -d {db} -c "{sql_query}"'
@@ -760,8 +767,8 @@ def o_size(db):
 def o_freespace(server):
     """get the availlable disk space of on saas server"""
     _, server = _clean_db_name_and_server(server)
-    ok, ssh = _ssh_executor(server)
-    if not ok:
+    _, ssh = _ssh_executor(server)
+    if not ssh:
         return False
     _, stdout, _ = ssh("df -h")
     columns = stdout.readline()
@@ -798,7 +805,7 @@ def o_stat(db):
 
 @shell_end_hook
 @call_from_shell
-def our_modules_update_and_compare(*args):
+def our_modules_update_and_compare():
     cmds = """cd $ST/scripts/clean_database_helper/
     ./Our_modules_generator.py --update-branches
     """
@@ -810,7 +817,7 @@ def our_modules_update_and_compare(*args):
 
 @shell_end_hook
 @call_from_shell
-def dummy_command(*args):
+def dummy_command():
     """Just a dummy command"""
     print("in python")
     differed_sh_run("echo 'in shell'")
