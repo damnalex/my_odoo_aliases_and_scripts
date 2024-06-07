@@ -25,6 +25,7 @@ return require('packer').startup(function(use)
     }
     use "nvim-treesitter/nvim-treesitter-context"
     use "tpope/vim-fugitive"
+    use "tpope/vim-rhubarb"
     use "airblade/vim-gitgutter"
     use "ntpeters/vim-better-whitespace"
     use "lukas-reineke/indent-blankline.nvim"
