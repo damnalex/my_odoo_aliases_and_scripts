@@ -770,7 +770,7 @@ def o_freespace(server):
     print("Mounted on\t\tUsed\tAvail\tUse%")
     for line in stdout.readlines():
         line = df_line(*line.rstrip().split())
-        if "home" in line.Mounted_on:
+        if "home" in line.Mounted_on and ".zfs/snapshot/" not in line.Mounted_on:
             tabs_rules = {(0, 6): 3, (6, 15): 2, (15, 999): 1}
             tabs_nb = next(v for k, v in tabs_rules.items() if k[0] < len(line.Mounted_on) < k[1])
             tabs = tabs_nb * "\t"
