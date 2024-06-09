@@ -29,7 +29,9 @@ return require('packer').startup(function(use)
     use "airblade/vim-gitgutter"
     use "ntpeters/vim-better-whitespace"
     use "lukas-reineke/indent-blankline.nvim"
-    use "tanvirtin/monokai.nvim"
+    use "rebelot/kanagawa.nvim"
+    use "nvim-tree/nvim-tree.lua"
+    use "nvim-tree/nvim-web-devicons"
     -- LSP
     use {
         'VonHeikemen/lsp-zero.nvim',

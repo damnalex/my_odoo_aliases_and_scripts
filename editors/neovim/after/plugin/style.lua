@@ -1,8 +1,11 @@
+vim.opt.termguicolors = true
+
 -- theme
-require('monokai').setup {}
+vim.cmd.colorscheme "kanagawa"
 
 -- gutter
-vim.opt.updatetime = 100  -- necessary for gitgutter to be responsive (not really specific to git gutter)
+-- necessary for gitgutter to be responsive (the option is not really specific to git gutter)
+vim.opt.updatetime = 100
 
 -- show trailing whitespace
 require("ibl").setup()

@@ -1,7 +1,7 @@
 -- general
 vim.opt.mouse = ""
 vim.g.mapleader = " "
-vim.keymap.set("n", "-", vim.cmd.Ex)
+-- vim.keymap.set("n", "-", vim.cmd.Ex)
 
 -- editor
 vim.opt.tabstop = 4 -- A TAB character looks like 4 spaces
