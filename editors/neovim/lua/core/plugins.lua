@@ -35,7 +35,7 @@ return require('packer').startup(function(use)
         'VonHeikemen/lsp-zero.nvim',
         branch = 'v3.x',
         requires = {
-            -- automate lsp stuff
+            -- automate lsp installation
             {'williamboman/mason.nvim'},
             {'williamboman/mason-lspconfig.nvim'},
             -- strict dependencies
@@ -45,6 +45,9 @@ return require('packer').startup(function(use)
             {'L3MON4D3/LuaSnip'},
         }
     }
+    -- completion
+    use "hrsh7th/cmp-buffer"
+    use "hrsh7th/cmp-nvim-lua"
 
     -- Automatically set up your configuration after cloning packer.nvim
     -- Put this at the end after all plugins
