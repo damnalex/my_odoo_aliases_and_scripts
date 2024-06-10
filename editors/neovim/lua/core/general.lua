@@ -1,7 +1,6 @@
 -- general
-vim.opt.mouse = ""
 vim.g.mapleader = " "
--- vim.keymap.set("n", "-", vim.cmd.Ex)
+-- vim.keymap.set("n", "-", vim.cmd.Ex)   -- replaced by vim-tree
 
 -- editor
 vim.opt.tabstop = 4 -- A TAB character looks like 4 spaces
@@ -52,3 +51,14 @@ vim.keymap.set('n', '<leader>bp', vim.cmd.bprevious, {})
 
 -- other
 vim.opt.wildmenu = true
+
+-- window resizing
+vim.keymap.set('n', '<leader>,', '20<C-w><')
+vim.keymap.set('n', '<leader>.', '20<C-w>>')
+
+-- Allow the mouse to resize windows
+-- TODO: find a "cleaner" way to resize wndows with the mouse without mouving the cursor
+-- This also allows to activate Visual which is fine I guess
+-- vim.opt.mouse = ""
+vim.keymap.set("n", "<LeftMouse>", "m'<LeftMouse>")
+vim.keymap.set("n", "<LeftRelease>", "<LeftRelease>g``")
