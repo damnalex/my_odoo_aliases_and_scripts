@@ -1,3 +1,11 @@
+if vim.g.vscode then
+    -- VSCode only
+else
+    -- Neovim only
+end
+-- common
+
+
 -- general
 vim.g.mapleader = " "
 -- vim.keymap.set("n", "-", vim.cmd.Ex)   -- replaced by vim-tree

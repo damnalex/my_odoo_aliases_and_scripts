@@ -94,29 +94,6 @@
     "git-graph.date.format": "Relative",
     "git-graph.date.type": "Commit Date",
     "githubPullRequests.pullBranch": "never",
-    "vim.incsearch": true,
-    "vim.hlsearch": true,
-    "vim.visualstar": true,
-    "vim.insertModeKeyBindings": [
-        {
-            "before": [
-                "j",
-                "j"
-            ],
-            "after": [
-                "<Esc>"
-            ],
-        },
-        {
-            "before": [
-                "k",
-                "k"
-            ],
-            "after": [
-                "<Esc>"
-            ],
-        },
-    ],
     "tabnine.experimentalAutoImports": true,
     "trailing-spaces.deleteModifiedLinesOnly": true,
     "highlight-matching-tag.styles": {
@@ -125,6 +102,34 @@
                 "surround": "yellow",
             },
         },
+    },
+    //vim emulator
+    // "vim.incsearch": true,
+    // "vim.hlsearch": true,
+    // "vim.visualstar": true,
+    // "vim.insertModeKeyBindings": [
+    //     {
+    //         "before": [
+    //             "j",
+    //             "j"
+    //         ],
+    //         "after": [
+    //             "<Esc>"
+    //         ],
+    //     },
+    //     {
+    //         "before": [
+    //             "k",
+    //             "k"
+    //         ],
+    //         "after": [
+    //             "<Esc>"
+    //         ],
+    //     },
+    // ],
+    // neovim imbeded
+    "extensions.experimental.affinity": {
+        "asvetliakov.vscode-neovim": 1
     },
     // end of settings
     "dummy.setting": "Anything under this line should be moved to another section.",

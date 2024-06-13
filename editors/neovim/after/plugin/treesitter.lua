@@ -1,3 +1,10 @@
+if vim.g.vscode then
+    -- VSCode only
+else
+    -- Neovim only
+end
+-- common
+
 require'nvim-treesitter.configs'.setup {
     -- A list of parser names, or "all"
     -- (the first five listed parsers should always be installed)
