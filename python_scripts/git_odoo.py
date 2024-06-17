@@ -199,14 +199,21 @@ def odoo_repos_pull_all():
     for repo_name, repo in zip(repos, _repos(repos)):
         repo_name = shorten_path(repo_name)
         print(f"updating {repo_name}")
-        print(f"updating in place {repo.active_branch.name}")
         try:
-            repo.remotes.origin.pull()
-        except git.exc.GitCommandError as e:
-            print(e)
-            pass
+            active_branch_name = repo.active_branch.name
+        except TypeError:
+            active_branch_name = None
+        if active_branch_name:
+            print(f"updating in place {active_branch_name}")
+            try:
+                repo.remotes.origin.pull()
+            except git.exc.GitCommandError as e:
+                print(e)
+                pass
+        else:
+            print(f"{repo_name} is in detached head mode, skipping in place update")
         for version in RELEVANT_BRANCHES:
-            if version != repo.active_branch.name:
+            if version != active_branch_name:
                 print(f"processing {version}")
                 try:
                     repo.remotes.origin.fetch(f"{version}:{version}")
@@ -217,13 +224,20 @@ def odoo_repos_pull_all():
     for repo_name, repo in zip(repos, _repos(repos)):
         repo_name = shorten_path(repo_name)
         print(f"updating {repo_name}")
-        print(f"updating in place {repo.active_branch.name}")
         try:
-            repo.remotes.origin.pull()
-        except git.exc.GitCommandError as e:
-            print(e)
-            pass
-        if "master" != repo.active_branch.name:
+            active_branch_name = repo.active_branch.name
+        except TypeError:
+            active_branch_name = None
+        print(f"updating in place {active_branch_name}")
+        if active_branch_name:
+            try:
+                repo.remotes.origin.pull()
+            except git.exc.GitCommandError as e:
+                print(e)
+                pass
+        else:
+            print(f"{repo_name} is in detached head mode, skipping in place update")
+        if "master" != active_branch_name:
             print("processing master")
             repo.remotes.origin.fetch("master:master")
 
