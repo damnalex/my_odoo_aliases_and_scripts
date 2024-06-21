@@ -100,14 +100,21 @@ eza() {
     # change the current directory while editing the files to have a better experience with my vim config
     local current_dir=$(pwd)
     cd $AP
+    local state_before="$(git status) $(git diff)"
     local skip_reload="No"
     eval "e $search_cmd $AP/$file_to_load" || skip_reload="Yes"
+    local state_after="$(git status) $(git diff)"
     cd "$current_dir"
     # if vim exits with an error (existing with :cq for example) do not reload
     # this can speed things up a bit especially if I use `eza` many times in a given tab
     # (not sure why, but each reload gets longer and longer)
     [[ $skip_reload == "Yes" ]] && return
+    # reload the shell reload only if there is a change
+    local hash_before=$(md5 -q -s $state_before)
+    local hash_after=$(md5 -q -s $state_after)
+    [[ $hash_after == $hash_before ]] && return
     # editing is done, applying changes
+    echo "some changes occured, reloading the shell"
     reload_zshrc
 }
 
