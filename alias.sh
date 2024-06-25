@@ -363,8 +363,8 @@ go_update_and_clean_all_branches() {
     git_odoo pull --all &
     wait
     # the full prune is quite slow and doesn't really need to be be run every time
-    # Do it only every fifth time (on average)
-    [ $((($RANDOM % 5))) -eq 0 ] && go_prune_all || echo 'no pruning this time'
+    # Do it only every tenth time (on average)
+    [ $((($RANDOM % 10))) -eq 0 ] && go_prune_all || echo 'no pruning this time'
     echo "updating 'our_modules' list:"
     local current_working_dir=$(pwd)
     our_modules_update_and_compare
