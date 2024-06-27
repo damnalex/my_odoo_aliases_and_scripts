@@ -478,18 +478,30 @@ build_multiverse_branch() {
 
 update_multiverse_branch() {
     # git pull the repos of the given mutliverse branche
-    odev pull -f $1
+
+    # for now odev is shitting the bed all the time
+    # odev pull -f $1
+
+    for repo in 'odoo' 'enterprise' 'design-themes'; do
+        git -C $SRC_MULTI/$1/$repo pull --quiet && echo "pulled $repo $1 (multiverse)"
+    done
 }
 
 update_all_multiverse_branches() {
     # git pull the repos of all the multivers branches
-    echo 'updating odev first' # otherwise it may ask to update itself in an interactive way
-    git -C $SRC/ps-tech-odev pull --quiet
-    odev pull -f # updates all versions except master
-    echo 'multiverse master pull'
-    git -C $SRC_MULTI/master/odoo pull --quiet && echo 'pulled odoo master'
-    git -C $SRC_MULTI/master/enterprise pull --quiet && echo 'pulled enterprise master'
-    git -C $SRC_MULTI/master/design-themes pull --quiet && echo 'pulled design themes master'
+    #
+    # for now odev is shitting the bed all the time
+    # echo 'updating odev first' # otherwise it may ask to update itself in an interactive way
+    # git -C $SRC/ps-tech-odev pull --quiet
+    # odev pull -f # updates all versions except master
+    # echo 'multiverse master pull'
+    # git -C $SRC_MULTI/master/odoo pull --quiet && echo 'pulled odoo master'
+    # git -C $SRC_MULTI/master/enterprise pull --quiet && echo 'pulled enterprise master'
+    # git -C $SRC_MULTI/master/design-themes pull --quiet && echo 'pulled design themes master'
+
+    for version in $(ls $SRC_MULTI); do
+        update_multiverse_branch $version
+    done
 }
 
 build_odoo_virtualenv() {
@@ -499,6 +511,7 @@ build_odoo_virtualenv() {
         virtualenv --clear "$SRC_MULTI/master/venv"
         pip install -r $SRC_MULTI/master/odoo/requirements.txt
     else
+        # not using odev anymore
         oe-support worktree add $1
         deactivate 2>/dev/null
         virtualenv --clear "$SRC_MULTI/$1/venv"
@@ -667,7 +680,7 @@ test-dump() {
     $ST/lib/neuter.py $db_name --filestore || $ST/lib/neuter.py $db_name
     # start the database just long enough to check if there are custom modules
     # "does it even start" check
-    odev run -y $db_name --stop-after-init --limit-memory-hard 0
+    # odev run -y $db_name --stop-after-init --limit-memory-hard 0
     # check for custom modules
     local current_dir=$(pwd)
     cd $SRC/all_standard_odoo_apps_per_version
