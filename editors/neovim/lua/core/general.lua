@@ -56,6 +56,7 @@ vim.keymap.set('i', 'kkk', '<Esc>')
 vim.keymap.set('n', '<leader>bl', vim.cmd.buffers, {})
 vim.keymap.set('n', '<leader>bn', vim.cmd.bnext, {})
 vim.keymap.set('n', '<leader>bp', vim.cmd.bprevious, {})
+vim.keymap.set('n', '<leader>q', vim.cmd.q, {})
 
 -- other
 vim.opt.wildmenu = true
