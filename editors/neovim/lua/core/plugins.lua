@@ -28,70 +28,66 @@ return require('packer').startup(function(use)
         -- cond = function()
         --     return vim.g.vscode == nil
         -- end,
-
     }
     use {
         "nvim-treesitter/nvim-treesitter-context",
         -- cond = function()
         --     return vim.g.vscode == nil
         -- end,
-
     }
     use {
         "tpope/vim-fugitive",
         -- cond = function()
         --     return vim.g.vscode == nil
         -- end,
-
     }
     use {
         "tpope/vim-rhubarb",
         -- cond = function()
         --     return vim.g.vscode == nil
         -- end,
-
     }
     use {
         "airblade/vim-gitgutter",
         -- cond = function()
         --     return vim.g.vscode == nil
         -- end,
-
+    }
+    use {
+        "iberianpig/tig-explorer.vim",
+        -- cond = function()
+        --     return vim.g.vscode == nil
+        -- end,
     }
     use {
         "ntpeters/vim-better-whitespace",
         -- cond = function()
         --     return vim.g.vscode == nil
         -- end,
-
     }
     use {
         "lukas-reineke/indent-blankline.nvim",
         -- cond = function()
         --     return vim.g.vscode == nil
         -- end,
-
     }
     use {
         "rebelot/kanagawa.nvim",
         -- cond = function()
         --     return vim.g.vscode == nil
         -- end,
-
     }
     use {
         "nvim-tree/nvim-tree.lua",
         -- cond = function()
         --     return vim.g.vscode == nil
         -- end,
-
     }
     use {
         "nvim-tree/nvim-web-devicons",
         -- cond = function()
         --     return vim.g.vscode == nil
         -- end,
-
     }
     -- LSP
     use {
@@ -110,7 +106,6 @@ return require('packer').startup(function(use)
         -- cond = function()
         --     return vim.g.vscode == nil
         -- end,
-
     }
     -- completion
     use {
@@ -118,14 +113,12 @@ return require('packer').startup(function(use)
         -- cond = function()
         --     return vim.g.vscode == nil
         -- end,
-
     }
     use {
         "hrsh7th/cmp-nvim-lua",
         -- cond = function()
         --     return vim.g.vscode == nil
         -- end,
-
     }
 
     -- Automatically set up your configuration after cloning packer.nvim

@@ -164,6 +164,11 @@ _G.packer_plugins = {
     path = "/Users/alex/.local/share/nvim/site/pack/packer/start/telescope.nvim",
     url = "https://github.com/nvim-telescope/telescope.nvim"
   },
+  ["tig-explorer.vim"] = {
+    loaded = true,
+    path = "/Users/alex/.local/share/nvim/site/pack/packer/start/tig-explorer.vim",
+    url = "https://github.com/iberianpig/tig-explorer.vim"
+  },
   ["vim-better-whitespace"] = {
     loaded = true,
     path = "/Users/alex/.local/share/nvim/site/pack/packer/start/vim-better-whitespace",
