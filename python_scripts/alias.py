@@ -877,6 +877,7 @@ def typos_and_simple_aliases():
         ],
         "new_typo": ["new_ypo", "new_tupo", "new_ytpo", "newtypo"],
         "open .": ["open."],
+        "e .": ["e."],
     }
 
     simple_aliases = {

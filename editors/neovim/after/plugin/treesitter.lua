@@ -19,8 +19,15 @@ require'nvim-treesitter.configs'.setup {
         "python",
         "javascript",
         "sql",
+        "po",
+        "xml",
+        "css",
+        "scss",
         "diff",
         "git_rebase",
+        "git_config",
+        "bash",
+        "yaml",
     },
 
     -- Install parsers synchronously (only applied to `ensure_installed`)
