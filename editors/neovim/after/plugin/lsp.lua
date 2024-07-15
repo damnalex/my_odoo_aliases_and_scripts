@@ -50,8 +50,6 @@ cmp.setup({
         {name = 'buffer'},
     },
     mapping = {
-        ['<Tab>'] = cmp_action.tab_complete(),
-        ['<S-Tab>'] = cmp_action.select_prev_or_fallback(),
         ['<C-y>'] = cmp.mapping.confirm({select = false}),
         ['<C-e>'] = cmp.mapping.abort(),
         ['<Up>'] = cmp.mapping.select_prev_item({behavior = 'select'}),
