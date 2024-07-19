@@ -32,6 +32,11 @@ vim.keymap.set('n', 'g*', 'g*zz', {})
 vim.keymap.set('n', 'g#', 'g#zz', {})
 -- highlight last inserted text
 vim.keymap.set('n', 'gV', '`[v`]', {})
+-- land big scrolls in the middle of the screen
+vim.keymap.set('n', '<C-d>', '<C-d>zz')
+vim.keymap.set('n', '<C-u>', '<C-u>zz')
+vim.keymap.set('n', '<C-b>', '<C-b>zz')
+vim.keymap.set('n', '<C-f>', '<C-f>zz')
 
 -- style
 vim.opt.number = true
