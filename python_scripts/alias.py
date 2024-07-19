@@ -812,6 +812,28 @@ def our_modules_update_and_compare():
     differed_sh_run(cmds)
 
 
+@call_from_shell
+def digfresh(domain, *records):
+    """Query DNS record against the authorative server to avoid cache issue
+    digfresh <domain_to_query> [<dns_records_to_check>...]
+    """
+    ns_raw = sh_run(f"dig {domain} NS +short")
+    ns = [e for e in ns_raw.split("\n") if e][0]
+    if ns.endswith(".odoo.com."):
+        ns = "master.odoo.com."
+    print("Authoritative server: ", ns)
+    for record in records:
+        print(record, ":")
+        res_raw = sh_run(f"dig @{ns} {domain} {record} +short")
+        print(res_raw)
+        if not res_raw:
+            # no result for the authoritative server
+            # display the normal dig result
+            res_raw2 = sh_run(f"dig {domain} {record} +short")
+            print(f"Non authoritatitve result for {record}:")
+            print(res_raw2)
+
+
 # -----  simple tests -----
 
 
