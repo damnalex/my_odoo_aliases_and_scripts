@@ -104,6 +104,14 @@ return require('packer').startup(function(use)
         --     return vim.g.vscode == nil
         -- end,
     }
+    use {
+        -- cool looking bottom line
+        'nvim-lualine/lualine.nvim',
+        requires = { 'nvim-tree/nvim-web-devicons', opt = true }
+        -- cond = function()
+        --     return vim.g.vscode == nil
+        -- end,
+    }
     -- LSP
     use {
         -- language server manager

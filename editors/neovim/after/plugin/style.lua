@@ -16,3 +16,6 @@ vim.opt.updatetime = 100
 
 -- show trailing whitespace
 require("ibl").setup()
+
+-- line styling
+require('lualine').setup()
