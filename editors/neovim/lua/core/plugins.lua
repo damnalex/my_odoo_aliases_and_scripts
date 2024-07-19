@@ -112,6 +112,17 @@ return require('packer').startup(function(use)
         --     return vim.g.vscode == nil
         -- end,
     }
+    use {
+        -- cool looking command prompt
+        "folke/noice.nvim",
+        requires = {
+            "MunifTanjim/nui.nvim", -- required
+            "rcarriga/nvim-notify", -- optional
+        }
+        -- cond = function()
+        --     return vim.g.vscode == nil
+        -- end,
+    }
     -- LSP
     use {
         -- language server manager

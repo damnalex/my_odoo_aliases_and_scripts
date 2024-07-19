@@ -15,6 +15,10 @@ require'nvim-treesitter.configs'.setup {
         "vim",
         "vimdoc",
         "query",
+        -- required by noice
+        "regex",
+        "markdown",
+        "markdown_inline",
         -- mine
         "python",
         "javascript",
