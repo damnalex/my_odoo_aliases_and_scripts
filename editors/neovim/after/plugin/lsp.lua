@@ -24,6 +24,10 @@ lsp_zero.on_attach(function(client, bufnr)
     -- ]d: Move to the next diagnostic. See :help vim.diagnostic.goto_next().
 end)
 
+vim.diagnostic.config({
+    virtual_text = false,
+})
+
 -- language server managment
 -- doc: https://github.com/VonHeikemen/lsp-zero.nvim/blob/v3.x/doc/md/guide/integrate-with-mason-nvim.md
 require('mason').setup({})
