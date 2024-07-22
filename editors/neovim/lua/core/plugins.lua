@@ -57,7 +57,7 @@ return require('packer').startup(function(use)
     }
     use {
         -- put git diff indication next to the line numbers
-        "airblade/vim-gitgutter",
+        "lewis6991/gitsigns.nvim",
         -- cond = function()
         --     return vim.g.vscode == nil
         -- end,

@@ -10,9 +10,8 @@ vim.opt.termguicolors = true
 -- theme
 vim.cmd.colorscheme "kanagawa"
 
--- gutter
--- necessary for gitgutter to be responsive (the option is not really specific to git gutter)
-vim.opt.updatetime = 100
+-- git info in the gutter
+require('gitsigns').setup()
 
 -- show trailing whitespace
 require("ibl").setup()
