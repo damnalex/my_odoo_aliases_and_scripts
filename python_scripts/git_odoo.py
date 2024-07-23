@@ -221,7 +221,6 @@ def odoo_repos_pull_all():
                     repo.remotes.origin.fetch(f"{version}:{version}")
                 except git.exc.GitCommandError:
                     print(f"version {version} does not exist in {repo_name}, skipping")
-                    pass
     repos = SINGLE_VERSION_REPOS + SUPPORT_REPOS
     for repo_name, repo in zip(repos, _repos(repos)):
         repo_name = shorten_path(repo_name)
@@ -241,7 +240,10 @@ def odoo_repos_pull_all():
             print(f"{repo_name} is in detached head mode, skipping in place update")
         if "master" != active_branch_name:
             print("processing master")
-            repo.remotes.origin.fetch("master:master")
+            try:
+                repo.remotes.origin.fetch("master:master")
+            except git.exc.GitCommandError:
+                print(f"branch master does not exist in {repo_name}, skipping.")
 
 
 def _get_version_from_db(dbname):
