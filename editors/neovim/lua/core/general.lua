@@ -8,7 +8,7 @@ end
 
 -- general
 vim.g.mapleader = " "
--- vim.keymap.set("n", "-", vim.cmd.Ex)   -- replaced by vim-tree
+vim.g.maplocalleader = " "
 
 -- editor
 vim.opt.tabstop = 4 -- A TAB character looks like 4 spaces
@@ -21,8 +21,16 @@ vim.opt.ignorecase = true
 vim.opt.smartcase = true
 vim.opt.incsearch = true
 vim.opt.hlsearch = true
--- turn off search higlight on <leader><space>
+-- turn off search higlight with <leader><space>
 vim.keymap.set('n', '<leader> ', vim.cmd.nohlsearch, {})
+-- flash yanked sections on yank
+vim.api.nvim_create_autocmd('TextYankPost', {
+  desc = 'Highlight when yanking (copying) text',
+  group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
+  callback = function()
+    vim.highlight.on_yank()
+  end,
+})
 -- show search result in the middle of the screen
 vim.keymap.set('n', 'n', 'nzz', {})
 vim.keymap.set('n', 'N', 'Nzz', {})
