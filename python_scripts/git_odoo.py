@@ -14,13 +14,14 @@ options:
     --all                   pull all relevant branches
 
 """
+
 import psycopg2
 from docopt import docopt
 from utils import env
 
 import git
 
-relevant_saas_versions = ["16.3", "16.4", "17.1", "17.2"]
+relevant_saas_versions = ["17.1", "17.2", "17.4"]
 RELEVANT_BRANCHES = [f"saas-{s}" for s in relevant_saas_versions]
 RELEVANT_BRANCHES += ["15.0", "16.0", "17.0", "master"]
 
@@ -30,6 +31,7 @@ SINGLE_VERSION_REPOS = [
     env.PAAS,
     env.UPGR_PLAT,
     env.UPGR_UTIL,
+    env.IAP_APPS,
     env.AP,  # this repo
     env.OQOL,
     env.ODYSSEY,

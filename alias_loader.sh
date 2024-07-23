@@ -16,6 +16,7 @@ export SRC_MULTI="$HOME/odoo/versions"
 # odoo internal repos
 export INTERNAL="$SRC/internal"
 export PAAS="$SRC/paas"
+export IAP_APPS="$SRC/iap-apps"
 export ST="$SRC/support-tools"
 export UPGR_PLAT="$SRC/upgrade-platform"
 export UPGR_UTIL="$SRC/upgrade-util"
