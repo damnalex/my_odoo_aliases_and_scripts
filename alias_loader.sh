@@ -104,6 +104,8 @@ source $ST/scripts/completion/oe-support-completion.sh
 complete -o default -F _oe-support oes
 source $ST/scripts/completion/clean-database-completion.sh
 complete -o default -F _clean-database clean_database
+source /Users/alex/src/support-tools/scripts/completion/find_backup_completion.sh
+complete -o default -F _find_backup find_backup
 
 # load temporary scripts
 # this file may be deleted at any time, so we need to make sure that it actually exists before trying to source it
