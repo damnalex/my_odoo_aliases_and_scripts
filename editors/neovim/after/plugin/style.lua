@@ -40,4 +40,4 @@ require("noice").setup({
 })
 
 -- make spell check play nice with noice
-vim.keymap.set('n', '<leader>z=', 'ea<C-X>s')
+vim.keymap.set('n', 'z=', 'ea<C-X>s')  -- z=  opens a dropdown rather than a full window, this breaks the counter feature of z=
