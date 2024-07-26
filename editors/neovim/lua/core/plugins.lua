@@ -63,13 +63,6 @@ return require('packer').startup(function(use)
         -- end,
     }
     use {
-        -- enables :tig within nvim
-        "iberianpig/tig-explorer.vim",
-        -- cond = function()
-        --     return vim.g.vscode == nil
-        -- end,
-    }
-    use {
         -- highlights in red trailling spaces
         "ntpeters/vim-better-whitespace",
         -- cond = function()
