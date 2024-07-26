@@ -38,3 +38,6 @@ require("noice").setup({
     lsp_doc_border = false, -- add a border to hover docs and signature help
   },
 })
+
+-- make spell check play nice with noice
+vim.keymap.set('n', '<leader>z=', 'ea<C-X>s')
