@@ -29,6 +29,7 @@ VERSIONED_REPOS = [env.ODOO, env.ENTERPRISE, env.DESIGN_THEMES, env.INDUSTRY, en
 SINGLE_VERSION_REPOS = [
     env.INTERNAL,
     env.PAAS,
+    env.SAAS,
     env.UPGR_PLAT,
     env.UPGR_UTIL,
     env.IAP_APPS,
