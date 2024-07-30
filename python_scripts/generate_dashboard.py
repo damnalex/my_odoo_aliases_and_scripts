@@ -37,31 +37,34 @@ varia = [
     "syf",
 ]
 account = [
+    "aaha",
     "amay",
-    "arsi",
     "asm",
     "crm",
     "flhu",
+    "habo",
     "jond",
+    "loje",
     "mege",
     "tbs",
     "thco",
+    "vifo",
 ]
 pos = [
-    "khah",
+    "baar",
     "lse",
     "pebr",
 ]
 stock = [
     "dafr",
     "nci",
+    "nea",
     "pno",
     "wama",
     "was",
 ]
 sm = [
     "bve",
-    "frc",
     "jorv",
     "yla",
 ]
@@ -71,6 +74,7 @@ perf = [
     "beha",
     "juse",
     "kasem",
+    "mmha",
     "pivi",
 ]
 website_js = [
@@ -82,7 +86,9 @@ website_js = [
 other = [
     # BE
     "mvw",
-    "baar",
+    "loug",
+    "myah",
+    "viso",
     # US
     "adda",
     "andg",
