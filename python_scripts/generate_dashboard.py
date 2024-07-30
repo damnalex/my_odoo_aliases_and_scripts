@@ -73,7 +73,7 @@ perf = [
     "avd",
     "beha",
     "juse",
-    "kasem",
+    "kasm",
     "mmha",
     "pivi",
 ]
