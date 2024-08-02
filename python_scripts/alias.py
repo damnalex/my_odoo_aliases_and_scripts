@@ -6,6 +6,7 @@ from collections import namedtuple
 from configparser import ConfigParser
 from functools import cache
 from inspect import signature
+from itertools import groupby
 from socket import gaierror
 from textwrap import dedent as _dd
 
@@ -13,7 +14,7 @@ import paramiko
 from git_odoo import App as _git_odoo_app
 from git_odoo import _get_version_from_db, _repos
 from psycopg2 import OperationalError, ProgrammingError, connect
-from utils import _get_xmlrpc_executer, _xmlrpc_master, _xmlrpc_odoo_com, env
+from utils import _get_xmlrpc_executer, _xmlrpc_apps, _xmlrpc_master, _xmlrpc_odoo_com, env
 
 PYTHON3, PYTHON2 = 3, 2
 
@@ -688,6 +689,37 @@ def o_user(*trigrams):
             results: {users}
             """
         raise Invalid_params(msg + debug_info)
+
+
+@call_from_shell
+def o_apps(*apps_tech_names):
+    """
+    list apps store apps grouped by versions, and with an short cut vim command to check them on the server
+    usage:
+        o_apps  [<app_tech_name>...]
+    """
+    r_exec = _xmlrpc_apps()
+    domain = ["|"] * (len(apps_tech_names) - 1)
+    domain += [["name", "=", app] for app in apps_tech_names]
+    apps: list[dict] = r_exec("loempia.module", "search_read", [domain], {"fields": ["name", "repo_id", "series_id"]})
+    repos: list[dict] = r_exec(
+        "loempia.repo", "search_read", [[["id", "in", [app["repo_id"][0] for app in apps]]]], {"fields": ["path"]}
+    )
+    repos_paths = {r["id"]: r["path"] for r in repos}
+    per_series = lambda x: x.get("series_id")
+    apps.sort(key=per_series)
+    for serie, apps_v in groupby(apps, key=per_series):
+        print(f"{serie[1]} :")
+        paths = []
+        for app in apps_v:
+            # print(app)
+            app_path = repos_paths[app["repo_id"][0]] + "/" + app["name"]
+            print(app_path)
+            paths.append(app_path)
+        first = paths[0]
+        splits = [f"-c ':vsplit {p}'" for p in paths[1:]]
+        vim_cmd = f"view {first} {' '.join(splits)} -c ':nnoremap - :Explore<CR>'"
+        print(vim_cmd)
 
 
 @call_from_shell

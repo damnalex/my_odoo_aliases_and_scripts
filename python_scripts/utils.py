@@ -78,3 +78,15 @@ def _xmlrpc_master():
     db_name = "saas_master"
     r_exec = _get_xmlrpc_executer(db_url, db_name, api_login, api_key)
     return r_exec
+
+
+def _xmlrpc_apps():
+    import keyring
+
+    api_key = keyring.get_password("apps-hunter", "mao@odoo.com-2FA")
+    api_login = "mao@odoo.com"
+    assert all((api_key, api_login))
+    db_url = "https://apps.odoo.com"
+    db_name = "apps"
+    r_exec: callable[list] = _get_xmlrpc_executer(db_url, db_name, api_login, api_key)
+    return r_exec
