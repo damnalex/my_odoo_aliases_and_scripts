@@ -209,9 +209,9 @@ help_domain = [
 ################################################################
 DASHBOARD = """
 <form string="My Dashboard">
-    <board style="1-1">
+    <board style="1">
         {column1}
-        {column2}
+        <column></column> <!-- unused column -->
         <column></column> <!-- unused column -->
     </board>
 </form>
@@ -374,77 +374,61 @@ def x_agent_helper(trigrams):
 
 
 def my_generator(main_squad):
-    top = [
-        [
-            x_unassigned(squad_name=main_squad),
-            x_processed(squad_name=main_squad),
-            x_new(squad_name=main_squad),
+    cards = [
+        x_unassigned(squad_name=main_squad),
+        x_in_tech_per_agent(squad_name=main_squad),
+        x_rot(squad_name=main_squad),
+        x_processed(squad_name=main_squad),
+        x_new(squad_name=main_squad),
+        *tags_helper(["Technical"], x_unassigned, x_new, x_processed),
+        *squad_helper(None, x_new, x_processed),
+        *x_agent_helper(get_from_squad(main_squad)),
+        """
+        <action
+            context="{'lang': 'en_US', 'tz': 'Europe/Brussels', 'uid': 963957, 'allowed_company_ids': [1, 2, 3, 4, 5, 14, 17], 'group_by': ['company_id'], 'orderedBy': [], 'dashboard_merge_domains_contexts': False}"
+            domain="['&amp;', ['share', '=', False], '|', ['employee_id.department_id.id', '=', 153], '|', '|','|', ['employee_id.parent_id.parent_id.parent_id.id', '=', 1313226], ['employee_id.parent_id.parent_id.id', '=', 1313226], ['employee_id.parent_id.id', '=', 1313226], ['employee_id.id', '=', 1313226]]" name="17"
+            string="Tech Support Team" view_mode="list" modifiers="{}" id="action_1_2"></action>
+        """,  # not everyone in tech BE is in the right departement, filtering on the manager hierachy (with some future proofing)
+        """
+        <action
+            context="{'lang': 'en_US', 'tz': 'Europe/Brussels', 'uid': 963957, 'allowed_company_ids': [1, 2, 3, 4, 5, 14, 17], 'group_by': ['company_id'], 'orderedBy': [], 'dashboard_merge_domains_contexts': False}"
+            domain="['&amp;', ['share', '=', False], ['employee_id.department_id.id', '=', 152]]" name="17"
+            string="Functionnal Support Team" view_mode="list" modifiers="{}" id="action_1_3"></action>
+        """,
+        """
+        <action
+            context="{'lang': 'en_US', 'tz': 'Europe/Brussels', 'uid': 963957, 'allowed_company_ids': [1, 2, 3, 4, 5, 14, 17], 'group_by': ['company_id'], 'orderedBy': [], 'dashboard_merge_domains_contexts': False}"
+            domain="['&amp;', ['share', '=', False], ['employee_id.department_id.id', '=', 164]]" name="17"
+            string="Bugfix Team" view_mode="list" modifiers="{}" id="action_1_4"></action>
+        """,
+        """
+        <action
+            context="{'lang': 'en_GB', 'tz': 'Europe/Brussels', 'uid': 963957, 'allowed_company_ids': [1], 'active_model': 'project.project', 'active_id': 250, 'active_ids': [250], 'pivot_row_groupby': ['user_ids'], 'default_project_id': 250, 'group_by': ['write_date:month'], 'orderedBy': [], 'dashboard_merge_domains_contexts': False}"
+            domain="['&amp;', ['project_id', '=', 250], '&amp;', ['project_id', '=', 250], ['message_is_follower', '=', True]]"
+            name="333" string="RD VALUE DEVs I follow" view_mode="kanban" modifiers="{}" id="action_1_5" fold="1">
+        </action>
+        """,
+        *[
+            card
+            for squad_name in squad_to_leader_employee
+            if squad_name != main_squad
+            for card in squad_helper(
+                squad_name,
+                x_unassigned,
+                x_new,
+                x_processed,
+                x_in_tech_per_agent,
+                x_rot,
+            )
         ],
-        [
-            x_in_tech_per_agent(squad_name=main_squad),
-            x_rot(squad_name=main_squad),
-        ],
+        *squad_helper("sh", x_unassigned, x_new, x_processed),
+        *squad_helper("infra", x_unassigned, x_new, x_processed),
+        *tags_helper(["saas-ops"], x_unassigned, x_new, x_processed),
+        *tags_helper(["apps"], x_unassigned, x_new, x_processed),
+        *x_agent_helper(get_from_squad(main_squad, not_in=True)),
     ]
-    the_rest = [
-        [
-            *tags_helper(["Technical"], x_unassigned, x_new, x_processed),
-            # x_unassigned(stage=None),
-            *squad_helper(None, x_new, x_processed),
-            *x_agent_helper(get_from_squad(main_squad)),
-        ],
-        [
-            """
-            <action
-                context="{'lang': 'en_US', 'tz': 'Europe/Brussels', 'uid': 963957, 'allowed_company_ids': [1, 2, 3, 4, 5, 14, 17], 'group_by': ['company_id'], 'orderedBy': [], 'dashboard_merge_domains_contexts': False}"
-                domain="['&amp;', ['share', '=', False], '|', ['employee_id.department_id.id', '=', 153], '|', '|','|', ['employee_id.parent_id.parent_id.parent_id.id', '=', 1313226], ['employee_id.parent_id.parent_id.id', '=', 1313226], ['employee_id.parent_id.id', '=', 1313226], ['employee_id.id', '=', 1313226]]" name="17"
-                string="Tech Support Team" view_mode="list" modifiers="{}" id="action_1_2"></action>
-            """,  # not everyone in tech BE is in the right departement, filtering on the manager hierachy (with some future proofing)
-            """
-            <action
-                context="{'lang': 'en_US', 'tz': 'Europe/Brussels', 'uid': 963957, 'allowed_company_ids': [1, 2, 3, 4, 5, 14, 17], 'group_by': ['company_id'], 'orderedBy': [], 'dashboard_merge_domains_contexts': False}"
-                domain="['&amp;', ['share', '=', False], ['employee_id.department_id.id', '=', 152]]" name="17"
-                string="Functionnal Support Team" view_mode="list" modifiers="{}" id="action_1_3"></action>
-            """,
-            """
-            <action
-                context="{'lang': 'en_US', 'tz': 'Europe/Brussels', 'uid': 963957, 'allowed_company_ids': [1, 2, 3, 4, 5, 14, 17], 'group_by': ['company_id'], 'orderedBy': [], 'dashboard_merge_domains_contexts': False}"
-                domain="['&amp;', ['share', '=', False], ['employee_id.department_id.id', '=', 164]]" name="17"
-                string="Bugfix Team" view_mode="list" modifiers="{}" id="action_1_4"></action>
-            """,
-            """
-            <action
-                context="{'lang': 'en_GB', 'tz': 'Europe/Brussels', 'uid': 963957, 'allowed_company_ids': [1], 'active_model': 'project.project', 'active_id': 250, 'active_ids': [250], 'pivot_row_groupby': ['user_ids'], 'default_project_id': 250, 'group_by': ['write_date:month'], 'orderedBy': [], 'dashboard_merge_domains_contexts': False}"
-                domain="['&amp;', ['project_id', '=', 250], '&amp;', ['project_id', '=', 250], ['message_is_follower', '=', True]]"
-                name="333" string="RD VALUE DEVs I follow" view_mode="kanban" modifiers="{}" id="action_1_5" fold="1">
-            </action>
-            """,
-            *[
-                card
-                for squad_name in squad_to_leader_employee
-                if squad_name != main_squad
-                for card in squad_helper(
-                    squad_name,
-                    x_unassigned,
-                    x_new,
-                    x_processed,
-                    x_in_tech_per_agent,
-                    x_rot,
-                )
-            ],
-            *squad_helper("sh", x_unassigned, x_new, x_processed),
-            *squad_helper("infra", x_unassigned, x_new, x_processed),
-            *tags_helper(["saas-ops"], x_unassigned, x_new, x_processed),
-            *tags_helper(["apps"], x_unassigned, x_new, x_processed),
-            *x_agent_helper(get_from_squad(main_squad, not_in=True)),
-        ],
-    ]
-    components = []
-    for col_top, col_bot in zip(top, the_rest):
-        components.append(col_top + col_bot)
-
-    col1 = COLUMN.format(slot="".join(components[0]))
-    col2 = COLUMN.format(slot="".join(components[1]))
-    dash = DASHBOARD.format(column1=col1, column2=col2)
+    col1 = COLUMN.format(slot="".join(cards))
+    dash = DASHBOARD.format(column1=col1)
     print(dash)
 
 
