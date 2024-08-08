@@ -13,6 +13,7 @@ from textwrap import dedent as _dd
 import paramiko
 from git_odoo import App as _git_odoo_app
 from git_odoo import _get_version_from_db, _repos
+from icecream import ic
 from psycopg2 import OperationalError, ProgrammingError, connect
 from utils import _get_xmlrpc_executer, _xmlrpc_apps, _xmlrpc_master, _xmlrpc_odoo_com, env
 

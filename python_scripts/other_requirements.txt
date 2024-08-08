@@ -4,6 +4,7 @@ black
 dbfread
 ebaysdk
 firebase_admin
+icecream
 ipython
 keyring
 phonenumbers
