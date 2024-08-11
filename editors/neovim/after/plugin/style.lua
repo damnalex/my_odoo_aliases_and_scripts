@@ -16,9 +16,6 @@ require('gitsigns').setup()
 -- show trailing whitespace
 require("ibl").setup()
 
--- line styling
-require('lualine').setup()
-
 -- command prompt
 require("noice").setup({
   lsp = {
@@ -31,13 +28,25 @@ require("noice").setup({
   },
   -- you can enable a preset for easier configuration
   presets = {
-    bottom_search = true, -- use a classic bottom cmdline for search
+    -- bottom_search = true, -- use a classic bottom cmdline for search
     command_palette = true, -- position the cmdline and popupmenu together
-    long_message_to_split = true, -- long messages will be sent to a split
-    inc_rename = false, -- enables an input dialog for inc-rename.nvim
-    lsp_doc_border = false, -- add a border to hover docs and signature help
   },
 })
 
 -- make spell check play nice with noice
 vim.keymap.set('n', 'z=', 'ea<C-X>s')  -- z=  opens a dropdown rather than a full window, this breaks the counter feature of z=
+
+-- line styling
+-- require('lualine').setup()
+require("lualine").setup({
+  sections = {
+    -- make noice play nice with the macro recording notification
+    lualine_x = {
+      {
+        require("noice").api.statusline.mode.get,
+        cond = require("noice").api.statusline.mode.has,
+        color = { fg = "#ff9e64" },
+      }
+    },
+  },
+})
