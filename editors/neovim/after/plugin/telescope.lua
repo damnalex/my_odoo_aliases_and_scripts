@@ -13,6 +13,7 @@ vim.keymap.set('n', '<leader>fh', tb.help_tags, {})
 vim.keymap.set('n', '<leader>fs', tb.lsp_document_symbols, {})
 vim.keymap.set('n', '<leader>fo', tb.oldfiles, {})
 vim.keymap.set('n', '<leader>fw', tb.grep_string, {})
+vim.keymap.set('n', '<leader>fp', tb.builtin, {})  -- list the telescope builtin pickers. To not clutter mappings, but still be able to access many less used pickers
 
 local telescope = require("telescope")
 local ta = require("telescope.actions")
