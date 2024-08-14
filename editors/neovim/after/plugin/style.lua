@@ -31,6 +31,9 @@ require("noice").setup({
     -- bottom_search = true, -- use a classic bottom cmdline for search
     command_palette = true, -- position the cmdline and popupmenu together
   },
+  messages = {
+    enabled = false,
+  },
 })
 
 -- make spell check play nice with noice
