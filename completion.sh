@@ -114,9 +114,16 @@ _clear_pyc() {
 complete -o default -F _clear_pyc clear_pyc
 
 _neuter_db() {
+    # Usage:
+    #     neuter <database> [--minimal --filestore --web-port <port>]
+    #
+    # Options:
+    #     --minimal                   Do not apply the Quality Of Life changes that only make sense for support
+    #     --filestore                 Neuter the filestore too.
+    #     --web-port=<port>
     _complete_db_name_on_first_param
     if [[ COMP_CWORD -eq 2 ]]; then
-        COMPREPLY=($(compgen -W "--minimal" -- "${COMP_WORDS[COMP_CWORD]}"))
+        COMPREPLY=($(compgen -W "--minimal --filestore --web-port=" -- "${COMP_WORDS[COMP_CWORD]}"))
     fi
 }
 complete -o default -F _neuter_db neuter_db
