@@ -1,6 +1,6 @@
 local tb = require('telescope.builtin')
 vim.keymap.set('n', '<leader>ff', tb.find_files, {})
-vim.keymap.set('n', '<leader>fg', ":lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>")  --TODO: add extension to be able to focus the search per file type
+vim.keymap.set('n', '<leader>fg', ":lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>")
 vim.keymap.set('n', '<leader>fb', tb.buffers, {})
 vim.keymap.set('n', '<leader>fh', tb.help_tags, {})
 vim.keymap.set('n', '<leader>fs', tb.lsp_document_symbols, {})
