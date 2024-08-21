@@ -1,10 +1,3 @@
-if vim.g.vscode then
-    -- VSCode only
-else
-    -- Neovim only
-end
--- common
-
 vim.opt.termguicolors = true
 
 -- theme

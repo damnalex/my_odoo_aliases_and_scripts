@@ -1,10 +1,3 @@
-if vim.g.vscode then
-    -- VSCode only
-else
-    -- Neovim only
-end
--- common
-
 local tb = require('telescope.builtin')
 vim.keymap.set('n', '<leader>ff', tb.find_files, {})
 vim.keymap.set('n', '<leader>fg', ":lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>")  --TODO: add extension to be able to focus the search per file type

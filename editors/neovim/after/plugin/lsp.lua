@@ -1,10 +1,3 @@
-if vim.g.vscode then
-    -- VSCode only
-else
-    -- Neovim only
-end
--- common
-
 local lsp_zero = require('lsp-zero')
 lsp_zero.on_attach(function(client, bufnr)
     -- see :help lsp-zero-keybindings

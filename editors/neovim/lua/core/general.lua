@@ -1,11 +1,3 @@
-if vim.g.vscode then
-    -- VSCode only
-else
-    -- Neovim only
-end
--- common
-
-
 -- general
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "

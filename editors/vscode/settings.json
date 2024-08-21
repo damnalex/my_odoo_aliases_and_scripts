@@ -104,33 +104,29 @@
         },
     },
     //vim emulator
-    // "vim.incsearch": true,
-    // "vim.hlsearch": true,
-    // "vim.visualstar": true,
-    // "vim.insertModeKeyBindings": [
-    //     {
-    //         "before": [
-    //             "j",
-    //             "j"
-    //         ],
-    //         "after": [
-    //             "<Esc>"
-    //         ],
-    //     },
-    //     {
-    //         "before": [
-    //             "k",
-    //             "k"
-    //         ],
-    //         "after": [
-    //             "<Esc>"
-    //         ],
-    //     },
-    // ],
-    // neovim imbeded
-    "extensions.experimental.affinity": {
-        "asvetliakov.vscode-neovim": 1
-    },
+    "vim.incsearch": true,
+    "vim.hlsearch": true,
+    "vim.visualstar": true,
+    "vim.insertModeKeyBindings": [
+        {
+            "before": [
+                "j",
+                "j"
+            ],
+            "after": [
+                "<Esc>"
+            ],
+        },
+        {
+            "before": [
+                "k",
+                "k"
+            ],
+            "after": [
+                "<Esc>"
+            ],
+        },
+    ],
     // end of settings
     "dummy.setting": "Anything under this line should be moved to another section.",
 }
