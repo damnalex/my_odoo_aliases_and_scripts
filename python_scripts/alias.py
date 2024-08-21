@@ -724,7 +724,7 @@ def o_apps(*apps_tech_names):
 
 
 @call_from_shell
-def o_ver(domain, verbose=True):
+def o_ver(domain, *args, verbose=True):
     """returns versions information about an odoo database, given a domain name"""
     from xmlrpc.client import ProtocolError
     from xmlrpc.client import ServerProxy as server
@@ -741,6 +741,10 @@ def o_ver(domain, verbose=True):
         # socket.gaierror: [Errno 8] nodename nor servname provided, or not known
         domain = f"{domain}.odoo.com"
         version_info = server(f"https://{domain}/xmlrpc/2/common").version()
+
+    if "--short" in args:
+        version_info = version_info["server_serie"]
+        float(version_info)
 
     if verbose:
         print(version_info)

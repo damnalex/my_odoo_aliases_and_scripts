@@ -415,6 +415,8 @@ oes() {
     if [[ $1 == "raw" ]]; then
         shift
     else
+        # -- old way
+        # TODO: remove this if the new way works
         # if [[ $1 == "fetch" ]] && ! [[ $* == *'--no-start'* ]]; then
         #     # running first a fetch without starting the db
         #     # then running a separate start to automagically
@@ -426,6 +428,11 @@ oes() {
         #     eval oes start $@[2,-1]
         #     return
         # fi
+
+        # --new way
+        if [[ $1 == "fetch" ]]; then
+            go_venv $(o_ver $2 --short)
+        fi
         if [[ $1 == "start" ]] || [[ $1 == "restore" ]]; then
             local version=$(_db_version $(list_db_like "%$2")) 2>/dev/null
             if [[ $version != "" ]]; then
