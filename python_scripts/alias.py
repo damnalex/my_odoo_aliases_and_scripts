@@ -823,6 +823,20 @@ def o_freespace(server):
 
 
 @call_from_shell
+def o_meta(db):
+    """get the size of a saas database"""
+    db, server = _clean_db_name_and_server(db)
+    _, ssh = _ssh_executor(server)
+    if not ssh:
+        return False
+    meta_get_cmd = f"/home/odoo/bin/oe-meta get -j {db} | jq"
+    _, stdout, _ = ssh(meta_get_cmd)
+    print("\nMeta info:")
+    print("".join(stdout.readlines()))
+    return True
+
+
+@call_from_shell
 def o_stat(db):
     """Show location, and size of a db and disk usage stat of the server"""
     from xmlrpc.client import ProtocolError
@@ -835,6 +849,7 @@ def o_stat(db):
             # probably a timeout (redirections are already handled by o_ver)
             print("failed to get database version")
         o_size(db)
+        o_meta(db)
     o_loc(server)
     print()
     o_freespace(server)
