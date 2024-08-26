@@ -34,7 +34,6 @@ SINGLE_VERSION_REPOS = [
     env.UPGR_UTIL,
     env.IAP_APPS,
     env.AP,  # this repo
-    env.OQOL,
     env.ODYSSEY,
 ]
 SUPPORT_REPOS = [env.ST]

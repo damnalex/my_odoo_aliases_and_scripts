@@ -22,7 +22,6 @@ export ST="$SRC/support-tools"
 export UPGR_PLAT="$SRC/upgrade-platform"
 export UPGR_UTIL="$SRC/upgrade-util"
 # third party repo
-export OQOL="$SRC/misc_gists/odoo-qol"
 export ODYSSEY="$SRC/misc_gists/odyssey-gpt"
 
 if [[ $OSTYPE =~ ^darwin ]]; then
@@ -50,7 +49,7 @@ export GPG_TTY=$(tty)
 autoload bashcompinit
 bashcompinit
 
-# use vim as default editor
+# use neovim as default editor
 export EDITOR="nvim"
 
 # activate vi mode in the terminal
