@@ -19,6 +19,7 @@ export PAAS="$SRC/paas"
 export SAAS="$SRC/saas-automation"
 export IAP_APPS="$SRC/iap-apps"
 export ST="$SRC/support-tools"
+export DEVTOOL="$SRC/OdooDevTool"
 export UPGR_PLAT="$SRC/upgrade-platform"
 export UPGR_UTIL="$SRC/upgrade-util"
 # third party repo
