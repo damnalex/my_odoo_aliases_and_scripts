@@ -700,6 +700,7 @@ def o_apps(*apps_tech_names):
         o_apps  [<app_tech_name>...]
     """
     r_exec = _xmlrpc_apps()
+    assert len(apps_tech_names), "give the name of at least one app"
     domain = ["|"] * (len(apps_tech_names) - 1)
     domain += [["name", "=", app] for app in apps_tech_names]
     apps: list[dict] = r_exec("loempia.module", "search_read", [domain], {"fields": ["name", "repo_id", "series_id"]})
