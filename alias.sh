@@ -489,7 +489,7 @@ update_multiverse_branch() {
     # for now odev is shitting the bed all the time
     # odev pull -f $1
 
-    for repo in 'odoo' 'enterprise' 'design-themes'; do
+    for repo in 'odoo' 'enterprise' 'design-themes' 'industry'; do
         git -C $SRC_MULTI/$1/$repo pull --quiet && echo "pulled $repo $1 (multiverse)"
     done
 }
@@ -518,10 +518,12 @@ build_odoo_virtualenv() {
         virtualenv --clear "$SRC_MULTI/master/venv"
         pip install -r $SRC_MULTI/master/odoo/requirements.txt
     else
-        # not using odev anymore
+        # setup git worktrees
         oe-support worktree add $1
+        git -C $SRC_MULTI/master/industry worktree add $SRC_MULTI/$1/industry $1
+        # setup the base virtual env
         deactivate 2>/dev/null
-        virtualenv --clear "$SRC_MULTI/$1/venv"
+        virtualenv --clear "$SRC_MULTI/$1/venv" #TODO: use recommended python version per odoo version
         pip install -r "$SRC_MULTI/$1/odoo/requirements.txt"
     fi
     go_venv $1
