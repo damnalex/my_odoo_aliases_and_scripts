@@ -438,6 +438,39 @@ def goso(db_name, *args):
 
 @shell_end_hook
 @call_from_shell
+def goto(version):
+    """change the current directory to the multiverse branch for the given version"""
+    special_paths = {
+        "src": "$SRC",
+        "master": "$SRC_MULTI/master",
+        "internal": "$INTERNAL",
+        "sh": "$PAAS",
+        "apps": "$INTERNAL/private/loempia",
+        "oes": "$ST",
+        "ap": "$AP",
+    }
+    path = special_paths.get(version, None)
+    try:
+        if int(float(version)) == float(version):
+            # xx.0 version
+            path = f"$SRC_MULTI/{float(version)}"
+        else:
+            # saas-xx.y version
+            path = f"$SRC_MULTI/saas-{float(version)}"
+            pass
+    except ValueError:
+        pass
+
+    if path is None:
+        print(f"no match found for {version}")
+        path = "$SRC"
+
+    differed_sh_run(f"cd {path}")
+    differed_sh_run("echo current folder $(pwd)")
+
+
+@shell_end_hook
+@call_from_shell
 def dropodoo(*dbs):
     """drop the given DB(s) and remove its filestore,
     also removes it from meta if it was a local saas db
