@@ -438,8 +438,11 @@ def goso(db_name, *args):
 
 @shell_end_hook
 @call_from_shell
-def goto(version):
-    """change the current directory to the multiverse branch for the given version"""
+def goto(version=None):
+    """
+    change the current directory to the multiverse branch for the given version
+    or to some short-cut often travelled other location
+    """
     special_paths = {
         "src": "$SRC",
         "master": "$SRC_MULTI/master",
@@ -451,14 +454,16 @@ def goto(version):
     }
     path = special_paths.get(version, None)
     try:
-        if int(float(version)) == float(version):
+        float_version = float(version)
+        if int(float_version) == float_version:
             # xx.0 version
-            path = f"$SRC_MULTI/{float(version)}"
+            path = f"$SRC_MULTI/{float_version}"
         else:
             # saas-xx.y version
-            path = f"$SRC_MULTI/saas-{float(version)}"
-            pass
-    except ValueError:
+            path = f"$SRC_MULTI/saas-{float_version}"
+    except (ValueError, TypeError):
+        # version is not a number, or no version was given
+        # fall back to the no match found path
         pass
 
     if path is None:
