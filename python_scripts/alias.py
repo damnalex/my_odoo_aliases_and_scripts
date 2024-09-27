@@ -448,10 +448,15 @@ def goto(version=None):
         "master": "$SRC_MULTI/master",
         "internal": "$INTERNAL",
         "sh": "$PAAS",
-        "apps": "$INTERNAL/private/loempia",
+        "apps_store": "$INTERNAL/private/loempia",
         "oes": "$ST",
         "ap": "$AP",
+        "all_apps_list": "$SRC/all_standard_odoo_apps_per_version",
     }
+    if version == "--list-short-cut":
+        # for the completion script
+        print(" ".join(k for k in special_paths))
+        return
     path = special_paths.get(version, None)
     try:
         float_version = float(version)

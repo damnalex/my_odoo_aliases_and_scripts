@@ -128,6 +128,16 @@ _neuter_db() {
 }
 complete -o default -F _neuter_db neuter_db
 
+_goto() {
+    if [[ COMP_CWORD -eq 1 ]]; then
+        local function_defined_shortcut=$(goto --list-short-cut)
+        local multiverse_versions=$(ls $SRC_MULTI)
+        # COMPREPLY=($(compgen -W "src master internal sh apps oes ap all $multiverse_versions" -- "${COMP_WORD[COMP_CWORD]}"))
+        COMPREPLY=($(compgen -W "$function_defined_shortcut $multiverse_versions" -- "${COMP_WORD[COMP_CWORD]}"))
+    fi
+}
+complete -o default -F _goto goto
+
 ########################################################
 ####    customized completion for other scripts    #####
 ########################################################
