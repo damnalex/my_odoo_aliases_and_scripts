@@ -453,10 +453,22 @@ def goto(version=None):
         "ap": "$AP",
         "all_apps_list": "$SRC/all_standard_odoo_apps_per_version",
     }
+    short_cuts = [k for k in special_paths]
     if version == "--list-short-cut":
         # for the completion script
-        print(" ".join(k for k in special_paths))
+        print(" ".join(short_cuts))
         return
+    # create short versions of the short cuts (`special_paths`)
+    for short_cut in short_cuts:
+        # all possible shortened versions of `short_cut`
+        super_shorts = [short_cut[0 : i + 1] for i in range(len(short_cut) - 1)]
+        for super_short in super_shorts:
+            # check for conflicts with any existing shortcuts, except the current one
+            conflicts = [k.startswith(super_short) for k in short_cuts if not k == short_cut]
+            if not any(conflicts):
+                special_paths[super_short] = special_paths[short_cut]
+
+    # get the right path
     path = special_paths.get(version, None)
     try:
         float_version = float(version)
@@ -470,11 +482,11 @@ def goto(version=None):
         # version is not a number, or no version was given
         # fall back to the no match found path
         pass
-
     if path is None:
         print(f"no match found for {version}")
         path = "$SRC"
 
+    # do the thing
     differed_sh_run(f"cd {path}")
     differed_sh_run("echo current folder $(pwd)")
 
