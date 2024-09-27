@@ -664,7 +664,7 @@ def o_emp(*trigrams):
     url_template = "https://www.odoo.com/web?debug=1#id={id}&model=hr.employee.public&view_type=form"
     for emp in employees_data:
         for level_name, level_users in levels:
-            if emp["user_id"][0] in level_users:
+            if emp["user_id"] and emp["user_id"][0] in level_users:
                 employee_support_level = level_name
                 break
         else:
