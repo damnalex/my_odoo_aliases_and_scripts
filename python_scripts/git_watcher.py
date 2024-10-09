@@ -24,6 +24,7 @@ usage:
 """
 
 import hashlib
+import html
 import json
 import os
 import subprocess
@@ -147,7 +148,7 @@ collapsible = """
 
 
 def _link(url, text):
-    return '<a href="%s" target="_blank">%s</a>' % (url, text)
+    return '<a href="%s" target="_blank">%s</a>' % (url, html.escape(text))
 
 
 def _one_watcher(name, new_commits, repo):
