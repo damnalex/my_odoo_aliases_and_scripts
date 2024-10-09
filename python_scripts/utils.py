@@ -73,7 +73,7 @@ def _xmlrpc_odoo_com(fallback_to_test=True):
 def _xmlrpc_master():
     import keyring
 
-    api_key = keyring.get_password("find_backup_master_2FA", "mao@odoo.com")
+    api_key = keyring.get_password("find_backup_master_2FA", "mao@odoo.com-2FA")
     api_login = "mao@odoo.com"
     assert all((api_key, api_login))
     db_url = "https://master.odoo.com"
