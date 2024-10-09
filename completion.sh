@@ -138,6 +138,42 @@ _goto() {
 }
 complete -o default -F _goto goto
 
+_apikey_rotation() {
+    if [[ COMP_CWORD -eq 1 ]]; then
+        COMPREPLY=($(compgen -W "refresh add --force --verbose --debug --apikey" -- "${COMP_WORD[COMP_CWORD]}"))
+    fi
+    if [[ COMP_CWORD -ge 2 ]]; then
+        case ${COMP_WORDS[1]} in
+        refresh)
+            if [[ COMP_CWORD -eq 2 ]]; then
+                local dbs=$(grep '\[.*\]' ~/.apikey_rotation.conf | tr -d '[]' | tr '\n' ' ')
+                COMPREPLY=($(compgen -W "$dbs" -- "${COMP_WORD[COMP_CWORD]}"))
+            else
+                COMPREPLY=($(compgen -W "--force --verbose --debug --apikey" -- "${COMP_WORD[COMP_CWORD]}"))
+            fi
+            ;;
+        add)
+            if [[ COMP_CWORD -eq 2 ]]; then
+                local dbs=$(grep '\[.*\]' ~/.apikey_rotation.conf | tr -d '[]' | tr '\n' ' ')
+                COMPREPLY=($(compgen -W "$dbs" -- "${COMP_WORD[COMP_CWORD]}"))
+            else
+                if [[ COMP_CWORD -eq 3 ]]; then
+                    COMPREPLY=()
+                else
+                    COMPREPLY=($(compgen -W "--url= --keyring_name= --verbose --debug" -- "${COMP_WORD[COMP_CWORD]}"))
+                fi
+            fi
+            ;;
+        *)
+            COMPREPLY=($(compgen -W "--force --verbose --debug --apikey" -- "${COMP_WORD[COMP_CWORD]}"))
+            ;;
+
+        esac
+    fi
+
+}
+complete -o default -F _apikey_rotation apikey_rotation
+
 ########################################################
 ####    customized completion for other scripts    #####
 ########################################################
