@@ -363,7 +363,7 @@ def ptvsd2(*args):
 
 @call_from_shell
 def ptvsd3(*args):
-    cmd = "python3 -m ptvsd --host localhost --port 5678".split() + list(args)
+    cmd = "python3 -m debugby --listen localhost:5678".split() + list(args)
     subprocess.run(cmd, check=True)
 
 
@@ -810,6 +810,7 @@ def o_ver(domain, *args, verbose=True):
 @cache
 def _clean_db_name_and_server(name):
     name = name.removesuffix(".odoo.com")
+    assert len(name.split()) == 1, "database name should not include space(s)"
     out = sh_run(f"dig {name}.odoo.com mx +short")
     if out:
         db = name
@@ -841,6 +842,7 @@ def o_loc(db):
 def o_size(db):
     """get the size of a saas database"""
     db, server = _clean_db_name_and_server(db)
+    assert db, "cannot get size info without a specific db name"
     _, ssh = _ssh_executor(server)
     if not ssh:
         return False
