@@ -1033,6 +1033,7 @@ def typos_and_simple_aliases():
         "ssl_checker": "$PSS/SSL_checker.py",
         "thingsToDiscussAtNextSquadMeeting": "e ~/Documents/meetings_notes/thingsToDiscussAtNextSquadMeeting.txt",
         "xdg-open": "open",
+        "apikey_rotation": "$ST/lib/apikey_rotation/app.py",
     }
 
     # reverse mappping (and remove duplicates)
