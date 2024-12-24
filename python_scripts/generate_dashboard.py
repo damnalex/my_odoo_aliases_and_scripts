@@ -401,13 +401,6 @@ def my_generator(main_squad):
             domain="['&amp;', ['share', '=', False], ['employee_id.department_id.id', '=', 164]]" name="17"
             string="Bugfix Team" view_mode="list" modifiers="{}" id="action_1_4"></action>
         """,
-        """
-        <action
-            context="{'lang': 'en_GB', 'tz': 'Europe/Brussels', 'uid': 963957, 'allowed_company_ids': [1], 'active_model': 'project.project', 'active_id': 250, 'active_ids': [250], 'pivot_row_groupby': ['user_ids'], 'default_project_id': 250, 'group_by': ['write_date:month'], 'orderedBy': [], 'dashboard_merge_domains_contexts': False}"
-            domain="['&amp;', ['project_id', '=', 250], '&amp;', ['project_id', '=', 250], ['message_is_follower', '=', True]]"
-            name="333" string="RD VALUE DEVs I follow" view_mode="kanban" modifiers="{}" id="action_1_5" fold="1">
-        </action>
-        """,
         *[
             card
             for squad_name in squad_to_leader_employee
