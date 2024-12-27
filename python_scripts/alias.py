@@ -15,7 +15,7 @@ from git_odoo import App as _git_odoo_app
 from git_odoo import _get_version_from_db, _repos
 from icecream import ic
 from psycopg2 import OperationalError, ProgrammingError, connect
-from utils import _get_xmlrpc_executer, _xmlrpc_apps, _xmlrpc_master, _xmlrpc_odoo_com, env
+from utils import _get_xmlrpc_executer, _xmlrpc_apps, _xmlrpc_master, _xmlrpc_odoo_com, env, try_exec
 
 PYTHON3, PYTHON2 = 3, 2
 
@@ -578,6 +578,19 @@ def shurl(long_url):
     short_url = short_url.replace("totd.moens.xyz", "shorturl.moens.xyz")
     print(short_url)
     return short_url
+
+
+@call_from_shell
+def o_test_api(from_shell=True):
+    """
+    test if my apikey for odoo.com is still working
+    """
+    res = True
+    if not try_exec(_xmlrpc_odoo_com):
+        res = False
+    if from_shell:
+        sys.exit(int(not res))
+    return res
 
 
 @call_from_shell

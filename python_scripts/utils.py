@@ -92,3 +92,17 @@ def _xmlrpc_apps():
     db_name = "apps"
     r_exec: callable[list] = _get_xmlrpc_executer(db_url, db_name, api_login, api_key)
     return r_exec
+
+
+def try_exec(f, *args, **kwargs):
+    """
+    try to execute function f,
+    if it succeeds, return its return value.
+    if it fails, catch the exception and return a falsy value.
+
+    The details of the exception are lost.
+    """
+    try:
+        return f(*args, **kwargs)
+    except Exception:
+        return False
