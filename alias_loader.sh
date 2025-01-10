@@ -119,4 +119,4 @@ fi
 ##################################################
 # scripts / alias defined in this repo to call at each terminal startup
 
-# govcur
+govcur
