@@ -283,7 +283,7 @@ def _so_builder(db_name, port_number=8069, *args):
     ODOO_PY_PATH = f"{env.ODOO}/odoo.py"
     PATH_COMMUNITY = f"--addons-path={env.ODOO}/addons"
     PATH_ENTERPRISE = f"--addons-path={env.ENTERPRISE},{env.ODOO}/addons,{env.SRC}/design-themes"
-    PARAMS_NORMAL = f"--db-filter=^{db_name}$ -d {db_name} --xmlrpc-port={port_number}"
+    PARAMS_NORMAL = f"--db-filter=^{db_name}$ -d {db_name} --http-port={port_number}"
     additional_params = " ".join(args)
     if _check_file_exists(ODOO_BIN_PATH):
         # version 10 or above
