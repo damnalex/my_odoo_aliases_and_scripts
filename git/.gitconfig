@@ -5,6 +5,7 @@
 [core]
 	excludesfile = /home/odoo/.gitignore_global
 	editor = nvim
+	pager = delta
 [alias]
     hist = log --graph --all --date=short --pretty=format:'%C(dim white)%h%Creset%C(auto)%d%Creset %s %C(blue)<%an> %C(dim green)(%cd)%Creset%n'
     alias = ! sed -n '/^\\[alias]$/, /^\\[.*]$/p' ~/.gitconfig | sed '$d'
@@ -46,3 +47,7 @@
 	repo = /Users/alex/odoo/versions/master/enterprise
 	repo = /Users/alex/odoo/versions/master/odoo
 	repo = /Users/alex/src/saas-automation
+[merge]
+	conflictStyle = zdiff3
+[delta]
+	line-numbers = true
