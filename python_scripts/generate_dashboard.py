@@ -23,6 +23,7 @@ squad_to_leader_employee = {
     "sm": 317943,  # bve
     "perf": 1206319,  # avd
     "website_js": 1001546,  # pco
+    "web_pos": 1001546,  # pco
 }
 varia = [
     "alha",
@@ -83,6 +84,15 @@ website_js = [
     "thc",
 ]
 
+web_pos = [
+     "baar",
+    "lse",
+    "pebr",
+    "jula",
+    "pco",
+    "thc",
+]
+
 other = [
     # BE
     "mvw",
@@ -122,6 +132,7 @@ match_name_to_squad = {
     "sm": sm,
     "perf": perf,
     "website_js": website_js,
+    "web_pos": web_pos,
     "other": other,
 }
 
@@ -426,7 +437,7 @@ def my_generator(main_squad):
 
 
 if __name__ == "__main__":
-    print("What's your squad ? [v]aria / [a]ccount / [po]s / [st]ock / [sm] / [pe]rf / [w]ebsite_js / [o]ther")
+    print("What's your squad ? [v]aria / [a]ccount / [po]s / [st]ock / [sm] / [pe]rf / [w]ebsite_js / [we]b_pos / [o]ther")
     pick = input()
     pic_match = {
         "v": "varia",
@@ -436,6 +447,7 @@ if __name__ == "__main__":
         "sm": "sm",
         "pe": "perf",
         "w": "website_js",
+        "we": "web_pos",
         "o": "other",
     }
     my_generator(pic_match[pick])
