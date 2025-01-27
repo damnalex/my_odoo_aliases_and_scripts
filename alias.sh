@@ -6,7 +6,7 @@ reload_zshrc() {
     # don't modify this one from eza to avoid headaches
     ap_compile
     source ~/.zshrc
-    deactivate >/dev/null 2>&1
+
 }
 
 alias e="nvim"
