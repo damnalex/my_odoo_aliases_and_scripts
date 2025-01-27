@@ -707,7 +707,7 @@ dump_to_sql() {
         echo "<destination.sql> defaults to dump.sql"
         return 1
     fi
-    pg_restore -f $1 $sql_file
+    pg_restore -f - $1 >$sql_file
 }
 
 sql_to_dump() {
