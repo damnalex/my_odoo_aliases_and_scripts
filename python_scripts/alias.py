@@ -228,6 +228,7 @@ def _so_checker(*args):
     # check that the params given to 'so' are correct,
     # check that I am not trying to start a protected DB,
     # check that I am sure to want to start a DB with the wrong branch checked out (only check $ODOO)
+    raise RuntimeError("THIS FUNCTION CANNOT CURRENTLY WORK ANYMORE WITHOUT A FULL UNIVERSE SETUP !!!!!")
     args_pattern = ["<db_name:string>", "<port:int>"]
 
     if len(args) == 0:
@@ -279,6 +280,8 @@ def _so_checker(*args):
 
 @call_from_shell
 def _so_builder(db_name, port_number=8069, *args):
+    raise RuntimeError("THIS FUNCTION CANNOT CURRENTLY WORK ANYMORE WITHOUT A FULL UNIVERSE SETUP !!!!!")
+
     ODOO_BIN_PATH = f"{env.ODOO}/odoo-bin"
     ODOO_PY_PATH = f"{env.ODOO}/odoo.py"
     PATH_COMMUNITY = f"--addons-path={env.ODOO}/addons"
@@ -409,7 +412,6 @@ def go_update_and_clean(version=None):
     params = {"pull": True, "--version": version}
     _git_odoo_app(**params)
     clear_pyc()
-    # differed_sh_run("go_venv_current")
     differed_sh_run("echo '--------'")
     differed_sh_run("golist")
 
@@ -930,7 +932,7 @@ def o_stat(db):
 @call_from_shell
 def our_modules_update_and_compare():
     cmds = """cd $ST/scripts/clean_database_helper/
-    ./Our_modules_generator.py --update-branches
+    ./Our_modules_generator.py --src /Users/alex/odoo/versions/master --update-branches
     """
     differed_sh_run(cmds)
 
@@ -1037,7 +1039,6 @@ def typos_and_simple_aliases():
         "file_server": "$SRC/misc_gists/simple_file_server/http_server_auth.py",
         "find_backup": "$PSS/find_backup.py",
         "gov": "go_venv",
-        "govcur": "go_venv_current",
         "neuter_db": "$ST/lib/neuter.py",
         "odoosh": "$ST/scripts/odoosh/odoosh.py",
         "oe-support": "oes",

@@ -7,10 +7,10 @@ export AP=$(dirname "$0")
 
 export SRC="$HOME/src"
 # odoo repos
-export ODOO="$SRC/odoo"
-export ENTERPRISE="$SRC/enterprise"
-export DESIGN_THEMES="$SRC/design-themes"
-export INDUSTRY="$SRC/industry"
+# export ODOO="$SRC/odoo"
+# export ENTERPRISE="$SRC/enterprise"
+# export DESIGN_THEMES="$SRC/design-themes"
+# export INDUSTRY="$SRC/industry"
 export USER_DOC="$SRC/documentation-user"
 export SRC_MULTI="$HOME/odoo/versions"
 # odoo internal repos
@@ -119,4 +119,4 @@ fi
 ##################################################
 # scripts / alias defined in this repo to call at each terminal startup
 
-govcur
+gov 18.0

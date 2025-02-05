@@ -93,18 +93,18 @@ complete -o default -F _complete_db_name_on_first_param pgcli
 complete -o default -F _complete_db_name_on_first_param build_local_saas_db
 complete -o default -F _complete_db_name_on_first_param start_local_saas_db
 
-_go() {
-    _complete_with_B_on_index_A 1 _complete_branch_name_on_repo_A $ODOO
-    _complete_with_B_on_index_A 2 _complete_branch_name_on_repo_A $ENTERPRISE
-    _complete_with_B_on_index_A 3 _complete_branch_name_on_repo_A $SRC/design-themes
-    _complete_with_B_on_index_A 4 _complete_branch_name_on_repo_A $INTERNAL
-}
-complete -o default -F _go go
+# _go() {
+#     _complete_with_B_on_index_A 1 _complete_branch_name_on_repo_A $ODOO
+#     _complete_with_B_on_index_A 2 _complete_branch_name_on_repo_A $ENTERPRISE
+#     _complete_with_B_on_index_A 3 _complete_branch_name_on_repo_A $SRC/design-themes
+#     _complete_with_B_on_index_A 4 _complete_branch_name_on_repo_A $INTERNAL
+# }
+# complete -o default -F _go go
 
-_go_update_and_clean() {
-    _complete_with_B_on_index_A 1 _complete_branch_name_on_repo_A $ODOO
-}
-complete -o default -F _go_update_and_clean go_update_and_clean
+# _go_update_and_clean() {
+#     _complete_with_B_on_index_A 1 _complete_branch_name_on_repo_A $ODOO
+# }
+# complete -o default -F _go_update_and_clean go_update_and_clean
 
 _clear_pyc() {
     if [[ COMP_CWORD -eq 1 ]]; then

@@ -373,7 +373,6 @@ go_update_and_clean_all_branches() {
     clear_pyc --all 2>/dev/null
     run 5 echo "#############################"
     echo "updated and cleaned all branches of multiverse and universe"
-    # go_venv_current
 }
 
 # pythonable
@@ -381,7 +380,7 @@ go_prune_all() {
     # git prune (ish) on all the repos of the the universe, multiverse, platforms and support tools
     echo "----"
     echo "pruning the universe and the multiverse (in parallel, let's get reading for some nasty logs!)"
-    local repos=("$ODOO" "$ENTERPRISE" "$DESIGN_THEMES" "$ST" "$INTERNAL" "$PAAS" "$UPGR_PLAT")
+    local repos=("$ST" "$INTERNAL" "$PAAS" "$UPGR_PLAT")
     for repo in $repos; do {
         git_prune_branches $repo &
     } done
@@ -486,9 +485,6 @@ build_multiverse_branch() {
 update_multiverse_branch() {
     # git pull the repos of the given mutliverse branche
 
-    # for now odev is shitting the bed all the time
-    # odev pull -f $1
-
     for repo in 'odoo' 'enterprise' 'design-themes' 'industry'; do
         git -C $SRC_MULTI/$1/$repo pull --quiet && echo "pulled $repo $1 (multiverse)"
     done
@@ -496,15 +492,6 @@ update_multiverse_branch() {
 
 update_all_multiverse_branches() {
     # git pull the repos of all the multivers branches
-    #
-    # for now odev is shitting the bed all the time
-    # echo 'updating odev first' # otherwise it may ask to update itself in an interactive way
-    # git -C $SRC/ps-tech-odev pull --quiet
-    # odev pull -f # updates all versions except master
-    # echo 'multiverse master pull'
-    # git -C $SRC_MULTI/master/odoo pull --quiet && echo 'pulled odoo master'
-    # git -C $SRC_MULTI/master/enterprise pull --quiet && echo 'pulled enterprise master'
-    # git -C $SRC_MULTI/master/design-themes pull --quiet && echo 'pulled design themes master'
 
     for version in $(ls $SRC_MULTI); do
         update_multiverse_branch $version
@@ -513,10 +500,10 @@ update_all_multiverse_branches() {
 
 build_odoo_virtualenv() {
     if [[ $1 == "master" ]]; then
-        # odev does not support master
         deactivate 2>/dev/null
         virtualenv --clear "$SRC_MULTI/master/venv"
         pip install -r $SRC_MULTI/master/odoo/requirements.txt
+        ln -s $SRC $SRC_MULTI/master/src
     else
         # setup git worktrees
         oe-support worktree add $1
@@ -525,6 +512,7 @@ build_odoo_virtualenv() {
         deactivate 2>/dev/null
         virtualenv --clear "$SRC_MULTI/$1/venv" #TODO: use recommended python version per odoo version
         pip install -r "$SRC_MULTI/$1/odoo/requirements.txt"
+        ln -s $SRC "$SRC_MULTI/$1/src"
     fi
     go_venv $1
     pip install --upgrade pip
@@ -562,12 +550,16 @@ go_venv() {
 
 go_venv_current() {
     # use the virtualenv for the currently checked out odoo branch
+    echo "THIS FUNCTION CANNOT WORK ANYMORE WITHOUT A FULL UNIVERSE SETUP !!!!!"
+    return
     go_venv $(git_branch_version $ODOO)
 }
 
 #local-saas
 # pythonable
 build_local_saas_db() {
+    echo "THIS FUNCTION CANNOT WORK ANYMORE WITHOUT A FULL UNIVERSE SETUP !!!!!"
+    return
     # create or modify a DB to make it run as if it was a DB on the saas
     local db_name=$1
     godb $db_name
@@ -583,6 +575,8 @@ build_local_saas_db() {
 
 # pythonable
 start_local_saas_db() {
+    echo "THIS FUNCTION CANNOT WORK ANYMORE WITHOUT A FULL UNIVERSE SETUP !!!!!"
+    return
     # start a local db as if it was on the saas, need to run build_local_saas_db first
     local db_name=$1
     godb $db_name
