@@ -277,14 +277,6 @@ require("lazy").setup({
             opts = { default = true},
         },
         {
-            -- cool looking bottom line
-            'nvim-lualine/lualine.nvim',
-            dependencies = {
-                'nvim-tree/nvim-web-devicons',
-            },
-            opts = {},
-        },
-        {
             -- cool looking command prompt
             "folke/noice.nvim",
             event = "VeryLazy",
