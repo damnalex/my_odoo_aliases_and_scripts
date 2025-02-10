@@ -103,6 +103,12 @@ return require('packer').startup(function(use)
         "hrsh7th/cmp-nvim-lua",
     }
 
+    -- -- odoo LSP
+    -- use {
+    --     'whenrow/odoo-ls.nvim',
+    --     requires = { {'neovim/nvim-lspconfig'} }
+    -- }
+
     -- Automatically set up your configuration after cloning packer.nvim
     -- Put this at the end after all plugins
     if packer_bootstrap then

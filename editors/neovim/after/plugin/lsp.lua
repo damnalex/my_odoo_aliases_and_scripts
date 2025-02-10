@@ -36,6 +36,29 @@ require('mason-lspconfig').setup({
     },
 })
 
+-- -- odoo LSP - manual local install
+-- -- only loaded if nvim is started in one of my odoo workspaces
+-- if vim.fn.isdirectory('odoo') ~= 0 and vim.fn.isdirectory('enterprise') ~= 0 and vim.fn.isdirectory('design-themes') ~= 0 and vim.fn.isdirectory('src') ~= 0  then
+--     local odools = require('odools')
+--     local r = vim.fn.getcwd()
+--     odools.setup({
+--         -- mandatory
+--         odoo_path = r .. "/odoo/",
+--         python_path = r .. "/venv/bin/python3",
+--         server_path = r .. "/src/odoo-ls/server/target/release/odoo_ls_server", -- compiled from source
+--
+--         -- optional
+--         addons = {r .. "/enterprise/", r .. "/design-themes/", r .. "/src/internal/default", r .. "/src/internal/private", r .. "/src/internal/trial"},
+--         additional_stubs = { r .. "/src/misc_gists/typeshed/stubs"},
+--         root_dir = r, -- working directory, odoo_path if empty
+--         settings = {
+--             autoRefresh = true,
+--             autoRefreshDelay = nil,
+--             diagMissingImportLevel = "none",
+--         },
+--     })
+-- end
+
 -- completion
 local cmp = require('cmp')
 local cmp_format = require('lsp-zero').cmp_format({details = true})
