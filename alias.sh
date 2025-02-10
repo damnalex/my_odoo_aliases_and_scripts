@@ -49,7 +49,7 @@ eza() {
         file_type="other"
         ;;
     nvim)
-        file_to_load="editors/neovim"
+        file_to_load="editors/neovim/init.lua"
         file_type="other"
         ;;
     tmp)
