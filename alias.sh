@@ -503,7 +503,6 @@ build_odoo_virtualenv() {
         deactivate 2>/dev/null
         virtualenv --clear "$SRC_MULTI/master/venv"
         pip install -r $SRC_MULTI/master/odoo/requirements.txt
-        ln -s $SRC $SRC_MULTI/master/src
     else
         # setup git worktrees
         oe-support worktree add $1
@@ -512,8 +511,8 @@ build_odoo_virtualenv() {
         deactivate 2>/dev/null
         virtualenv --clear "$SRC_MULTI/$1/venv" #TODO: use recommended python version per odoo version
         pip install -r "$SRC_MULTI/$1/odoo/requirements.txt"
-        ln -s $SRC "$SRC_MULTI/$1/src"
     fi
+    ln -s $SRC "$SRC_MULTI/$1/src"
     go_venv $1
     pip install --upgrade pip
     # support specific requirements
