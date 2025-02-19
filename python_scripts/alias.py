@@ -484,13 +484,17 @@ def goto(version=None):
         # version is not a number, or no version was given
         # fall back to the no match found path
         pass
+    open_in_nvim = True
     if path is None:
         print(f"no match found for {version}")
         path = "$SRC"
+        open_in_nvim = False
 
     # do the thing
     differed_sh_run(f"cd {path}")
     differed_sh_run("echo current folder $(pwd)")
+    if open_in_nvim:
+        differed_sh_run("e .")
 
 
 @shell_end_hook
