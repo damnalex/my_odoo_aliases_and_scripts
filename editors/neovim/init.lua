@@ -414,9 +414,9 @@ require("lazy").setup({
             -- odoo LSP
             'whenrow/odoo-ls.nvim',
             enabled = function()
-                return false
+                -- return false
                 -- only loaded if nvim is started in one of my odoo workspaces
-                -- return vim.fn.isdirectory('odoo') ~= 0 and vim.fn.isdirectory('enterprise') ~= 0 and vim.fn.isdirectory('design-themes') ~= 0 and vim.fn.isdirectory('src') ~= 0
+                return vim.fn.isdirectory('odoo') ~= 0 and vim.fn.isdirectory('enterprise') ~= 0 and vim.fn.isdirectory('design-themes') ~= 0 and vim.fn.isdirectory('src') ~= 0
             end,
             requires = { {'neovim/nvim-lspconfig'} },
             config = function()
