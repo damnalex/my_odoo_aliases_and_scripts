@@ -103,7 +103,6 @@ require("lazy").setup({
                 { 'nvim-lua/plenary.nvim' },  -- default requirement
                 { 'nvim-telescope/telescope-live-grep-args.nvim' }  -- adds ripgrep arguments support to <leader>fg
             },
-            event = "VeryLazy",
             config = function()
                 local tb = require('telescope.builtin')
                 vim.keymap.set('n', '<leader>ff', tb.find_files, {})
@@ -236,12 +235,10 @@ require("lazy").setup({
         {
             -- git commands integration
             "tpope/vim-fugitive",
-            event = "VeryLazy",
         },
         {
             -- fugitiv extension : enables :Gbrowse
             "tpope/vim-rhubarb",
-            event = "VeryLazy",
         },
         {
             -- put git diff indication next to the line numbers
@@ -281,7 +278,6 @@ require("lazy").setup({
         {
             -- cool looking command prompt
             "folke/noice.nvim",
-            event = "VeryLazy",
             opts = {
                 lsp = {
                     -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
@@ -324,7 +320,6 @@ require("lazy").setup({
                 { 'L3MON4D3/LuaSnip' },
             },
             lazy = true,
-            event = { "BufReadPost", "BufNewFile" },
             config = function()
                 local lsp_zero = require('lsp-zero')
                 lsp_zero.on_attach(function(client, bufnr)
@@ -370,7 +365,6 @@ require("lazy").setup({
             -- code completion menu
             "hrsh7th/cmp-buffer",
             lazy = true,
-            event = { "BufReadPost", "BufNewFile" },
             config = function()
                 local cmp = require('cmp')
                 local cmp_format = require('lsp-zero').cmp_format({details = true})
