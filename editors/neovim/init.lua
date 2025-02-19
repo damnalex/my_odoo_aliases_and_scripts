@@ -94,6 +94,9 @@ vim.keymap.set('n', '<leader>.', '20<C-w>>')
 vim.keymap.set("n", "<LeftMouse>", "m'<LeftMouse>")
 vim.keymap.set("n", "<LeftRelease>", "<LeftRelease>g``")
 
+-- fast switch to file explorer
+vim.keymap.set("n", "-", vim.cmd.Explore, {})
+
 require("lazy").setup({
     spec = {
         {
@@ -147,6 +150,7 @@ require("lazy").setup({
         {
             --supercharged highlighting
             'nvim-treesitter/nvim-treesitter',
+            -- enabled = false,
             build = ":TSUpdate",
             opts = {
                 ensure_installed = {
@@ -217,6 +221,7 @@ require("lazy").setup({
         {
             -- extension for treesitter : keep class and function definition within the window
             "nvim-treesitter/nvim-treesitter-context",
+            -- enabled = false,
             opts = {
                 enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
                 max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
@@ -260,20 +265,6 @@ require("lazy").setup({
                 vim.opt.termguicolors = true
                 vim.cmd.colorscheme "kanagawa"
             end,
-        },
-        {
-            -- file explorer
-            "nvim-tree/nvim-tree.lua",
-            opts = {},
-            init = function()
-                vim.keymap.set("n", "-", vim.cmd.NvimTreeFindFile, {})
-                vim.keymap.set("n", "_", vim.cmd.NvimTreeClose, {})
-            end,
-        },
-        {
-            -- extension for nvim tree: displays nice looking file type icons
-            "nvim-tree/nvim-web-devicons",
-            opts = { default = true},
         },
         {
             -- cool looking command prompt
