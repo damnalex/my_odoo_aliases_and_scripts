@@ -756,3 +756,12 @@ odoo_alive_check() {
     echo "$db_url is back online since:"
     date
 }
+
+compile_odoo_ls() {
+    local version=${1:-'master'}
+    local current_dir=$(pwd)
+    cd $SRC/odoo-ls/server
+    git switch $version --detach
+    cargo build --release
+    cd $current_dir
+}
