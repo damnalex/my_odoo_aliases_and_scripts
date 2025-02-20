@@ -230,7 +230,7 @@ git_prune_branches() {
     # then remove the local branches that don't exists on the remote ANYMORE
     local repo=${1:-$(pwd)}
     echo "gc [$repo]..."
-    git -C $repo gc --quiet
+    git -C $repo gc --aggressive --prune=now
     echo "fetch prune [$repo]..."
     git -C $repo fetch --prune --all --quiet
     echo "deleting old branches [$repo]..."
