@@ -22,6 +22,9 @@ export ST="$SRC/support-tools"
 export DEVTOOL="$SRC/OdooDevTool"
 export UPGR_PLAT="$SRC/upgrade-platform"
 export UPGR_UTIL="$SRC/upgrade-util"
+export UPGR="$SRC/upgrade"
+export PAPER_MUNCHER="$SRC/paper-muncher"
+export ODOO_LS="$SRC/odoo-ls"
 # third party repo
 export ODYSSEY="$SRC/misc_gists/odyssey-gpt"
 

@@ -38,9 +38,11 @@ SINGLE_VERSION_REPOS = [
     env.SAAS,
     env.UPGR_PLAT,
     env.UPGR_UTIL,
+    env.UPGR,
     env.IAP_APPS,
+    env.PAPER_MUNCHER,
+    env.ODOO_LS,
     env.AP,  # this repo
-    # env.ODYSSEY,
 ]
 SUPPORT_REPOS = [env.ST, env.DEVTOOL]
 ALL_REPOS = VERSIONED_REPOS + SINGLE_VERSION_REPOS + SUPPORT_REPOS
