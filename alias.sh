@@ -758,10 +758,15 @@ odoo_alive_check() {
 }
 
 compile_odoo_ls() {
-    local version=${1:-'master'}
+    local version=${1:-'latest'}
+    if [[ $version == "latest" ]]; then
+        version=$(gh api https://api.github.com/repos/odoo/odoo-ls/releases | jq -r '.[0].tag_name')
+    fi
     local current_dir=$(pwd)
     cd $SRC/odoo-ls/server
+    git fetch origin $version
     git switch $version --detach
-    cargo build --release
+    echo "Compiling Odoo language server version $version in release mode..."
+    cargo build --release 2>/dev/null && echo "sucessfully !" || echo "woops, something went wrong :("
     cd $current_dir
 }
