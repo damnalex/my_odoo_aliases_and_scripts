@@ -424,7 +424,10 @@ require("lazy").setup({
                 -- only loaded if nvim is started in one of my odoo workspaces
                 return vim.fn.isdirectory('odoo') ~= 0 and vim.fn.isdirectory('enterprise') ~= 0 and vim.fn.isdirectory('design-themes') ~= 0 and vim.fn.isdirectory('src') ~= 0
             end,
-            requires = { {'neovim/nvim-lspconfig'} },
+            requires = {
+                {'neovim/nvim-lspconfig'},
+                {'VonHeikemen/lsp-zero.nvim'}, -- technically not a strict requirement, but lsp-zero should be loaded first
+            },
             config = function()
                 local odools = require('odools')
                 local r = vim.fn.getcwd()
