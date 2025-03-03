@@ -104,7 +104,8 @@ require("lazy").setup({
             'nvim-telescope/telescope.nvim', tag = '0.1.8',
             dependencies = {
                 { 'nvim-lua/plenary.nvim' },  -- default requirement
-                { 'nvim-telescope/telescope-live-grep-args.nvim' }  -- adds ripgrep arguments support to <leader>fg
+                { 'nvim-telescope/telescope-live-grep-args.nvim' },  -- adds ripgrep arguments support to <leader>fg
+                { 'nvim-telescope/telescope-fzf-native.nvim' }, --faster fuzzy finder
             },
             event = "VeryLazy",
             config = function()
@@ -146,7 +147,12 @@ require("lazy").setup({
                 })
 
                 telescope.load_extension("live_grep_args")
+                telescope.load_extension("fzf")
             end,
+        },
+        {
+            'nvim-telescope/telescope-fzf-native.nvim',
+            build = 'make',
         },
         {
             --supercharged highlighting
