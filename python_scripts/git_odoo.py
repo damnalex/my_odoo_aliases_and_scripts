@@ -21,9 +21,13 @@ from utils import env
 
 import git
 
-relevant_saas_versions = ["17.1", "17.2", "17.4"]
+relevant_saas_versions = [
+    "17.4",
+    "18.1",
+    "18.2",
+]
 RELEVANT_BRANCHES = [f"saas-{s}" for s in relevant_saas_versions]
-RELEVANT_BRANCHES += ["15.0", "16.0", "17.0", "master"]
+RELEVANT_BRANCHES += ["16.0", "17.0", "18.0", "master"]
 
 VERSIONED_REPOS = [
     # env.ODOO,
