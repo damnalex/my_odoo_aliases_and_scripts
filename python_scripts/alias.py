@@ -675,9 +675,9 @@ def o_emp(*trigrams):
         "res.groups",
         "search_read",
         [[["category_id.name", "=", "Odoo Support Level"]]],
-        {"fields": ["id", "name", "users"]},
+        {"fields": ["id", "name", "user_ids"]},
     )
-    levels = [[sg["name"], sg["users"]] for sg in support_groups]
+    levels = [[sg["name"], sg["user_ids"]] for sg in support_groups]
     levels.sort(key=lambda x: len(x[1]))
     # output
     url_template = "https://www.odoo.com/web?debug=1#id={id}&model=hr.employee.public&view_type=form"
