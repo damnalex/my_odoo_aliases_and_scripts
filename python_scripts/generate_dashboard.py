@@ -30,6 +30,16 @@ squad_to_leader_employee = {
     "US_BU": 4562951,  # sad
 }
 assert all(squad_to_leader_employee.values()), "Squad without a manager curently not supported"
+squads_with_tags = [
+    "varia",
+    "account",
+    "pos",
+    "stock",
+    "sm",
+    "perf",
+    "website_js",
+    "web_pos",
+]
 varia = [
     "alha",
     "crm",
@@ -445,7 +455,7 @@ def my_generator(main_squad):
         *[
             card
             for squad_name in squad_to_leader_employee
-            if squad_name != main_squad
+            if squad_name != main_squad and squad_name in squads_with_tags
             for card in squad_helper(
                 squad_name,
                 x_unassigned,
