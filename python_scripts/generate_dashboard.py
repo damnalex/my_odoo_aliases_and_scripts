@@ -18,16 +18,20 @@ help_project = 49
 squad_to_leader_employee = {
     "varia": 136783,  # mao
     "account": 1490367,  # tbs
-    "pos": 715807,  # lse
+    "pos": 715807,  # lse   --  TODO: remove after 1 year of webpos (February 2026)
     "stock": 885,  # nci
     "sm": 317943,  # bve
     "perf": 1206319,  # avd
-    "website_js": 1001546,  # pco
+    "website_js": 1001546,  # pco   --  TODO: remove after 1 year of webpos (February 2026)
     "web_pos": 1001546,  # pco
+    "QA": 1888379,  # angv
+    # "Dubai": None  # refactor to support None as a manager, or wait for a new squad leader, whichever comes first I guess
+    "US_SF": 1512774,  # pca
+    "US_BU": 4562951,  # sad
 }
+assert all(squad_to_leader_employee.values()), "Squad without a manager curently not supported"
 varia = [
     "alha",
-    "angv",
     "crm",
     "gavb",
     "lole",
@@ -35,7 +39,6 @@ varia = [
     "mao",
     "mege",
     "nasg",
-    "ofa",
     "sigo",
     "syf",
 ]
@@ -54,7 +57,7 @@ account = [
     "thco",
     "vifo",
 ]
-pos = [
+pos = [  #  --  TODO: remove after 1 year of webpos (February 2026)
     "baar",
     "lse",
     "pebr",
@@ -75,20 +78,19 @@ sm = [
 perf = [
     "auma",
     "avd",
-    "beha",
     "juse",
     "kasm",
     "mmha",
     "pivi",
 ]
-website_js = [
+website_js = [  #  --  TODO: remove after 1 year of webpos (February 2026)
     "jula",
     "pco",
     "thc",
 ]
 
 web_pos = [
-     "baar",
+    "baar",
     "lse",
     "pebr",
     "jula",
@@ -96,35 +98,57 @@ web_pos = [
     "thc",
 ]
 
-other = [
-    # BE
-    "mvw",
-    "loug",
-    "myah",
-    "viso",
-    # US
-    "adda",
-    "andg",
-    "bikh",
-    "cyro",
-    "dhs",
+QA = [
+    "angv",
+    "khah",
+]
+
+Dubai = [
+    "ezza",
+    "arih",
+    "malh",
+    "vega",
+]
+
+US_BU = [
+    "aksp",
+    "awke",
+    "cmal",
     "elct",
     "emub",
-    "guba",
-    "iada",
+    "hahu",
     "jrbr",
+    "juwu",
+    "deni",
+    "prri",
+    "saho",
+]
+
+US_SF = [
+    "pca",
+    "adda",
+    "paau",
+    "bikh",
+    "cyro",
+    "iada",
     "jelu",
-    "maje",
     "jobl",
     "myhy",
-    "deni",
     "orzh",
-    "pca",
-    "qung",
-    "prri",
     "ryce",
-    "liya",
-    "zaha",
+]
+
+other = [
+    # mercenaries + newbies without squad yet
+    "mvw",
+    "ande",
+    "loug",
+    "myah",
+    "osah",
+    "thsc",
+    "vise",
+    "viso",
+    "yoma",
 ]
 
 match_name_to_squad = {
@@ -136,6 +160,9 @@ match_name_to_squad = {
     "perf": perf,
     "website_js": website_js,
     "web_pos": web_pos,
+    # "Dubai": Dubai,    # refactor to support None as a manager, or wait for a new squad leader, whichever comes first I guess
+    "US_BU": US_BU,
+    "US_SF": US_SF,
     "other": other,
 }
 
@@ -440,17 +467,23 @@ def my_generator(main_squad):
 
 
 if __name__ == "__main__":
-    print("What's your squad ? [v]aria / [a]ccount / [po]s / [st]ock / [sm] / [pe]rf / [w]ebsite_js / [we]b_pos / [o]ther")
+    print(
+        "What's your squad ? [v]aria / [a]ccount / [st]ock / [sm] / [pe]rf / [q]a / [we]b_pos / [d]ubai / [us1] BUffalo / [us2] SF / [o]ther"
+    )
     pick = input()
     pic_match = {
         "v": "varia",
         "a": "account",
         "po": "pos",
+        "q": "QA",
         "st": "stock",
         "sm": "sm",
         "pe": "perf",
         "w": "website_js",
         "we": "web_pos",
+        "d": "Dubai",
+        "us1": "US_BU",
+        "us2": "US_SF",
         "o": "other",
     }
     my_generator(pic_match[pick])
