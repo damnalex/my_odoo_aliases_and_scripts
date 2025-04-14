@@ -436,7 +436,6 @@ require("lazy").setup({
             end,
             requires = {
                 {'neovim/nvim-lspconfig'},
-                {'VonHeikemen/lsp-zero.nvim'}, -- technically not a strict requirement, but lsp-zero should be loaded first
             },
             lazy = true,
             event = { "BufReadPost", "BufNewFile" },
