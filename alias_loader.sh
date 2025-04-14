@@ -79,9 +79,20 @@ fi
 ########################################
 
 PROMPT="[%D|%T] $PROMPT"
-TMOUT=10
+TMOUT=5
 TRAPALRM() {
-    zle reset-prompt
+    # zle reset-prompt
+    case "$WIDGET" in
+    expand-or-complete | self-insert | up-line-or-beginning-search | down-line-or-beginning-search | backward-delete-char | .history-incremental-search-backward | .history-incremental-search-forward)
+        :
+        ;;
+
+    *)
+        # uncomment this to see the current state of the widget in case of weirdness
+        # PROMPT="[$WIDGET]"
+        zle reset-prompt
+        ;;
+    esac
 }
 
 ##################################################
