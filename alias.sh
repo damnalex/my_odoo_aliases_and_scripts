@@ -764,7 +764,7 @@ compile_odoo_ls() {
     fi
     local current_dir=$(pwd)
     cd $SRC/odoo-ls/server
-    git fetch origin $version
+    git fetch --tags
     git switch $version --detach
     echo "Compiling Odoo language server version $version in release mode..."
     cargo build --release 2>/dev/null && echo "sucessfully !" || echo "woops, something went wrong :("
