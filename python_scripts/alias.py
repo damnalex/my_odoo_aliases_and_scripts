@@ -1042,7 +1042,6 @@ def typos_and_simple_aliases():
         "ezagit": "git -C $AP",
         "ezatig": "tig -C $AP",
         "file_server": "$SRC/misc_gists/simple_file_server/http_server_auth.py",
-        "find_backup": "$PSS/find_backup.py",
         "gov": "go_venv",
         "neuter_db": "$ST/lib/neuter.py",
         "odoosh": "$ST/scripts/odoosh/odoosh.py",

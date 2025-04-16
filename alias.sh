@@ -770,3 +770,11 @@ compile_odoo_ls() {
     cargo build --release 2>/dev/null && echo "sucessfully !" || echo "woops, something went wrong :("
     cd $current_dir
 }
+
+find_backup() {
+    $PSS/find_backup.py $@
+}
+
+fbp() {
+    find_backup PaaS -u $1 --download
+}
