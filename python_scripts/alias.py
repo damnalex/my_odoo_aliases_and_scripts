@@ -1007,7 +1007,7 @@ def typos_and_simple_aliases():
         ],
         "new_typo": ["new_ypo", "new_tupo", "new_ytpo", "newtypo"],
         "e .": ["e.", ".e"],
-        "o_emp": ["o_mep"],
+        "o_emp": ["o_mep", "o-emp"],
         "exit": [
             "exiit",
             "exit$",
