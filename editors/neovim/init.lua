@@ -313,7 +313,7 @@ require("lazy").setup({
         {
             -- language server manager
             'VonHeikemen/lsp-zero.nvim',
-            -- enabled = false,
+            enabled = false,
             branch = 'v3.x',
             dependencies = {
                 -- automate lsp installation
@@ -369,8 +369,20 @@ require("lazy").setup({
             end,
         },
         {
+            --lsp stuff
+            'neovim/nvim-lspconfig',
+            config = function()
+                require'lspconfig'.ruff.setup{}
+                require'lspconfig'.pyright.setup{}
+                -- TODO: check command mapping that I care about
+            end,
+        },
+        {
             -- code completion menu
             "hrsh7th/cmp-buffer",
+            dependencies = {
+                { 'hrsh7th/nvim-cmp' },
+            },
             lazy = true,
             event = { "BufReadPost", "BufNewFile" },
             config = function()
