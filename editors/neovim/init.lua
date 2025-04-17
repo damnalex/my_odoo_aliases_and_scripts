@@ -313,6 +313,7 @@ require("lazy").setup({
         {
             -- language server manager
             'VonHeikemen/lsp-zero.nvim',
+            -- enabled = false,
             branch = 'v3.x',
             dependencies = {
                 -- automate lsp installation
@@ -374,8 +375,7 @@ require("lazy").setup({
             event = { "BufReadPost", "BufNewFile" },
             config = function()
                 local cmp = require('cmp')
-                local cmp_format = require('lsp-zero').cmp_format({details = true})
-                local cmp_action = require('lsp-zero').cmp_action()
+                -- local cmp_format = require('lsp-zero').cmp_format({details = true})
                 cmp.setup({
                     sources = {
                         {name = 'nvim_lsp'},
@@ -408,7 +408,7 @@ require("lazy").setup({
                         end,
                     },
                     -- show completion source
-                    formatting = cmp_format,
+                    -- formatting = cmp_format,   --TODO do this without lsp-zero
                     -- preselect the first completion result
                     preselect = 'item',
                     completion = {
