@@ -311,70 +311,61 @@ require("lazy").setup({
             end,
         },
         {
-            -- language server manager
-            'VonHeikemen/lsp-zero.nvim',
-            enabled = false,
-            branch = 'v3.x',
-            dependencies = {
-                -- automate lsp installation
-                { 'williamboman/mason.nvim' },
-                { 'williamboman/mason-lspconfig.nvim' },
-                -- strict dependencies
-                { 'neovim/nvim-lspconfig' },
-                { 'hrsh7th/nvim-cmp' },
-                { 'hrsh7th/cmp-nvim-lsp' },
-                { 'L3MON4D3/LuaSnip' },
-            },
-            lazy = true,
-            event = { "BufReadPost", "BufNewFile" },
-            config = function()
-                local lsp_zero = require('lsp-zero')
-                lsp_zero.on_attach(function(client, bufnr)
-                    -- see :help lsp-zero-keybindings
-                    lsp_zero.default_keymaps({buffer = bufnr})
-                    -- K: Displays hover information about the symbol under the cursor in a floating window. See :help vim.lsp.buf.hover().
-                    -- gd: Jumps to the definition of the symbol under the cursor. See :help vim.lsp.buf.definition().
-                    -- gD: Jumps to the declaration of the symbol under the cursor. Some servers don't implement this feature. See :help vim.lsp.buf.declaration().
-                    -- gi: Lists all the implementations for the symbol under the cursor in the quickfix window. See :help vim.lsp.buf.implementation().
-                    -- go: Jumps to the definition of the type of the symbol under the cursor. See :help vim.lsp.buf.type_definition().
-                    -- gr: Lists all the references to the symbol under the cursor in the quickfix window. See :help vim.lsp.buf.references().
-                    -- gs: Displays signature information about the symbol under the cursor in a floating window. See :help vim.lsp.buf.signature_help(). If a mapping already exists for this key this function is not bound.
-                    -- <F2>: Renames all references to the symbol under the cursor. See :help vim.lsp.buf.rename().
-                    -- <F3>: Format code in current buffer. See :help vim.lsp.buf.format().
-                    -- <F4>: Selects a code action available at the current cursor position. See :help vim.lsp.buf.code_action().
-                    -- gl: Show diagnostics in a floating window. See :help vim.diagnostic.open_float().
-                    -- [d: Move to the previous diagnostic in the current buffer. See :help vim.diagnostic.goto_prev().
-                    -- ]d: Move to the next diagnostic. See :help vim.diagnostic.goto_next().
-                end)
-
-                vim.diagnostic.config({
-                    virtual_text = false,
-                })
-
-                -- language server managment
-                -- doc: https://github.com/VonHeikemen/lsp-zero.nvim/blob/v3.x/doc/md/guide/integrate-with-mason-nvim.md
-                require('mason').setup({})
-                require('mason-lspconfig').setup({
-                    ensure_installed = {
-                        "ruff",
-                        "pyright",
-                    },
-                    handlers = {
-                        function(server_name)
-                            require('lspconfig')[server_name].setup({})
-                        end,
-                    },
-                })
-
-            end,
-        },
-        {
-            --lsp stuff
+            -- General lsp config
             'neovim/nvim-lspconfig',
             config = function()
                 require'lspconfig'.ruff.setup{}
                 require'lspconfig'.pyright.setup{}
-                -- TODO: check command mapping that I care about
+                require'lspconfig'.lua_ls.setup{}
+                -- some lsp bindings I like
+                vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {})
+                vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, {})
+                vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, {})
+                vim.keymap.set('n', 'gr', vim.lsp.buf.references, {})
+                vim.keymap.set('n', 'gs', vim.lsp.buf.signature_help, {})
+                vim.keymap.set('n', 'gl', vim.diagnostic.open_float, {})
+                vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, {})
+                -- reminder of some defaults:
+                -- "grn" is mapped in Normal mode to vim.lsp.buf.rename()
+                -- "gra" is mapped in Normal and Visual mode to vim.lsp.buf.code_action()
+                -- "grr" is mapped in Normal mode to vim.lsp.buf.references()
+                -- "gri" is mapped in Normal mode to vim.lsp.buf.implementation()
+                -- "gO" is mapped in Normal mode to vim.lsp.buf.document_symbol()
+                -- CTRL-S is mapped in Insert mode to vim.lsp.buf.signature_help()
+
+            end,
+        },
+        {
+            -- Odoo LSP
+            'whenrow/odoo-ls.nvim',
+            enabled = function()
+                -- return false
+                -- only loaded if nvim is started in one of my odoo workspaces
+                return vim.fn.isdirectory('odoo') ~= 0 and vim.fn.isdirectory('enterprise') ~= 0 and vim.fn.isdirectory('design-themes') ~= 0 and vim.fn.isdirectory('src') ~= 0
+            end,
+            requires = {
+                {'neovim/nvim-lspconfig'},
+            },
+            lazy = true,
+            event = { "BufReadPost", "BufNewFile" },
+            config = function()
+                local odools = require('odools')
+                local r = vim.fn.getcwd()
+                odools.setup({
+                    -- mandatory
+                    odoo_path = r .. "/odoo/",
+                    python_path = r .. "/venv/bin/python3",
+                    server_path = r .. "/src/odoo-ls/server/target/release/odoo_ls_server", -- compiled from source
+                    -- optional
+                    addons = {r .. "/enterprise/", r .. "/design-themes/", r .. "/src/internal/default", r .. "/src/internal/private", r .. "/src/internal/trial"},
+                    additional_stubs = { r .. "/src/misc_gists/typeshed/stubs"},
+                    root_dir = r, -- working directory, odoo_path if empty
+                    settings = {
+                        autoRefresh = true,
+                        autoRefreshDelay = nil,
+                        diagMissingImportLevel = "none",
+                    },
+                })
             end,
         },
         {
@@ -438,42 +429,6 @@ require("lazy").setup({
             -- add completion for nvim specific lua
             "hrsh7th/cmp-nvim-lua",
         },
-        {
-            -- odoo LSP
-            'whenrow/odoo-ls.nvim',
-            enabled = function()
-                -- return false
-                -- only loaded if nvim is started in one of my odoo workspaces
-                return vim.fn.isdirectory('odoo') ~= 0 and vim.fn.isdirectory('enterprise') ~= 0 and vim.fn.isdirectory('design-themes') ~= 0 and vim.fn.isdirectory('src') ~= 0
-            end,
-            requires = {
-                {'neovim/nvim-lspconfig'},
-            },
-            lazy = true,
-            event = { "BufReadPost", "BufNewFile" },
-            config = function()
-                local odools = require('odools')
-                local r = vim.fn.getcwd()
-                odools.setup({
-                    -- mandatory
-                    odoo_path = r .. "/odoo/",
-                    python_path = r .. "/venv/bin/python3",
-                    server_path = r .. "/src/odoo-ls/server/target/release/odoo_ls_server", -- compiled from source
-
-                    -- optional
-                    addons = {r .. "/enterprise/", r .. "/design-themes/", r .. "/src/internal/default", r .. "/src/internal/private", r .. "/src/internal/trial"},
-                    additional_stubs = { r .. "/src/misc_gists/typeshed/stubs"},
-                    root_dir = r, -- working directory, odoo_path if empty
-                    settings = {
-                        autoRefresh = true,
-                        autoRefreshDelay = nil,
-                        diagMissingImportLevel = "none",
-                    },
-                })
-            end,
-        },
-
-
     },
     -- colorscheme that will be used when installing plugins.
     install = { colorscheme = { "habamax" } },
