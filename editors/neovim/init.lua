@@ -122,6 +122,7 @@ require("lazy").setup({
 
                 local telescope = require("telescope")
                 local ta = require("telescope.actions")
+                local tlga = require("telescope-live-grep-args.actions")
 
                 -- follow symbolic links
                 local telescopeConfig = require("telescope.config")
@@ -134,6 +135,13 @@ require("lazy").setup({
                             i = {
                                 ["<C-j>"] = ta.cycle_history_next,
                                 ["<C-k>"] = ta.cycle_history_prev,
+                                 -- most frequent annoyance when looking for translated terms (but i prefer to do it manually rather that risking over excluding by default)
+                                ["<C-p>"] = tlga.quote_prompt({ postfix = ' --iglob "!*.po"' }),
+                                ["<C-q>"] = tlga.quote_prompt(),  -- this will be on right-ctrl + q, left-ctrl+q still sends the result to the quick fix list
+                                -- move the preview only
+                                ["<C-u>"] = ta.preview_scrolling_up, -- full height scroll
+                                ["<C-d>"] = ta.preview_scrolling_down,
+                                -- TODO: find a way to scroll left and right in the preview
                             }
                         },
                         vimgrep_arguments = vimgrep_arguments,
