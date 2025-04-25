@@ -9,7 +9,6 @@ ipython
 keyring
 phonenumbers
 prettytable
-ptvsd
 pudb
 pydevd-odoo
 pyldap
