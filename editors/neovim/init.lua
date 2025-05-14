@@ -141,7 +141,7 @@ require("lazy").setup({
                                 -- move the preview only
                                 ["<C-u>"] = ta.preview_scrolling_up, -- full height scroll
                                 ["<C-d>"] = ta.preview_scrolling_down,
-                                -- TODO: find a way to scroll left and right in the preview
+                                -- TODO: find a way to scroll left and right in the preview (will land in 0.2.0 : https://github.com/nvim-telescope/telescope.nvim/issues/3110#issuecomment-2395242266 )
                             }
                         },
                         vimgrep_arguments = vimgrep_arguments,
