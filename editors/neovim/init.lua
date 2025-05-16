@@ -359,21 +359,35 @@ require("lazy").setup({
             config = function()
                 local odools = require('odools')
                 local r = vim.fn.getcwd()
-                odools.setup({
-                    -- mandatory
-                    odoo_path = r .. "/odoo/",
-                    python_path = r .. "/venv/bin/python3",
-                    server_path = r .. "/src/odoo-ls/server/target/release/odoo_ls_server", -- compiled from source
-                    -- optional
-                    addons = {r .. "/enterprise/", r .. "/design-themes/", r .. "/src/internal/default", r .. "/src/internal/private", r .. "/src/internal/trial"},
-                    additional_stubs = { r .. "/src/misc_gists/typeshed/stubs"},
-                    root_dir = r, -- working directory, odoo_path if empty
-                    settings = {
-                        autoRefresh = true,
-                        autoRefreshDelay = nil,
-                        diagMissingImportLevel = "none",
-                    },
-                })
+                local h = os.getenv('HOME')
+                if vim.fn.isdirectory('odoo') ~= 0 and vim.fn.isdirectory('enterprise') ~= 0 and vim.fn.isdirectory('design-themes') ~= 0 and vim.fn.isdirectory('src') ~= 0 then
+                    -- in odoo workspace
+                    odools.setup({
+                        -- mandatory
+                        odoo_path = r .. "/odoo/",
+                        python_path = r .. "/venv/bin/python3",
+                        server_path = r .. "/src/odoo-ls/server/target/release/odoo_ls_server", -- compiled from source
+                        -- optional
+                        addons = {r .. "/enterprise/", r .. "/design-themes/", r .. "/src/internal/default", r .. "/src/internal/private", r .. "/src/internal/trial"},
+                        additional_stubs = { r .. "/src/misc_gists/typeshed/stubs"},
+                        root_dir = r, -- working directory, odoo_path if empty
+                        settings = {
+                            autoRefresh = true,
+                            autoRefreshDelay = nil,
+                            diagMissingImportLevel = "none",
+                        },
+                    })
+                else
+                    --somewhere else, just used odoo-ls as a generic python lsp
+                    odools.setup({
+                        -- mandatory
+                        odoo_path = h .. "/odoo/versions/18.0/odoo",  -- good enough
+                        python_path = h .. "/odoo/versions/18.0/venv/bin/python3",
+                        server_path = h .. "/src/odoo-ls/server/target/release/odoo_ls_server", -- compiled from source
+                        --optional
+                        additional_stubs = { h .. "/src/misc_gists/typeshed/stubs"},
+                    })
+                end
             end,
         },
         {
