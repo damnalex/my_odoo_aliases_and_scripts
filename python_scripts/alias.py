@@ -563,6 +563,8 @@ def go_fetch():
 def shurl(long_url):
     """Returns (and prints) a short (and tracked) url version of a link.
     Hosted on an odoo saas server"""
+    from xmlrpc.client import Fault
+
     import keyring
 
     api_login = env.SHORT_URL_LOGIN
@@ -572,13 +574,24 @@ def shurl(long_url):
     db = "runboot"
     r_exec = _get_xmlrpc_executer(dburl, db, api_login, api_key)
     data = {"url": long_url}
-    url_id = r_exec("link.tracker", "create", [data])
-    short_url = r_exec(
-        "link.tracker",
-        "search_read",
-        [[["id", "=", url_id]]],
-        {"fields": ["short_url"]},
-    )[0]["short_url"]
+    try:
+        url_id = r_exec("link.tracker", "create", [data])
+        short_url = r_exec(
+            "link.tracker",
+            "search_read",
+            [[["id", "=", url_id]]],
+            {"fields": ["short_url"]},
+        )[0]["short_url"]
+    except Fault:
+        # maybe the url already exists
+        print("Url already exist on db, getting the existing one.")
+        short_url = r_exec(
+            "link.tracker",
+            "search_read",
+            [[["url", "=", long_url]]],
+            {"fields": ["short_url"]},
+        )[0]["short_url"]
+
     # force the "right" domain
     short_url = short_url.replace("runboot.odoo.com", "shorturl.moens.xyz")
     short_url = short_url.replace("totd.moens.xyz", "shorturl.moens.xyz")
