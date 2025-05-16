@@ -291,6 +291,9 @@ require("lazy").setup({
             -- cool looking command prompt
             "folke/noice.nvim",
             event = "VeryLazy",
+            -- enabled = function()
+            --     return false
+            -- end,
             opts = {
                 lsp = {
                     -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
@@ -347,9 +350,9 @@ require("lazy").setup({
             -- Odoo LSP
             'whenrow/odoo-ls.nvim',
             enabled = function()
-                -- return false
+                return true
                 -- only loaded if nvim is started in one of my odoo workspaces
-                return vim.fn.isdirectory('odoo') ~= 0 and vim.fn.isdirectory('enterprise') ~= 0 and vim.fn.isdirectory('design-themes') ~= 0 and vim.fn.isdirectory('src') ~= 0
+                -- return vim.fn.isdirectory('odoo') ~= 0 and vim.fn.isdirectory('enterprise') ~= 0 and vim.fn.isdirectory('design-themes') ~= 0 and vim.fn.isdirectory('src') ~= 0
             end,
             requires = {
                 {'neovim/nvim-lspconfig'},
