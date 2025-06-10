@@ -687,7 +687,7 @@ def o_emp(*trigrams):
     support_groups = r_exec(
         "res.groups",
         "search_read",
-        [[["category_id.name", "=", "Odoo Support Level"]]],
+        [[["privilege_id.name", "=", "Odoo Support Level"]]],
         {"fields": ["id", "name", "user_ids"]},
     )
     levels = [[sg["name"], sg["user_ids"]] for sg in support_groups]
