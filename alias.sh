@@ -500,6 +500,9 @@ update_all_multiverse_branches() {
 }
 
 build_odoo_virtualenv() {
+    for repo in 'odoo' 'enterprise' 'design-themes' 'industry'; do
+        git -C $SRC_MULTI/master/$repo fetch origin $1
+    done
     if [[ $1 == "master" ]]; then
         deactivate 2>/dev/null
         virtualenv --clear "$SRC_MULTI/master/venv"
