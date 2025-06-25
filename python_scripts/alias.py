@@ -649,23 +649,16 @@ def o_emp(*trigrams):
             ]
         },
     )
-    # get data of all managers chains
+    managers_info = r_exec(
+        "hr.employee.public",
+        "search_read",
+        [[["id", "parent_of", [e["id"] for e in employees_data]]]],
+        {"fields": ["id", "name", "parent_id", "github_login"]},
+    )
     managers_data = {
         e["id"]: {"name": e["name"], "parent_id": e["parent_id"] and e["parent_id"][0], "github": e["github_login"]}
-        for e in employees_data
+        for e in managers_info
     }
-    while managers_to_do := [
-        e["parent_id"] for _, e in managers_data.items() if e["parent_id"] and e["parent_id"] not in managers_data
-    ]:
-        new_managers = r_exec(
-            "hr.employee.public",
-            "search_read",
-            [[["id", "in", managers_to_do]]],
-            {"fields": ["id", "name", "parent_id", "github_login"]},
-        )
-        for m in new_managers:
-            mm = m["parent_id"] and m["parent_id"][0]
-            managers_data[m["id"]] = {"name": m["name"], "parent_id": mm, "github": m["github_login"]}
     # build manager chains
     chains = {id: [e["parent_id"]] for id, e in managers_data.items()}
     while chains_to_do := [id for id, c in chains.items() if c[-1]]:
