@@ -779,7 +779,3 @@ compile_odoo_ls() {
 find_backup() {
     $PSS/find_backup.py $@
 }
-
-fbp() {
-    find_backup PaaS -u $1 --download
-}
