@@ -256,10 +256,6 @@ require("lazy").setup({
             -- git commands integration
             "tpope/vim-fugitive",
             event = "VeryLazy",
-            config = function()
-                -- fast fugitive git blame
-                vim.keymap.set("n", "<leader>gb", function() vim.cmd("G blamef") end, {})
-            end
         },
         {
             -- fugitiv extension : enables :Gbrowse
