@@ -166,6 +166,7 @@ require("lazy").setup({
             --supercharged highlighting
             'nvim-treesitter/nvim-treesitter',
             -- enabled = false,
+            branch = "master",
             build = ":TSUpdate",
             opts = {
                 ensure_installed = {
