@@ -813,18 +813,26 @@ def o_ver(domain, *args, verbose=True):
     from requests import get
 
     try:
-        version_info = server(f"https://{domain}/xmlrpc/2/common").version()
-    except ProtocolError:
-        # probably redirected
-        url = get(f"https://{domain}").url  # requests follows redirections
-        version_info = server(f"{url}xmlrpc/2/common").version()
-    except gaierror:
-        # socket.gaierror: [Errno 8] nodename nor servname provided, or not known
-        domain = f"{domain}.odoo.com"
-        version_info = server(f"https://{domain}/xmlrpc/2/common").version()
+        # xmlrpc style
+        try:
+            version_info = server(f"https://{domain}/xmlrpc/2/common").version()
+        except ProtocolError:
+            # probably redirected
+            url = get(f"https://{domain}").url  # requests follows redirections
+            version_info = server(f"{url}xmlrpc/2/common").version()
+        except gaierror:
+            # socket.gaierror: [Errno 8] nodename nor servname provided, or not known
+            domain = f"{domain}.odoo.com"
+            version_info = server(f"https://{domain}/xmlrpc/2/common").version()
+    except Exception:  # TODO pick a more specific error
+        # json2 style
+        version_info = get(f"https://{domain}/web/version").json()
 
     if "--short" in args:
-        version_info = version_info["server_serie"]
+        version_info = version_info.get(
+            "server_serie",  # xmlrpc style
+            version_info["version"],  # json2 style
+        )
         float(version_info)
 
     if verbose:
