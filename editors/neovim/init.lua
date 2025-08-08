@@ -83,9 +83,13 @@ vim.keymap.set('n', '<leader>q', vim.cmd.q, {})
 -- other
 vim.opt.wildmenu = true
 
--- window resizing
+-- window resizing and navigation
 vim.keymap.set('n', '<leader>,', '20<C-w><')
 vim.keymap.set('n', '<leader>.', '20<C-w>>')
+vim.keymap.set('n', '<leader>h', '<C-w>h')
+vim.keymap.set('n', '<leader>j', '<C-w>j')
+vim.keymap.set('n', '<leader>k', '<C-w>k')
+vim.keymap.set('n', '<leader>l', '<C-w>l')
 
 -- Allow the mouse to resize windows
 -- TODO: find a "cleaner" way to resize wndows with the mouse without mouving the cursor
@@ -347,7 +351,8 @@ require("lazy").setup({
             -- Odoo LSP
             'whenrow/odoo-ls.nvim',
             enabled = function()
-                return true
+                return false
+                -- return true
                 -- only loaded if nvim is started in one of my odoo workspaces
                 -- return vim.fn.isdirectory('odoo') ~= 0 and vim.fn.isdirectory('enterprise') ~= 0 and vim.fn.isdirectory('design-themes') ~= 0 and vim.fn.isdirectory('src') ~= 0
             end,
