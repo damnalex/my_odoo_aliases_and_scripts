@@ -92,7 +92,7 @@ vim.keymap.set('n', '<leader>k', '<C-w>k')
 vim.keymap.set('n', '<leader>l', '<C-w>l')
 
 -- Allow the mouse to resize windows
--- TODO: find a "cleaner" way to resize wndows with the mouse without mouving the cursor
+-- TODO: find a "cleaner" way to resize wndows with the mouse without moving the cursor
 -- This also allows to activate Visual which is fine I guess
 -- vim.opt.mouse = ""
 vim.keymap.set("n", "<LeftMouse>", "m'<LeftMouse>")
