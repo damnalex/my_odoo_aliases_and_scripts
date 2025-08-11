@@ -326,6 +326,71 @@ require("lazy").setup({
             -- General lsp config
             'neovim/nvim-lspconfig',
             config = function()
+                require'lspconfig'.ruff.setup{}
+                require'lspconfig'.pyright.setup{}
+                require'lspconfig'.lua_ls.setup{}
+                if vim.fn.filereadable('odools.toml') then
+                    -- TODO, make this work
+                    -- Currently, nvim recognises the lsp, and apparently it starts
+                    -- without exploding. But I get none of the features... not sure why yet
+                    -- note : this bit of the config should not be here , but it just makes it easy to find , so it will stay for now.
+                    local r = vim.fn.getcwd()
+                    local h = os.getenv('HOME')
+
+                    vim.lsp.config("odools", {
+                        cmd = { h .. "/src/odoo-ls/server/target/release/odoo_ls_server", "--config-path", r .. "/odools.toml"},
+                        filetypes = { 'python', 'xml' },
+                        root_markers = { 'odools.toml' },
+                        settings = {},
+                    })
+                    vim.lsp.enable("odools")
+
+                    -- local lsp_config = require('lspconfig.configs')
+                    -- local addons_path = { "${workspaceFolder}/odoo/addons", "${workspaceFolder}/enterprise", "${workspaceFolder}/design-themes", "${workspaceFolder}/src/internal/default", "${workspaceFolder}/src/internal/private", "${workspaceFolder}/src/internal/trial"}
+                    -- local odooConfig = {
+                    --     id = 1,
+                    --     name = "main config",
+                    --     validatedAddonsPaths = addons_path,
+                    --     addons = addons_path,
+                    --     odooPath = "${workspaceFolder}/odoo",
+                    --     finalPythonPath = "python3",
+                    -- }
+                    -- lsp_config.odools = {
+                    --     default_config = {
+                    --         name = 'odools',
+                    --         cmd = { h .. "/src/odoo-ls/server/target/release/odoo_ls_server" },
+                    --         root_dir = function() return r end,
+                    --         workspace_folders = {
+                    --             {
+                    --                 uri = function() return r end,
+                    --                 name = function() return "base_workspace" end,
+                    --             },
+                    --         },
+                    --         filetypes = { 'python', 'xml' },
+                    --         settings = {
+                    --             Odoo = {
+                    --                 autoRefresh = true,
+                    --                 autoRefreshDelay = nil,
+                    --                 diagMissingImportLevel = "none",
+                    --                 configurations = { mainConfig = odooConfig },
+                    --                 selectedConfiguration = "mainConfig",
+                    --             },
+                    --         },
+                    --         capabilities = {
+                    --             textDocument = {
+                    --                 workspace = {
+                    --                     symbol = {
+                    --                         dynamicRegistration = true,
+                    --                     },
+                    --                 },
+                    --             },
+                    --         },
+                    --     },
+                    -- }
+                    -- lsp_config.odools.setup {}
+
+                end
+
                 -- some lsp bindings I like
                 vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {})
                 vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, {})
@@ -341,24 +406,6 @@ require("lazy").setup({
                 -- "gri" is mapped in Normal mode to vim.lsp.buf.implementation()
                 -- "gO" is mapped in Normal mode to vim.lsp.buf.document_symbol()
                 -- CTRL-S is mapped in Insert mode to vim.lsp.buf.signature_help()
-                require'lspconfig'.ruff.setup{}
-                require'lspconfig'.pyright.setup{}
-                require'lspconfig'.lua_ls.setup{}
-                if vim.fn.filereadable('odools.toml') then
-                    -- TODO, make this work
-                    -- Currently, nvim recognises the lsp, and apparently it starts
-                    -- without exploding. But I get non of the features... not sure why yet
-                    -- note : this bit of the config should not be here , but it just makes it easy to find , so it will stay for now.
-                    local r = vim.fn.getcwd()
-                    local h = os.getenv('HOME')
-                    vim.lsp.config("odools", {
-                        cmd = { h .. "/src/odoo-ls/server/target/release/odoo_ls_server", "--config-path", r .. "/odools.toml"},
-                        filetypes = { 'python', 'xml' },
-                        root_markers = { 'odools.toml' },
-                        settings = {},
-                    })
-                    vim.lsp.enable("odools")
-                end
 
             end,
         },
