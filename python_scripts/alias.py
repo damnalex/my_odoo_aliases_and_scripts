@@ -741,10 +741,12 @@ def o_user(*trigrams):
 
     uids = [uid for uid in trigrams if _isint(uid)]
     f_trigrams = [f"{trigram.lower()}@odoo.com" for trigram in trigrams if not _isint(trigram)]
+    full_emails = [trigram.lower() for trigram in trigrams if not _isint(trigram)]
     users = {}
     if f_trigrams:
-        domain = ["|"] * (len(f_trigrams) - 1)
+        domain = ["|"] * ((len(f_trigrams) + len(full_emails)) - 1)
         domain += [["login", "=", tri] for tri in f_trigrams]
+        domain += [["login", "=", email] for email in full_emails]
         r_exec = _xmlrpc_odoo_com(fallback_to_test=False)
         users_data = r_exec(
             "res.users",
