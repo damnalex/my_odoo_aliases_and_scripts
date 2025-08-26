@@ -143,8 +143,7 @@ def _get_branch_name(path):
     # return the name of the current branch of repo :path
     # _repos expects multiple path entries in an itterable
     # giving one in a list
-    repo_generator = _repos([path])
-    repo = list(repo_generator)[0]
+    repo = next(_repos([path]))
     return repo.active_branch.name
 
 
@@ -391,18 +390,21 @@ def ptvsd3_so(*args):
     _ptvsd_so(PYTHON3, *args)
 
 
-@shell_end_hook
-@call_from_shell
-def go(*args):
-    """switch branch for all odoo repos"""
-    print("cleaning all the junk")
-    clear_pyc()
-    params = {"checkout": True, "<version>": args}
-    _git_odoo_app(**params)
-    # if len(args) == 1:
-    #     differed_sh_run(f"go_venv {args[0]}")
-    print("-----------")
-    differed_sh_run("golist")
+# NOT NEEDED ANYMORE WITHOUT A UNIVERSE SET UP
+# WOULD ONLY BE USEFULL TO SET REPOS LIKE INTERNAL
+# WHICH I WOULD PREFER TO DO MANUALY ANYWAY NOW
+# @shell_end_hook
+# @call_from_shell
+# def go(*args):
+#     """switch branch for all odoo repos"""
+#     print("cleaning all the junk")
+#     clear_pyc()
+#     params = {"checkout": True, "<version>": args}
+#     _git_odoo_app(**params)
+#     # if len(args) == 1:
+#     #     differed_sh_run(f"go_venv {args[0]}")
+#     print("-----------")
+#     differed_sh_run("golist")
 
 
 @shell_end_hook
@@ -416,26 +418,28 @@ def go_update_and_clean(version=None):
     differed_sh_run("golist")
 
 
-@shell_end_hook
-@call_from_shell
-def godb(db_name):
-    """switch repos branch to the version of the given DB"""
-    try:
-        _ = _get_version_from_db(db_name)
-    except OperationalError:
-        print(f"DB {db_name} does not exist")
-    else:
-        params = {"checkout": True, "--dbname": db_name}
-        _git_odoo_app(**params)
-        # differed_sh_run(f"go_venv {version}")
+# NOT NEEDED ANYMORE WITHOUT A UNIVERSE SET UP
+# @shell_end_hook
+# @call_from_shell
+# def godb(db_name):
+#     """switch repos branch to the version of the given DB"""
+#     try:
+#         _ = _get_version_from_db(db_name)
+#     except OperationalError:
+#         print(f"DB {db_name} does not exist")
+#     else:
+#         params = {"checkout": True, "--dbname": db_name}
+#         _git_odoo_app(**params)
+#         # differed_sh_run(f"go_venv {version}")
 
 
-@shell_end_hook
-@call_from_shell
-def goso(db_name, *args):
-    """switch repos to the version of given db and starts it"""
-    godb(db_name)
-    so(db_name, *args)
+# NOT NEEDED ANYMORE WITHOUT A UNIVERSE SET UP
+# @shell_end_hook
+# @call_from_shell
+# def goso(db_name, *args):
+#     """switch repos to the version of given db and starts it"""
+#     godb(db_name)
+#     so(db_name, *args)
 
 
 @shell_end_hook
@@ -550,10 +554,11 @@ def dropodoo(*dbs):
                 print("failed to delete the filestore, looks like it doesn't exist anymore")
 
 
-@call_from_shell
-def go_fetch():
-    # git fetch on all the repos of the main source folder
-    _git_odoo_app(fetch=True)
+# USES TOO MUCH STORAGE, NOW I FECTH ONLY WHAT I NEED
+# @call_from_shell
+# def go_fetch():
+#     # git fetch on all the repos of the main source folder
+#     _git_odoo_app(fetch=True)
 
 
 #  vvvvvv   not strictly odoo   vvvvvvv

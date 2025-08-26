@@ -34,7 +34,7 @@ VERSIONED_REPOS = [
     # env.ENTERPRISE,
     # env.DESIGN_THEMES,
     # env.INDUSTRY,
-    env.USER_DOC,
+    # env.USER_DOC,
 ]
 SINGLE_VERSION_REPOS = [
     env.INTERNAL,

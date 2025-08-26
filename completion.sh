@@ -80,11 +80,11 @@ _so() {
 complete -o default -F _so so
 complete -o default -F _so soi
 complete -o default -F _so sou
-complete -o default -F _so goso
+# complete -o default -F _so goso
 complete -o default -F _so ptvsd3-so
 complete -o default -F _so ptvsd2-so
 
-complete -o default -F _complete_db_name_on_first_param godb
+# complete -o default -F _complete_db_name_on_first_param godb
 # complete -o default -F _complete_db_name_on_first_param clean_database
 complete -o default -F _complete_db_name dropodoo
 complete -o default -F _complete_db_name_on_first_param lu
@@ -190,78 +190,78 @@ complete -o default -F _apikey_rotation apikey_rotation
 #             excluding ./util_package and ./psbe-internal.
 #           odev run -[i|u] *<TAB> will put a csv of custom modules on the command line.
 
-_odev() { #  By convention, the function name starts with an underscore.
-    _odev_complete_config="${HOME}/.config/odev/databases.cfg"
-
-    _odev_complete_list_cache() {
-        # if [ "${_odev_complete_last:-0}" -lt "$(date +%s -r ${_odev_complete_config})" ]; then
-        _odev_complete_list="$(odev list -1)"
-        _odev_complete_last="$(date +%s)"
-        # fi
-    }
-
-    local cur prev words cword split opts
-    # _init_completion -s || return
-
-    if [ "$cur" = "?" ]; then
-        cmd="${words[@]:0:cword} --help"
-        $cmd
-        # replace '?' and fake an option to force redraw-current-line after help text
-        COMPREPLY=(" " "  ")
-        return
-    fi
-
-    case ${COMP_CWORD} in
-    1)
-        # complete command names
-        if [ -z "${_odev_complete_help}" ]; then
-            _odev_complete_help="$(odev help -1)"
-        fi
-        opts=${_odev_complete_help}
-        ;;
-    2)
-        # complete database names
-        _odev_complete_list_cache
-        opts=${_odev_complete_list}
-        ;;
-    3)
-        # complete template names
-        if [ "${words[1]}" = "create" ]; then
-            _odev_complete_list_cache
-            opts=${_odev_complete_list}
-        fi
-        ;;
-    4)
-        # complete custom module/directory names
-        if [ "$prev" = "-i" -o "$prev" = "-u" ]; then
-            # glob on './*' to avoid any '.*' files/dirs
-            opts=(./*)
-            for o in "${!opts[@]}"; do
-                # remove files or special directories
-                if [ ! -d ${opts[o]} -o "${opts[o]}" = "./util_package" -o "${opts[o]}" = "./psbe-internal" ]; then
-                    unset opts[o]
-                else
-                    # removing leading ./
-                    opts[$o]=${opts[o]#./}
-                fi
-            done
-            # convert array to wordlist
-            opts="${opts[@]}"
-            # replace '*' with a csv of all module names
-            if [ "$cur" = "*" ]; then
-                COMPREPLY=($(echo "${opts}" | tr ' ' ','))
-                return
-            fi
-        fi
-        ;;
-    *)
-        _filedir
-        return
-        ;;
-    esac
-
-    COMPREPLY=($(compgen -W "${opts}" -- "${cur}"))
-
-    return
-} &&
-    complete -F _odev -o default odev
+# _odev() { #  By convention, the function name starts with an underscore.
+#     _odev_complete_config="${HOME}/.config/odev/databases.cfg"
+#
+#     _odev_complete_list_cache() {
+#         # if [ "${_odev_complete_last:-0}" -lt "$(date +%s -r ${_odev_complete_config})" ]; then
+#         _odev_complete_list="$(odev list -1)"
+#         _odev_complete_last="$(date +%s)"
+#         # fi
+#     }
+#
+#     local cur prev words cword split opts
+#     # _init_completion -s || return
+#
+#     if [ "$cur" = "?" ]; then
+#         cmd="${words[@]:0:cword} --help"
+#         $cmd
+#         # replace '?' and fake an option to force redraw-current-line after help text
+#         COMPREPLY=(" " "  ")
+#         return
+#     fi
+#
+#     case ${COMP_CWORD} in
+#     1)
+#         # complete command names
+#         if [ -z "${_odev_complete_help}" ]; then
+#             _odev_complete_help="$(odev help -1)"
+#         fi
+#         opts=${_odev_complete_help}
+#         ;;
+#     2)
+#         # complete database names
+#         _odev_complete_list_cache
+#         opts=${_odev_complete_list}
+#         ;;
+#     3)
+#         # complete template names
+#         if [ "${words[1]}" = "create" ]; then
+#             _odev_complete_list_cache
+#             opts=${_odev_complete_list}
+#         fi
+#         ;;
+#     4)
+#         # complete custom module/directory names
+#         if [ "$prev" = "-i" -o "$prev" = "-u" ]; then
+#             # glob on './*' to avoid any '.*' files/dirs
+#             opts=(./*)
+#             for o in "${!opts[@]}"; do
+#                 # remove files or special directories
+#                 if [ ! -d ${opts[o]} -o "${opts[o]}" = "./util_package" -o "${opts[o]}" = "./psbe-internal" ]; then
+#                     unset opts[o]
+#                 else
+#                     # removing leading ./
+#                     opts[$o]=${opts[o]#./}
+#                 fi
+#             done
+#             # convert array to wordlist
+#             opts="${opts[@]}"
+#             # replace '*' with a csv of all module names
+#             if [ "$cur" = "*" ]; then
+#                 COMPREPLY=($(echo "${opts}" | tr ' ' ','))
+#                 return
+#             fi
+#         fi
+#         ;;
+#     *)
+#         _filedir
+#         return
+#         ;;
+#     esac
+#
+#     COMPREPLY=($(compgen -W "${opts}" -- "${cur}"))
+#
+#     return
+# } &&
+#     complete -F _odev -o default odev
