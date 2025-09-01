@@ -331,74 +331,35 @@ require("lazy").setup({
                 require'lspconfig'.lua_ls.setup{}
                 if vim.fn.filereadable('odools.toml') then
                     -- TODO, make this work
-                    -- Currently, nvim recognises the lsp, and apparently it starts
-                    -- without exploding. But I get none of the features... not sure why yet
-                    -- note : this bit of the config should not be here , but it just makes it easy to find , so it will stay for now.
+                    -- based on the readme at https://github.com/odoo/odoo-ls-neovim
+                    -- still doesn't work, but I have a good feeling about this ...
                     local r = vim.fn.getcwd()
                     local h = os.getenv('HOME')
+                    local odools_server = h .. "/src/odoo-ls/server/target/release/odoo_ls_server"
+                    local typeshed_location = h .. "/src/misc_gists/typeshed"
 
-                    vim.lsp.config("odools", {
-                        cmd = { h .. "/src/odoo-ls/server/target/release/odoo_ls_server", "--config-path", r .. "/odools.toml"},
-                        filetypes = { 'python', 'xml' },
-                        root_markers = { 'odools.toml' },
-                        settings = {},
+                    vim.lsp.config('odools', {
+                        cmd = {odools_server, '--stdlib', vim.fn.fnamemodify(typeshed_location, ':h') .. '/stdlib'},
+                        root_dir = r,
+                        filetypes = { 'python' },
+                        workspace_folders = {{
+                            uri = vim.uri_from_fname(r),
+                            name = 'main_folder',
+                        }},
+                        settings = {
+                            Odoo = {
+                                selectedProfile = 'OdooWorkspace', -- should be the name defined in odools.toml
+                            }
+                        },
                     })
                     vim.lsp.enable("odools")
-
-                    -- local lsp_config = require('lspconfig.configs')
-                    -- local addons_path = { "${workspaceFolder}/odoo/addons", "${workspaceFolder}/enterprise", "${workspaceFolder}/design-themes", "${workspaceFolder}/src/internal/default", "${workspaceFolder}/src/internal/private", "${workspaceFolder}/src/internal/trial"}
-                    -- local odooConfig = {
-                    --     id = 1,
-                    --     name = "main config",
-                    --     validatedAddonsPaths = addons_path,
-                    --     addons = addons_path,
-                    --     odooPath = "${workspaceFolder}/odoo",
-                    --     finalPythonPath = "python3",
-                    -- }
-                    -- lsp_config.odools = {
-                    --     default_config = {
-                    --         name = 'odools',
-                    --         cmd = { h .. "/src/odoo-ls/server/target/release/odoo_ls_server" },
-                    --         root_dir = function() return r end,
-                    --         workspace_folders = {
-                    --             {
-                    --                 uri = function() return r end,
-                    --                 name = function() return "base_workspace" end,
-                    --             },
-                    --         },
-                    --         filetypes = { 'python', 'xml' },
-                    --         settings = {
-                    --             Odoo = {
-                    --                 autoRefresh = true,
-                    --                 autoRefreshDelay = nil,
-                    --                 diagMissingImportLevel = "none",
-                    --                 configurations = { mainConfig = odooConfig },
-                    --                 selectedConfiguration = "mainConfig",
-                    --             },
-                    --         },
-                    --         capabilities = {
-                    --             textDocument = {
-                    --                 workspace = {
-                    --                     symbol = {
-                    --                         dynamicRegistration = true,
-                    --                     },
-                    --                 },
-                    --             },
-                    --         },
-                    --     },
-                    -- }
-                    -- lsp_config.odools.setup {}
-
                 end
 
                 -- some lsp bindings I like
                 vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {})
                 vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, {})
-                vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, {})
-                vim.keymap.set('n', 'gr', vim.lsp.buf.references, {})
                 vim.keymap.set('n', 'gs', vim.lsp.buf.signature_help, {})
                 vim.keymap.set('n', 'gl', vim.diagnostic.open_float, {})
-                vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, {})
                 -- reminder of some defaults:
                 -- "grn" is mapped in Normal mode to vim.lsp.buf.rename()
                 -- "gra" is mapped in Normal and Visual mode to vim.lsp.buf.code_action()
