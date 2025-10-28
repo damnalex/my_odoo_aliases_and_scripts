@@ -365,12 +365,12 @@ go_update_and_clean_all_branches() {
     # the full prune is quite slow and doesn't really need to be be run every time
     # Do it only every tenth time (on average)
     [ $((($RANDOM % 10))) -eq 0 ] && go_prune_all || echo 'no pruning this time'
+    echo "cleaning up the pyhton leftovers"
+    clear_pyc --all 2>/dev/null
     echo "updating 'our_modules' list:"
     local current_working_dir=$(pwd)
     our_modules_update_and_compare
     cd $current_working_dir
-    echo "finishing with a bit of cleanup..."
-    clear_pyc --all 2>/dev/null
     run 5 echo "#############################"
     echo "updated and cleaned all branches of multiverse and universe"
 }
