@@ -21,6 +21,7 @@
 	required = true
 [checkout]
 	defaultRemote = origin
+	workers = 4
 [gpg]
 	format = ssh
 [rebase]
