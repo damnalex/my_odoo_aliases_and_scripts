@@ -326,9 +326,12 @@ require("lazy").setup({
             -- General lsp config
             'neovim/nvim-lspconfig',
             config = function()
-                require'lspconfig'.ruff.setup{}
-                require'lspconfig'.pyright.setup{}
-                require'lspconfig'.lua_ls.setup{}
+                vim.lsp.config('ruff', {})
+                vim.lsp.enable("ruff")
+                vim.lsp.config('pyright', {})
+                vim.lsp.enable("pyright")
+                vim.lsp.config('lua_ls', {})
+                vim.lsp.enable("lua_ls")
                 if vim.fn.filereadable('odools.toml') then
                     -- TODO, make this work
                     -- based on the readme at https://github.com/odoo/odoo-ls-neovim
