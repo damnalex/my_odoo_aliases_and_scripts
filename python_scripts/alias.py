@@ -836,11 +836,7 @@ def o_ver(domain, *args, verbose=True):
         version_info = get(f"https://{domain}/web/version").json()
 
     if "--short" in args:
-        version_info = version_info.get(
-            "server_serie",  # xmlrpc style
-            version_info["version"],  # json2 style
-        )
-        float(version_info)
+        version_info = version_info.get("server_serie") or version_info["version"]
 
     if verbose:
         print(version_info)
