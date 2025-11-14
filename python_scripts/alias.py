@@ -654,6 +654,7 @@ def o_emp(*trigrams):
             ]
         },
     )
+    # TODO get the create date of the user_id too to get a more accurate create date in case of contract change
     managers_info = r_exec(
         "hr.employee.public",
         "search_read",
