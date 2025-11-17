@@ -289,6 +289,10 @@ require("lazy").setup({
             end,
         },
         {
+            -- easy f t horizontal movement
+            "unblevable/quick-scope",
+        },
+        {
             -- cool looking command prompt
             "folke/noice.nvim",
             event = "VeryLazy",
