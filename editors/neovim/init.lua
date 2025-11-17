@@ -258,6 +258,25 @@ require("lazy").setup({
             }
         },
         {
+            'Wansmer/treesj',
+            keys = {
+                '<space>m',
+                '<space>M',
+                '<space>j',
+                '<space>s',
+            },
+            dependencies = {
+                'nvim-treesitter/nvim-treesitter',
+            },
+            config = function()
+                require('treesj').setup({
+                    max_join_length = 1000,
+                })
+                -- For extending default preset with `recursive = true`
+                vim.keymap.set('n', '<leader>M', function() require('treesj').toggle({ split = { recursive = true } }) end)
+            end,
+        },
+        {
             -- git commands integration
             "tpope/vim-fugitive",
             event = "VeryLazy",
