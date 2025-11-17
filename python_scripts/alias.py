@@ -654,7 +654,13 @@ def o_emp(*trigrams):
             ]
         },
     )
-    # TODO get the create date of the user_id too to get a more accurate create date in case of contract change
+    users_data = r_exec(
+        "res.users",
+        "search_read",
+        [[["id", "in", [e["user_id"][0] for e in employees_data]]]],
+        {"fields": ["id", "create_date"]},
+    )
+    users_create_date = {u["id"]: u["create_date"] for u in users_data}
     managers_info = r_exec(
         "hr.employee.public",
         "search_read",
@@ -703,7 +709,7 @@ def o_emp(*trigrams):
         print(
             f"""name : {emp['name']}
         github account: {emp['github_login']}
-        create date : {emp['create_date']}
+        create date : {min([emp['create_date'], users_create_date[emp["user_id"][0]]])}
         company : {emp['company_id'][1]}
         department : {emp['department_id'] and emp['department_id'][1]}
         Job title : {emp['job_title']}
