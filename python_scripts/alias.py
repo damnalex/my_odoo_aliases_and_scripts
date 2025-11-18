@@ -706,10 +706,11 @@ def o_emp(*trigrams):
                 break
         else:
             employee_support_level = "None"
+        user_create_date = min([emp["create_date"], users_create_date.get(emp["user_id"][0], "999999999999")])
         print(
             f"""name : {emp['name']}
         github account: {emp['github_login']}
-        create date : {min([emp['create_date'], users_create_date[emp["user_id"][0]]])}
+        create date : {user_create_date}
         company : {emp['company_id'][1]}
         department : {emp['department_id'] and emp['department_id'][1]}
         Job title : {emp['job_title']}
