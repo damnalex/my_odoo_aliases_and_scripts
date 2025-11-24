@@ -349,36 +349,17 @@ require("lazy").setup({
             -- General lsp config
             'neovim/nvim-lspconfig',
             config = function()
-                vim.lsp.config('ruff', {})
-                vim.lsp.enable("ruff")
-                vim.lsp.config('pyright', {})
-                vim.lsp.enable("pyright")
                 vim.lsp.config('lua_ls', {})
                 vim.lsp.enable("lua_ls")
-                if vim.fn.filereadable('odools.toml') then
-                    -- TODO, make this work
-                    -- based on the readme at https://github.com/odoo/odoo-ls-neovim
-                    -- still doesn't work, but I have a good feeling about this ...
-                    local r = vim.fn.getcwd()
-                    local h = os.getenv('HOME')
-                    local odools_server = h .. "/src/odoo-ls/server/target/release/odoo_ls_server"
-                    local typeshed_location = h .. "/src/misc_gists/typeshed"
-
-                    vim.lsp.config('odools', {
-                        cmd = {odools_server, '--stdlib', vim.fn.fnamemodify(typeshed_location, ':h') .. '/stdlib'},
-                        root_dir = r,
-                        filetypes = { 'python' },
-                        workspace_folders = {{
-                            uri = vim.uri_from_fname(r),
-                            name = 'main_folder',
-                        }},
-                        settings = {
-                            Odoo = {
-                                selectedProfile = 'OdooWorkspace', -- should be the name defined in odools.toml
-                            }
-                        },
-                    })
-                    vim.lsp.enable("odools")
+                if vim.fn.filereadable('odools.toml') == 1 then
+                    -- odoo workspace, try to use just odoo-ls
+                    -- see next section
+                else
+                    -- not odoo, enable regular python LSPs
+                    vim.lsp.config('ruff', {})
+                    vim.lsp.enable("ruff")
+                    vim.lsp.config('pyright', {})
+                    vim.lsp.enable("pyright")
                 end
 
                 -- some lsp bindings I like
@@ -395,6 +376,30 @@ require("lazy").setup({
                 -- CTRL-S is mapped in Insert mode to vim.lsp.buf.signature_help()
 
             end,
+        },
+        {  -- odooLS specific config
+            'odoo/odoo-neovim',
+            config = function()
+                -- still doesn't work for now, but at least it does not actively crash anymore
+                if vim.fn.filereadable('odools.toml') == 1 then
+                    -- odoo workspace, try to use just odoo-ls
+                    vim.lsp.config("odoo_ls", {
+                        -- custom config if needed
+                        cmd = {
+                            -- Path to the odoo_ls_server binary
+                            vim.fn.expand('$HOME/src/odoo-ls/server/target/release/odoo_ls_server'),
+                            -- '--config-path',
+                            -- 'Path_to_toml/odools.toml',
+                            '--stdlib',
+                            vim.fn.expand('$HOME/src/misc_gists/typeshed/stdlib'),
+                        }
+                    })
+                    vim.lsp.enable({"odoo_ls"})
+                else
+                    -- not odoo, enable regular python LSPs
+                    -- see previous section
+                end
+            end
         },
         {
             -- code completion menu
