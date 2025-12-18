@@ -698,6 +698,14 @@ test-dump() {
     pl | grep $db_name
 }
 
+test-zipped-dump() {
+    local zipped=$1
+    unzip $zipped dump.sql || echo "dump not in expected place"
+    dropdb 'checkingDumpIntegrity-test' # should not exist, fine anyway
+    test-dump 'checkingDumpIntegrity'
+    dropdb 'checkingDumpIntegrity-test'
+}
+
 dump_to_sql() {
     # transform a postgres .dump file in a .sql file
     local dump_file=${1:-'no file'}
