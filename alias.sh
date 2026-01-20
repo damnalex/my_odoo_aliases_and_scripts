@@ -701,7 +701,7 @@ test-dump() {
 test-zipped-dump() {
     local zipped=$1
     unzip $zipped dump.sql || echo "dump not in expected place"
-    dropdb 'checkingDumpIntegrity-test' # should not exist, fine anyway
+    dropdb 'checkingDumpIntegrity-test' 2>/dev/null # should not exist, fine anyway
     test-dump 'checkingDumpIntegrity'
     dropdb 'checkingDumpIntegrity-test'
 }
