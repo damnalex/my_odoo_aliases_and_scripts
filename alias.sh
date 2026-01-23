@@ -486,7 +486,6 @@ build_multiverse_branch() {
 
 update_multiverse_branch() {
     # git pull the repos of the given mutliverse branche
-
     for repo in 'odoo' 'enterprise' 'design-themes' 'industry'; do
         git -C $SRC_MULTI/$1/$repo pull --quiet && echo "pulled $repo $1 (multiverse)"
     done
@@ -494,7 +493,6 @@ update_multiverse_branch() {
 
 update_all_multiverse_branches() {
     # git pull the repos of all the multivers branches
-
     for version in $(ls $SRC_MULTI); do
         update_multiverse_branch $version
     done
@@ -519,7 +517,7 @@ build_odoo_virtualenv() {
         source $SRC_MULTI/$1/venv/bin/activate
         pip install -r "$SRC_MULTI/$1/odoo/requirements.txt"
     fi
-    ln -s $SRC "$SRC_MULTI/$1/src"
+    # ln -s $SRC "$SRC_MULTI/$1/src"     # slows down searches by having a gigantic code base to look through. Also some tool do not work well with symlinks
     go_venv $1
     pip install --upgrade pip
     # support specific requirements
@@ -534,7 +532,7 @@ build_odoo_virtualenv() {
 }
 
 rebuild_virtualenvs() {
-    # recreate the main virtual envs
+    # recreate the existing virtual envs
     # usefull when I add something to other_requirements.txt
     for version in $(ls $SRC_MULTI); do {
         echo "--> $version"
