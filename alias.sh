@@ -624,6 +624,7 @@ list_local_saas() {
 #psql aliases
 # pythonable
 pl() {
+    local db_name
     # list odoo DBs
     #echo "select t1.datname as db_name, pg_size_pretty(pg_database_size(t1.datname)) as db_size from pg_database t1 order by t1.datname;" | psql postgres
     local where_clause="where t1.datname not like 'CLEAN_ODOO%' "
