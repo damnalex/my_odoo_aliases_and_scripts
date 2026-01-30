@@ -682,7 +682,7 @@ test-dump() {
     local db_name="$1-test"
     createdb $db_name || return 1
     echo "building DB"
-    psql -d $db_name <$dump_f &>/dev/null || return 1
+    psql -d $db_name -c "\restrict $(uuidgen)" -f $dump_f &>/dev/null || return 1
     # neutralize db for local testing
     $ST/lib/neuter.py $db_name --filestore || $ST/lib/neuter.py $db_name
     # start the database just long enough to check if there are custom modules
@@ -722,7 +722,7 @@ sql_to_dump() {
     local dump_file=${2:-'dump.dump'}
     if [ -f "$sql_file" ]; then
         createdb xoxo_to_delete &&
-            psql -d xoxo_to_delete <$sql_file >/dev/null &&
+            psql -d xoxo_to_delete -c "\restrict $(uuidgen)" -f $sql_file >/dev/null &&
             pg_dump -F c -f $2 xoxo_to_delete &&
             dropdb xoxo_to_delete
     else
