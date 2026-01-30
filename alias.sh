@@ -679,7 +679,7 @@ test-dump() {
     local dump_f=$dump_parent_folder/dump.sql
     $PSS/test_dump_safety.py $dump_f || return 1
     echo "Safety check OK"
-    local db_name="$1-test"
+    local db_name="$1"
     oes restore-dump $db_name $dump_f --no-start
     # check for custom modules
     local db_version=$(psql -tAqX -d "oes_$db_name" -c "select replace((regexp_matches(latest_version, '^\d+\.0|^saas~\d+\.\d+|saas~\d+'))[1], '~', '-') from ir_module_module where name='base'")
@@ -692,9 +692,8 @@ test-dump() {
 test-zipped-dump() {
     local zipped=$1
     unzip $zipped dump.sql || echo "dump not in expected place"
-    dropdb 'checkingDumpIntegrity-test' 2>/dev/null # should not exist, fine anyway
-    test-dump 'checkingDumpIntegrity'
-    dropdb 'checkingDumpIntegrity-test'
+    test-dump 'checkingdumpintegrity'
+    oes cleanup 'checkingdumpintegrity'
 }
 
 dump_to_sql() {
