@@ -780,3 +780,10 @@ compile_odoo_ls() {
 find_backup() {
     $PSS/find_backup.py $@
 }
+
+use_odoo_keychain() {
+    security default-keychain -s Odoo.keychain-db
+}
+use_default_keychain() {
+    security default-keychain -s login.keychain-db
+}
