@@ -408,27 +408,11 @@ _db_version() {
     psql -tAqX -d $1 -c "SELECT replace((regexp_matches(latest_version, '^\d+\.0|^saas~\d+\.\d+|saas~\d+'))[1], '~', '-') FROM ir_module_module WHERE name='base';"
 }
 
-# pythonable
 oes() {
     # start oe-support, with some smartness
     if [[ $1 == "raw" ]]; then
         shift
     else
-        # -- old way
-        # TODO: remove this if the new way works
-        # if [[ $1 == "fetch" ]] && ! [[ $* == *'--no-start'* ]]; then
-        #     # running first a fetch without starting the db
-        #     # then running a separate start to automagically
-        #     # use the right virtual-env, even when the db version
-        #     # is not known beforehand
-        #     echo "oes $@ --no-start "
-        #     eval oes $@ --no-start
-        #     echo " oes start $@[2,-1] "
-        #     eval oes start $@[2,-1]
-        #     return
-        # fi
-
-        # --new way
         if [[ $1 == "fetch" ]]; then
             go_venv $(o_ver $2 --short | tail -1)
         fi
@@ -442,18 +426,9 @@ oes() {
     # start odoo support
     # echo " $ST/oe-support.py $@ "
     eval $ST/oe-support.py $@
-    # (clear_pyc &)
 }
 # source $ST/scripts/completion/oe-support-completion.sh
 # complete -o default -F _oe-support oes
-
-odef() {
-    # download restore and start in one command with odev
-    local dbname=$1
-    local dburl=${2:-"$dbname.odoo.com"}
-    odev quickstart $dbname $dburl --stop-after-init
-    odev run $dbname
-}
 
 # pythonable
 droplike() {
