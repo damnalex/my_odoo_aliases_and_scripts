@@ -1046,6 +1046,7 @@ def typos_and_simple_aliases():
         "ezatig": ["ezatgi", "eaztgi"],
         "git": ["gti"],
         "htop": ["hotp"],
+        "less": ["lesss"],
         "oes": ["eos", "ose", "oe", "eso"],
         "open .": ["open."],
         "pl": ["pl$"],
