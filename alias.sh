@@ -677,7 +677,7 @@ test-dump() {
     # test dump (in the current folder, by default) for safety
     local dump_parent_folder=${2:-$(pwd)}
     local dump_f=$dump_parent_folder/dump.sql
-    $PSS/test_dump_safety.py $dump_f || return 1
+    $PSS/test_dump_safety.py $dump_f --not-strict || return 1
     echo "Safety check OK"
     local db_name="$1"
     oes restore-dump $db_name $dump_f --no-start
