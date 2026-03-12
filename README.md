@@ -7,7 +7,7 @@ See setup/README.md
 
 
 Disclaimer :
-This is made to work on macOS Sequoia with zsh shell and python 3.12.10, no recent effort has been made to make it work with other versions or OS
+This is made to work on macOS Sequoia with zsh shell and python 3.12.12, no recent effort has been made to make it work with other versions or OS
 
 Disclaimer 2 :
 This is made to work on my personal machine, with it's shitty config and idiosyncrasies. If this breaks yours, it's on you, no support will be provided, you have been warned.
