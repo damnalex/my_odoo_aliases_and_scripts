@@ -443,6 +443,14 @@ require("lazy").setup({
             -- add completion for nvim specific lua
             "hrsh7th/cmp-nvim-lua",
         },
+        {
+            -- github copilot intergration
+            "github/copilot.vim",
+            -- disbale by default, to limit distraction and save credits.
+            init = function()
+                vim.g.copilot_enabled = false
+            end,
+        },
     },
     -- colorscheme that will be used when installing plugins.
     install = { colorscheme = { "habamax" } },
