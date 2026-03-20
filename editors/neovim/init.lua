@@ -446,7 +446,7 @@ require("lazy").setup({
         {
             -- github copilot intergration
             "github/copilot.vim",
-            -- disbale by default, to limit distraction and save credits.
+            -- disable by default, to limit distraction and save credits.
             init = function()
                 vim.g.copilot_enabled = false
             end,
