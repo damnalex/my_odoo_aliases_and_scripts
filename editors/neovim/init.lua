@@ -447,6 +447,14 @@ require("lazy").setup({
             -- github copilot intergration
             "github/copilot.vim",
         },
+        {
+            "CopilotC-Nvim/CopilotChat.nvim",
+            dependencies = {
+                "github/copilot.vim",
+                { "nvim-lua/plenary.nvim", branch = "master" },
+            },
+            build = "make tiktoken",
+        },
     },
     -- colorscheme that will be used when installing plugins.
     install = { colorscheme = { "habamax" } },
