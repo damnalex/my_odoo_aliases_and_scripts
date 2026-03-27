@@ -446,10 +446,6 @@ require("lazy").setup({
         {
             -- github copilot intergration
             "github/copilot.vim",
-            -- disable by default, to limit distraction and save credits.
-            init = function()
-                vim.g.copilot_enabled = false
-            end,
         },
     },
     -- colorscheme that will be used when installing plugins.
