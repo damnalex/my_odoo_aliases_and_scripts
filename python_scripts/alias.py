@@ -5,7 +5,7 @@ import sys
 from collections import namedtuple
 from configparser import ConfigParser
 from functools import cache
-from inspect import signature
+from inspect import iscoroutinefunction, signature
 from itertools import groupby
 from socket import gaierror
 from textwrap import dedent as _dd
@@ -1006,6 +1006,13 @@ def dummy_nested_function():
     differed_sh_run("echo 'in shell, from nested'")
 
 
+@call_from_shell
+async def dummy_async_command():
+    """Just a dummy async command"""
+    # not actually doing anything async
+    print("in python async")
+
+
 # ^^^^^^^^^^^ aliasable functions above this line ^^^^^^^^^
 
 ####################################
@@ -1138,7 +1145,12 @@ if __name__ == "__main__":
         sys.exit(0)
 
     try:
-        res = CALLABLE_FROM_SHELL[method_name](*method_params)
+        if iscoroutinefunction(CALLABLE_FROM_SHELL[method_name]):
+            import asyncio
+
+            res = asyncio.run(CALLABLE_FROM_SHELL[method_name](*method_params))
+        else:
+            res = CALLABLE_FROM_SHELL[method_name](*method_params)
         if res is False:
             sys.exit(1)
     except (Invalid_params, UserAbort) as nice_e:
