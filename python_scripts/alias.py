@@ -826,6 +826,7 @@ def o_ver(domain, *args, verbose=True):
     from xmlrpc.client import ServerProxy as server
 
     from requests import get
+    from requests.exceptions import JSONDecodeError
 
     try:
         # xmlrpc style
@@ -841,7 +842,12 @@ def o_ver(domain, *args, verbose=True):
             version_info = server(f"https://{domain}/xmlrpc/2/common").version()
     except Exception:  # TODO pick a more specific error
         # json2 style
-        version_info = get(f"https://{domain}/web/version").json()
+        try:
+            version_info = get(f"https://{domain}/web/version").json()
+        except JSONDecodeError:
+            # TODO raise a proper error here
+            # or handle the case where the domain redirects to odoo.com in a smart way.
+            version_info = {"server_version": "Unknown"}
 
     if "--short" in args:
         version_info = version_info.get("server_serie") or version_info["version"]
