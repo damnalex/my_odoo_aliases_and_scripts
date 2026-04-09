@@ -749,7 +749,7 @@ compile_odoo_ls() {
     git switch $version --detach
     git submodule update
     echo "Compiling Odoo language server version $version in release mode..."
-    cargo build --release 2>/dev/null && echo "sucessfully !" || echo "woops, something went wrong :("
+    cargo build --release && echo "sucessfully !" || echo "woops, something went wrong :("
     cd $current_dir
 }
 
