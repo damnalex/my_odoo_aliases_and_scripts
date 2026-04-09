@@ -290,12 +290,17 @@ lldu() {
     # shows the creation date and the actual folder size
     # TODO : accept a flag to sort on date, size or name (+ revert)
     # Would probably be easier as a python script in that case
-    ll -rt | grep -v '^total' | while read line; do
-        local t=$(echo $line | awk '{print $6, $7, $8}')
-        local s=$(echo $line | awk '{print substr($0, index($0,$9))}' | sed 's/ /\\ /g' | xargs du -sh)
-        echo "$t \t $s"
-    done
-    echo "Total: $(du -sh . | awk '{print $1}')"
+    what=${1:-'--all'}
+    if [[ $what == "--all" ]] || [[ $what == "--items" ]]; then
+        ll -rt | grep -v '^total' | while read line; do
+            local t=$(echo $line | awk '{print $6, $7, $8}')
+            local s=$(echo $line | awk '{print substr($0, index($0,$9))}' | sed 's/ /\\ /g' | xargs du -sh)
+            echo "$t \t $s"
+        done
+    fi
+    if [[ $what == "--total" ]] || [[ $what == "--all" ]]; then
+        echo "Total: $(du -sh . | awk '{print $1}')"
+    fi
 }
 
 fix_dbd() {
