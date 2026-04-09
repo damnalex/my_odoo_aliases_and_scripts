@@ -285,6 +285,19 @@ retry_rsync() {
     done
 }
 
+upload_to_drive() {
+    file_path=$1
+    if [[ ! -f "$file_path" ]]; then
+        echo "file not found: $file_path"
+        return 1
+    fi
+    destination=${2:-""}
+    if [[ $destination != "" ]]; then
+        rclone mkdir "gdrive:/Support/shared\ dumps/$destination"
+    fi
+    rclone copy -P --drive-chunk-size 64M "$file_path" "gdrive:/Support/shared dumps/$destination"
+}
+
 lldu() {
     # a combination of ls -rt and du -sh *
     # shows the creation date and the actual folder size
