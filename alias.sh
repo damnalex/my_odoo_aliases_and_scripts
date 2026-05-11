@@ -797,19 +797,20 @@ go_update_and_hunter() {
 }
 
 check_multiverse_consistency() {
-    local v # multiverse version
-    local r # current repo in multiverse $v
-    local b # currrent effective branch in repo $r in multiverse $v
-    for v in $(ls $SRC_MULTI); do
-        for r in "odoo" "enterprise" "design-themes" "industry"; do
-            if [[ -d "$SRC_MULTI/$v/$r" ]]; then # not all repo exist in all versions
+    function check_multiverse_consistency_parallel() {
+        local v=$1                           # multiverse version
+        local r=$2                           # current repo in multiverse $v
+        local b                              # currrent effective branch in repo $r in multiverse $v
+        if [[ -d "$SRC_MULTI/$v/$r" ]]; then # not all repo exist in all versions
+            git -C "$SRC_MULTI/$v/$r" status --short
+            b=$(git -C "$SRC_MULTI/$v/$r" branch --show-current)
+            if [[ "$v" != "$b" ]]; then
+                echo "$v $r branch name == $b     <<<<<<<<<<<<<    is this expected ? "
+            else
                 echo "$v $r"
-                git -C "$SRC_MULTI/$v/$r" status --short
-                b=$(git -C "$SRC_MULTI/$v/$r" branch --show-current)
-                if [[ "$v" != "$b" ]]; then
-                    echo "$v  !=  $b     <<<<<<<<<<<<<    is this expected ? "
-                fi
             fi
-        done
-    done
+        fi
+    }
+    F=$(functions check_multiverse_consistency_parallel) # based on https://stackoverflow.com/a/70382827
+    parallel "$F; check_multiverse_consistency_parallel" ::: $(ls $SRC_MULTI) ::: "odoo" "enterprise" "design-themes" "industry"
 }
