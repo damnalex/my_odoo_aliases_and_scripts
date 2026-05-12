@@ -304,6 +304,15 @@ lldu() {
     # TODO : accept a flag to sort on date, size or name (+ revert)
     # Would probably be easier as a python script in that case
     what=${1:-'--all'}
+    if [[ $what == "--help" ]] || [[ $what == "-h" ]]; then
+        echo "lldu [--all|--items|--total|--help]"
+        return 1
+    fi
+    if [[ $what != "--all" ]] && [[ $what != "--items" ]] && [[ $what != "--total" ]]; then
+        echo "invalid argument: $what"
+        echo "lldu [--all|--items|--total|--help]"
+        return 1
+    fi
     if [[ $what == "--all" ]] || [[ $what == "--items" ]]; then
         ll -rt | grep -v '^total' | while read line; do
             local t=$(echo $line | awk '{print $6, $7, $8}')
