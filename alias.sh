@@ -735,7 +735,7 @@ public_file_server_autokill() {
     # checking that the file server is properly running
     sleep 2
     local PY_SERV_PID="$(listport 8000 | sed -n '2p' | awk '{print $2}')"
-    kill -0 "${PY_SERV_PID:-111111111111}" 2>/dev/null || return 1 # lets hope I never stumble upon that PID
+    kill -0 "${PY_SERV_PID:-111111111111}" 2>/dev/null || return 1 # this should be way above max pid on any system
     # opening the tunnel
     cloudflared tunnel --url http://localhost:8000
     # killing the file server, this line is reached
