@@ -10,7 +10,7 @@ from itertools import groupby
 from socket import gaierror
 from textwrap import dedent as _dd
 
-import paramiko
+import asyncssh
 from git_odoo import App as _git_odoo_app
 from git_odoo import _get_version_from_db, _repos
 from icecream import ic
@@ -176,19 +176,6 @@ def sh_run(cmd, **kwargs):
                 return res
             case bytes():
                 return res.decode("utf-8")
-
-
-def _ssh_executor(server, user="odoo"):
-    """returns a function that can be used to execute cli commands on the server :server with the user :user"""
-    ssh = paramiko.SSHClient()
-    ssh.load_host_keys(os.path.expanduser("~/.ssh/known_hosts"))
-    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    try:
-        ssh.connect(f"{server}.odoo.com", username=user)
-    except Exception:
-        print(f"Failed to established an ssh connection against server `{server}` with user `{user}`")
-        return False, None
-    return True, ssh.exec_command
 
 
 @call_from_shell
@@ -889,63 +876,59 @@ def o_loc(db):
 
 
 @call_from_shell
-def o_size(db):
+async def o_size(db):
     """get the size of a saas database"""
     db, server = _clean_db_name_and_server(db)
     assert db, "cannot get size info without a specific db name"
-    _, ssh = _ssh_executor(server)
-    if not ssh:
-        return False
-    sql_query = f"SELECT pg_size_pretty(pg_database_size('{db}'));"
-    psql_cmd = f'psql -tAqX -d {db} -c "{sql_query}"'
-    _, stdout, _ = ssh(psql_cmd)
-    sql_size = stdout.readline().rstrip()
-    filestore_size_cmd = f"du -sh /home/odoo/filestore/{db}/"
-    _, stdout, _ = ssh(filestore_size_cmd)
-    filestore_size = stdout.readline().split()[0]
-    print("SQL Size:", sql_size)
-    print("Filestore Size:", filestore_size)
+    async with asyncssh.connect(f"{server}.odoo.com", username="odoo") as ssh:
+        sql_query = f"SELECT pg_size_pretty(pg_database_size('{db}'));"
+        psql_cmd = f'psql -tAqX -d {db} -c "{sql_query}"'
+        ssh_res = await ssh.run(psql_cmd)
+        sql_size = ssh_res.stdout.rstrip()
+        filestore_size_cmd = f"du -sh /home/odoo/filestore/{db}/"
+        ssh_res = await ssh.run(filestore_size_cmd)
+        filestore_size = ssh_res.stdout.split()[0]
+        print("SQL Size:", sql_size)
+        print("Filestore Size:", filestore_size)
     return True
 
 
 @call_from_shell
-def o_freespace(server):
+async def o_freespace(server):
     """get the availlable disk space of on saas server"""
     _, server = _clean_db_name_and_server(server)
-    _, ssh = _ssh_executor(server)
-    if not ssh:
-        return False
-    _, stdout, _ = ssh("df -h")
-    columns = stdout.readline()
-    clean_columns = columns.replace("%", "").replace(" on", "_on")
-    df_line = namedtuple("df_line", clean_columns.split())
-    print("Mounted on\t\tUsed\tAvail\tUse%")
-    for line in stdout.readlines():
-        line = df_line(*line.rstrip().split())
-        if "home" in line.Mounted_on and ".zfs/snapshot/" not in line.Mounted_on:
-            tabs_rules = {(0, 6): 3, (6, 15): 2, (15, 999): 1}
-            tabs_nb = next(v for k, v in tabs_rules.items() if k[0] < len(line.Mounted_on) < k[1])
-            tabs = tabs_nb * "\t"
-            print(f"{line.Mounted_on}{tabs}{line.Used}\t{line.Avail}\t{line.Use}")
+    async with asyncssh.connect(f"{server}.odoo.com", username="odoo") as ssh:
+        ssh_res = await ssh.run("df -h")
+        out: str = ssh_res.stdout
+        lines = out.splitlines()
+        columns = lines[0]
+        clean_columns = columns.replace("%", "").replace(" on", "_on")
+        df_line = namedtuple("df_line", clean_columns.split())
+        print("Mounted on\t\tUsed\tAvail\tUse%")
+        for line in lines[1:]:
+            line = df_line(*line.rstrip().split())
+            if "home" in line.Mounted_on and ".zfs/snapshot/" not in line.Mounted_on:
+                tabs_rules = {(0, 6): 3, (6, 15): 2, (15, 999): 1}
+                tabs_nb = next(v for k, v in tabs_rules.items() if k[0] < len(line.Mounted_on) < k[1])
+                tabs = tabs_nb * "\t"
+                print(f"{line.Mounted_on}{tabs}{line.Used}\t{line.Avail}\t{line.Use}")
     return True
 
 
 @call_from_shell
-def o_meta(db):
+async def o_meta(db):
     """get the size of a saas database"""
     db, server = _clean_db_name_and_server(db)
-    _, ssh = _ssh_executor(server)
-    if not ssh:
-        return False
-    meta_get_cmd = f"/home/odoo/bin/oe-meta get -j {db} | jq"
-    _, stdout, _ = ssh(meta_get_cmd)
-    print("\nMeta info:")
-    print("".join(stdout.readlines()))
+    async with asyncssh.connect(f"{server}.odoo.com", username="odoo") as ssh:
+        meta_get_cmd = f"/home/odoo/bin/oe-meta get -j {db} | jq"
+        ssh_res = await ssh.run(meta_get_cmd)
+        print("\nMeta info:")
+        print(ssh_res.stdout)
     return True
 
 
 @call_from_shell
-def o_stat(db):
+async def o_stat(db):
     """Show location, and size of a db and disk usage stat of the server"""
     from xmlrpc.client import ProtocolError
 
@@ -956,11 +939,11 @@ def o_stat(db):
         except ProtocolError:
             # probably a timeout (redirections are already handled by o_ver)
             print("failed to get database version")
-        o_size(db)
-        o_meta(db)
+        await o_size(db)
+        await o_meta(db)
     o_loc(server)
     print()
-    o_freespace(server)
+    await o_freespace(server)
 
 
 @shell_end_hook
