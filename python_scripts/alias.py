@@ -683,16 +683,10 @@ def o_emp(*trigrams):
         {"fields": ["id", "name", "user_ids"]},
     )
     levels = [[sg["name"], sg["user_ids"]] for sg in support_groups]
-    levels.sort(key=lambda x: len(x[1]))
     # output
     url_template = "https://www.odoo.com/web?debug=1#id={id}&model=hr.employee.public&view_type=form"
     for emp in employees_data:
-        for level_name, level_users in levels:
-            if emp["user_id"] and emp["user_id"][0] in level_users:
-                employee_support_level = level_name
-                break
-        else:
-            employee_support_level = "None"
+        emp_support_level = [name for name, users in levels if emp["user_id"] and emp["user_id"][0] in users]
         user_create_date = min([emp["create_date"], users_create_date.get(emp["user_id"][0], "999999999999")])
         print(
             f"""name : {emp['name']}
@@ -701,7 +695,7 @@ def o_emp(*trigrams):
         company : {emp['company_id'][1]}
         department : {emp['department_id'] and emp['department_id'][1]}
         Job title : {emp['job_title']}
-        Support Level : {employee_support_level}
+        Support Levels : {emp_support_level}
         managers : {chains_str[emp['id']]}"""
         )
         url = url_template.format(id=emp["id"])
