@@ -16,6 +16,6 @@ minimum_viable_filestore() {
     mkdir "$destination_path/filestore"
     for f in $(psql -tAqX -d $db_name -c "select store_fname from ir_attachment where url like '%asset%';"); do
         mkdir $(dirname "$destination_path/filestore/$f") 2>/dev/null
-        rsync -r "$original_filestore_path/$f" "$destination_path/filestore/$f"
+        rsync "$original_filestore_path/$f" "$destination_path/filestore/$f"
     done
 }
