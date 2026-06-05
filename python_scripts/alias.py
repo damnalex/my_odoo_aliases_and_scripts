@@ -874,7 +874,7 @@ async def o_size(db):
     """get the size of a saas database"""
     db, server = _clean_db_name_and_server(db)
     assert db, "cannot get size info without a specific db name"
-    async with asyncssh.connect(f"{server}.odoo.com", username="odoo") as ssh:
+    async with asyncssh.connect(f"{server}.odoo.com", username="odoo", known_hosts=None) as ssh:
         sql_query = f"SELECT pg_size_pretty(pg_database_size('{db}'));"
         psql_cmd = f'psql -tAqX -d {db} -c "{sql_query}"'
         ssh_res = await ssh.run(psql_cmd)
@@ -891,7 +891,7 @@ async def o_size(db):
 async def o_freespace(server):
     """get the availlable disk space of on saas server"""
     _, server = _clean_db_name_and_server(server)
-    async with asyncssh.connect(f"{server}.odoo.com", username="odoo") as ssh:
+    async with asyncssh.connect(f"{server}.odoo.com", username="odoo", known_hosts=None) as ssh:
         ssh_res = await ssh.run("df -h")
         out: str = ssh_res.stdout
         lines = out.splitlines()
@@ -913,7 +913,7 @@ async def o_freespace(server):
 async def o_meta(db):
     """get the size of a saas database"""
     db, server = _clean_db_name_and_server(db)
-    async with asyncssh.connect(f"{server}.odoo.com", username="odoo") as ssh:
+    async with asyncssh.connect(f"{server}.odoo.com", username="odoo", known_hosts=None) as ssh:
         meta_get_cmd = f"/home/odoo/bin/oe-meta get -j {db} | jq"
         ssh_res = await ssh.run(meta_get_cmd)
         print("\nMeta info:")
