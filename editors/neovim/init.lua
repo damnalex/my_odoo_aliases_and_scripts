@@ -111,6 +111,7 @@ require("lazy").setup({
                 { 'nvim-telescope/telescope-live-grep-args.nvim' },  -- adds ripgrep arguments support to <leader>fg
                 { 'nvim-telescope/telescope-fzf-native.nvim' }, --faster fuzzy finder
             },
+            -- enabled = false,
             event = "VeryLazy",
             config = function()
                 local tb = require('telescope.builtin')
@@ -164,13 +165,14 @@ require("lazy").setup({
         },
         {
             'nvim-telescope/telescope-fzf-native.nvim',
+            -- enabled = false,
             build = 'make',
         },
         {
             --supercharged highlighting
             'nvim-treesitter/nvim-treesitter',
             -- enabled = false,
-            branch = "master",
+            branch = "main",
             build = ":TSUpdate",
             opts = {
                 ensure_installed = {
@@ -260,29 +262,35 @@ require("lazy").setup({
         {
             -- git commands integration
             "tpope/vim-fugitive",
+            -- enabled = false,
             event = "VeryLazy",
         },
         {
             -- fugitiv extension : enables :Gbrowse
             "tpope/vim-rhubarb",
+            -- enabled = false,
             event = "VeryLazy",
         },
         {
             -- put git diff indication next to the line numbers
             "lewis6991/gitsigns.nvim",
+            -- enabled = false,
             opts = {},
         },
         {
             -- highlights in red trailling spaces
             "ntpeters/vim-better-whitespace",
+            -- enabled = false,
         },
         {
             -- add indentation markers
             "lukas-reineke/indent-blankline.nvim",
+            -- enabled = false,
         },
         {
             -- a theme
             "rebelot/kanagawa.nvim",
+            -- enabled = false,
             init = function()
                 vim.opt.termguicolors = true
                 vim.cmd.colorscheme "kanagawa"
@@ -291,10 +299,12 @@ require("lazy").setup({
         {
             -- easy f t horizontal movement
             "unblevable/quick-scope",
+            -- enabled = false,
         },
         {
             -- cool looking command prompt
             "folke/noice.nvim",
+            -- enabled = false,
             event = "VeryLazy",
             -- enabled = function()
             --     return false
@@ -329,6 +339,7 @@ require("lazy").setup({
         {
             -- General lsp config
             'neovim/nvim-lspconfig',
+            -- enabled = false,
             config = function()
                 vim.lsp.config('lua_ls', {})
                 vim.lsp.enable("lua_ls")
@@ -360,6 +371,7 @@ require("lazy").setup({
         },
         {  -- odooLS specific config
             'odoo/odoo-neovim',
+            -- enabled = false,
             config = function()
                 -- still doesn't work for now, but at least it does not actively crash anymore
                 if vim.fn.filereadable('odools.toml') == 1 then
@@ -385,6 +397,7 @@ require("lazy").setup({
         {
             -- code completion menu
             "hrsh7th/cmp-buffer",
+            -- enabled = false,
             dependencies = {
                 { 'hrsh7th/nvim-cmp' },
             },
@@ -442,13 +455,16 @@ require("lazy").setup({
         {
             -- add completion for nvim specific lua
             "hrsh7th/cmp-nvim-lua",
+            -- enabled = false,
         },
         {
             -- github copilot intergration
             "github/copilot.vim",
+            -- enabled = false,
         },
         {
             "CopilotC-Nvim/CopilotChat.nvim",
+            -- enabled = false,
             dependencies = {
                 "github/copilot.vim",
                 { "nvim-lua/plenary.nvim", branch = "master" },
