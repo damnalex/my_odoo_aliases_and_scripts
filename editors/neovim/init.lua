@@ -105,7 +105,7 @@ require("lazy").setup({
     spec = {
         {
             --  an IDE like search interface
-            'nvim-telescope/telescope.nvim', tag = '0.1.8',
+            'nvim-telescope/telescope.nvim', version = '*',
             dependencies = {
                 { 'nvim-lua/plenary.nvim' },  -- default requirement
                 { 'nvim-telescope/telescope-live-grep-args.nvim' },  -- adds ripgrep arguments support to <leader>fg
