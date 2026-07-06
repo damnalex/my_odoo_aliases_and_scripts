@@ -733,7 +733,9 @@ def o_user(*trigrams):
         except ValueError:
             return False
 
-    uids = [uid for uid in trigrams if _isint(uid)]
+    _trigrams = (gram.replace(",", "") for gram in trigrams)
+    uids = [uid for uid in _trigrams if _isint(uid)]
+    print(uids)
     f_trigrams = [f"{trigram.lower()}@odoo.com" for trigram in trigrams if not _isint(trigram)]
     full_emails = [trigram.lower() for trigram in trigrams if not _isint(trigram)]
     users = {}
