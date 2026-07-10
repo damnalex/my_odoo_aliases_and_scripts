@@ -441,6 +441,7 @@ def goto(version=None):
         "master": "$SRC_MULTI/master",
         "internal": "$INTERNAL",
         "sh": "$PAAS",
+        "saas-automation": "$SRC/saas-automation",
         "apps_store": "$INTERNAL/private/loempia",
         "oes": "$ST",
         "ap": "$AP",
