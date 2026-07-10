@@ -15,5 +15,5 @@ This is made to work on my personal machine, with it's shitty config and idiosyn
 
 # Repo History:
 
-* 2018-10-04: repo creation (it was just aliases to copy past in .zshrc at the time)
+* 2018-10-04: repo creation (it was just aliases to copy-paste in .zshrc at the time)
 * 2020-08-17: transfer of the repo ownership to github.com/damnalex
