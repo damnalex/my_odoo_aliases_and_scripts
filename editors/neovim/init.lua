@@ -348,10 +348,8 @@ require("lazy").setup({
                     -- see next section
                 else
                     -- not odoo, enable regular python LSPs
-                    vim.lsp.config('ruff', {})
-                    vim.lsp.enable("ruff")
-                    vim.lsp.config('pyright', {})
-                    vim.lsp.enable("pyright")
+                    vim.lsp.enable('ruff')
+                    vim.lsp.enable('ty')
                 end
 
                 -- some lsp bindings I like
