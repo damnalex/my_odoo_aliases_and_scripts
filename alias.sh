@@ -681,6 +681,7 @@ test-dump() {
     local dump_parent_folder=${2:-$(pwd)}
     local dump_f=$dump_parent_folder/dump.sql
     local db_name=${1:-$(uuidgen | tr '[:upper:]' '[:lower:]')}
+    $PSS/test_dump_safety.py $dump_f
     oes restore-dump $db_name $dump_f --no-start
     # check for custom modules
     local db_version=$(psql -tAqX -d "oes_$db_name" -c "select replace((regexp_matches(latest_version, '^\d+\.0|^saas~\d+\.\d+|saas~\d+'))[1], '~', '-') from ir_module_module where name='base'")
