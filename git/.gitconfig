@@ -10,7 +10,7 @@
     hist = log --graph --all --date=short --pretty=format:'%C(dim white)%h%Creset%C(auto)%d%Creset %s %C(blue)<%an> %C(dim green)(%cd)%Creset%n'
     alias = ! sed -n '/^\\[alias]$/, /^\\[.*]$/p' ~/.gitconfig | sed '$d'
     push-check = "! git fetch $(git rev-parse --symbolic-full-name --abbrev-ref @{upstream} | sed \"s|/| |\")  ; echo \"<<<<< only on remote:\\n$(git log HEAD..HEAD@{upstream} --pretty=format:\"%h%x09%ae%x09%ar%x09%s\")\"; echo \">>>>>> only on local:\\n$(git log HEAD@{upstream}..HEAD --pretty=format:\"%h%x09%ae%x09%ar%x09%s\")\""
-	blamef = blame -w -C -C -C
+    blamef = blame -w -C -C -C
 [commit]
 	verbose = true
 	gpgsign = true
@@ -52,3 +52,6 @@
 	conflictStyle = zdiff3
 [delta]
 	line-numbers = true
+[diff]
+    algorithm = histogram
+    colorMoved = default
