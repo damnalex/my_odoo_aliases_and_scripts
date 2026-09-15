@@ -1,21 +1,4 @@
--- Bootstrap lazy.nvim
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not (vim.uv or vim.loop).fs_stat(lazypath) then
-    local lazyrepo = "https://github.com/folke/lazy.nvim.git"
-    local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
-    if vim.v.shell_error ~= 0 then
-        vim.api.nvim_echo({
-            { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
-            { out, "WarningMsg" },
-            { "\nPress any key to exit..." },
-        }, true, {})
-        vim.fn.getchar()
-        os.exit(1)
-    end
-end
-vim.opt.rtp:prepend(lazypath)
-
--- `mapleader` and `maplocalleader` must be loaded before lazy.nvim
+-- `mapleader` and `maplocalleader` must be loaded before plugins are set up
 -- (and should be loaded before the rest of the config because it is just simpler that way)
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
@@ -101,377 +84,342 @@ vim.keymap.set("n", "<LeftRelease>", "<LeftRelease>g``")
 -- fast switch to file explorer
 vim.keymap.set("n", "-", vim.cmd.Explore, {})
 
-require("lazy").setup({
-    spec = {
-        {
-            --  an IDE like search interface
-            'nvim-telescope/telescope.nvim', version = '*',
-            dependencies = {
-                { 'nvim-lua/plenary.nvim' },  -- default requirement
-                { 'nvim-telescope/telescope-live-grep-args.nvim' },  -- adds ripgrep arguments support to <leader>fg
-                { 'nvim-telescope/telescope-fzf-native.nvim' }, --faster fuzzy finder
+
+-- Run each plugin's one-time build step whenever it is installed or updated.
+-- (native `vim.pack` has no `build`/`config`/`opts`/`dependencies` fields like
+-- lazy.nvim did, so build steps and plugin setup calls are handled explicitly
+-- below instead of being declared inline in the plugin spec)
+vim.api.nvim_create_autocmd("PackChanged", {
+    desc = "Run plugin build steps after install/update",
+    callback = function(ev)
+        local name, kind = ev.data.spec.name, ev.data.kind
+        if kind ~= "install" and kind ~= "update" then
+            return
+        end
+        if name == "telescope-fzf-native.nvim" then
+            vim.system({ "make" }, { cwd = ev.data.path }):wait()
+        elseif name == "nvim-treesitter" then
+            vim.cmd("TSUpdate")
+        elseif name == "CopilotChat.nvim" then
+            vim.system({ "make", "tiktoken" }, { cwd = ev.data.path }):wait()
+        end
+    end,
+})
+
+-- convenience command to check for and apply plugin updates (replaces the
+-- `:Lazy` UI); review the confirmation buffer, then `:write` to confirm or
+-- `:quit` to discard
+vim.api.nvim_create_user_command("PackUpdate", function()
+    vim.pack.update()
+end, {})
+
+vim.pack.add({
+    --  an IDE like search interface
+    { src = "https://github.com/nvim-lua/plenary.nvim", version = "master" }, -- default requirement
+    { src = "https://github.com/nvim-telescope/telescope.nvim", version = "master" },
+    { src = "https://github.com/nvim-telescope/telescope-live-grep-args.nvim", version = "master" }, -- adds ripgrep arguments support to <leader>fg
+    { src = "https://github.com/nvim-telescope/telescope-fzf-native.nvim", version = "main" }, -- faster fuzzy finder
+
+    -- supercharged highlighting
+    { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main" },
+    -- extension for treesitter : keep class and function definition within the window
+    { src = "https://github.com/nvim-treesitter/nvim-treesitter-context", version = "master" },
+
+    -- git commands integration
+    { src = "https://github.com/tpope/vim-fugitive", version = "master" },
+    -- fugitive extension : enables :Gbrowse
+    { src = "https://github.com/tpope/vim-rhubarb", version = "master" },
+    -- put git diff indication next to the line numbers
+    { src = "https://github.com/lewis6991/gitsigns.nvim", version = "main" },
+    -- highlights in red trailling spaces
+    { src = "https://github.com/ntpeters/vim-better-whitespace", version = "master" },
+    -- add indentation markers
+    { src = "https://github.com/lukas-reineke/indent-blankline.nvim", version = "master" },
+    -- a theme
+    { src = "https://github.com/rebelot/kanagawa.nvim", version = "master" },
+    -- easy f t horizontal movement
+    { src = "https://github.com/unblevable/quick-scope", version = "master" },
+
+    -- cool looking command prompt
+    { src = "https://github.com/folke/noice.nvim", version = "main" },
+    { src = "https://github.com/MunifTanjim/nui.nvim", version = "main" }, -- required
+    { src = "https://github.com/rcarriga/nvim-notify", version = "master" }, -- optional
+
+    -- General lsp config
+    { src = "https://github.com/neovim/nvim-lspconfig", version = "master" },
+    -- odooLS specific config
+    { src = "https://github.com/odoo/odoo-neovim", version = "main" },
+
+    -- code completion menu
+    { src = "https://github.com/hrsh7th/nvim-cmp", version = "main" },
+    { src = "https://github.com/hrsh7th/cmp-buffer", version = "main" },
+    -- add completion for nvim specific lua
+    { src = "https://github.com/hrsh7th/cmp-nvim-lua", version = "main" },
+
+    -- github copilot intergration
+    { src = "https://github.com/github/copilot.vim", version = "release" },
+    { src = "https://github.com/CopilotC-Nvim/CopilotChat.nvim", version = "main" },
+})
+
+--  an IDE like search interface
+do
+    local tb = require('telescope.builtin')
+    vim.keymap.set('n', '<leader>ff', tb.find_files, {})
+    vim.keymap.set('n', '<leader>fg', ":lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>")
+    vim.keymap.set('n', '<leader>fb', tb.buffers, {})
+    vim.keymap.set('n', '<leader>fh', tb.help_tags, {})
+    vim.keymap.set('n', '<leader>fs', tb.lsp_document_symbols, {})
+    vim.keymap.set('n', '<leader>fo', tb.oldfiles, {})
+    vim.keymap.set('n', '<leader>fw', tb.grep_string, {})  -- search for word under cursor
+    vim.keymap.set('n', '<leader>fp', tb.builtin, {})  -- list the telescope builtin pickers. To not clutter mappings, but still be able to access many less used pickers
+    vim.keymap.set('n', '<leader>fr', tb.resume, {}) -- resume last picker (even if I never pressed enter)
+
+    local telescope = require("telescope")
+    local ta = require("telescope.actions")
+    local tlga = require("telescope-live-grep-args.actions")
+
+    -- follow symbolic links
+    local telescopeConfig = require("telescope.config")
+    local vimgrep_arguments = { unpack(telescopeConfig.values.vimgrep_arguments) }
+    table.insert(vimgrep_arguments, "-L")
+
+    telescope.setup({
+        defaults = {
+            mappings = {
+                i = {
+                    ["<C-j>"] = ta.cycle_history_next,
+                    ["<C-k>"] = ta.cycle_history_prev,
+                     -- most frequent annoyance when looking for translated terms (but i prefer to do it manually rather that risking over excluding by default)
+                    ["<C-p>"] = tlga.quote_prompt({ postfix = ' --iglob "!*.po"' }),
+                    ["<C-q>"] = tlga.quote_prompt(),  -- this will be on right-ctrl + q, left-ctrl+q still sends the result to the quick fix list
+                    -- move the preview only
+                    ["<C-u>"] = ta.preview_scrolling_up, -- full height scroll
+                    ["<C-d>"] = ta.preview_scrolling_down,
+                    -- TODO: find a way to scroll left and right in the preview (will land in 0.2.0 : https://github.com/nvim-telescope/telescope.nvim/issues/3110#issuecomment-2395242266 )
+                }
             },
-            -- enabled = false,
-            event = "VeryLazy",
-            config = function()
-                local tb = require('telescope.builtin')
-                vim.keymap.set('n', '<leader>ff', tb.find_files, {})
-                vim.keymap.set('n', '<leader>fg', ":lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>")
-                vim.keymap.set('n', '<leader>fb', tb.buffers, {})
-                vim.keymap.set('n', '<leader>fh', tb.help_tags, {})
-                vim.keymap.set('n', '<leader>fs', tb.lsp_document_symbols, {})
-                vim.keymap.set('n', '<leader>fo', tb.oldfiles, {})
-                vim.keymap.set('n', '<leader>fw', tb.grep_string, {})  -- search for word under cursor
-                vim.keymap.set('n', '<leader>fp', tb.builtin, {})  -- list the telescope builtin pickers. To not clutter mappings, but still be able to access many less used pickers
-                vim.keymap.set('n', '<leader>fr', tb.resume, {}) -- resume last picker (even if I never pressed enter)
-
-                local telescope = require("telescope")
-                local ta = require("telescope.actions")
-                local tlga = require("telescope-live-grep-args.actions")
-
-                -- follow symbolic links
-                local telescopeConfig = require("telescope.config")
-                local vimgrep_arguments = { unpack(telescopeConfig.values.vimgrep_arguments) }
-                table.insert(vimgrep_arguments, "-L")
-
-                telescope.setup({
-                    defaults = {
-                        mappings = {
-                            i = {
-                                ["<C-j>"] = ta.cycle_history_next,
-                                ["<C-k>"] = ta.cycle_history_prev,
-                                 -- most frequent annoyance when looking for translated terms (but i prefer to do it manually rather that risking over excluding by default)
-                                ["<C-p>"] = tlga.quote_prompt({ postfix = ' --iglob "!*.po"' }),
-                                ["<C-q>"] = tlga.quote_prompt(),  -- this will be on right-ctrl + q, left-ctrl+q still sends the result to the quick fix list
-                                -- move the preview only
-                                ["<C-u>"] = ta.preview_scrolling_up, -- full height scroll
-                                ["<C-d>"] = ta.preview_scrolling_down,
-                                -- TODO: find a way to scroll left and right in the preview (will land in 0.2.0 : https://github.com/nvim-telescope/telescope.nvim/issues/3110#issuecomment-2395242266 )
-                            }
-                        },
-                        vimgrep_arguments = vimgrep_arguments,
-                    },
-                    pickers = {
-                        find_files = {
-                            -- follow symlink in file search
-                            find_command = { "rg", "--files", "-L" },
-                        },
-                    },
-                })
-
-                telescope.load_extension("live_grep_args")
-                telescope.load_extension("fzf")
-            end,
+            vimgrep_arguments = vimgrep_arguments,
         },
-        {
-            'nvim-telescope/telescope-fzf-native.nvim',
-            -- enabled = false,
-            build = 'make',
-        },
-        {
-            --supercharged highlighting
-            'nvim-treesitter/nvim-treesitter',
-            -- enabled = false,
-            branch = "main",
-            build = ":TSUpdate",
-            opts = {
-                ensure_installed = {
-                    -- required
-                    "c",
-                    "lua",
-                    "vim",
-                    "vimdoc",
-                    "query",
-                    -- required by noice
-                    "regex",
-                    "markdown",
-                    "markdown_inline",
-                    -- mine
-                    "python",
-                    "javascript",
-                    "sql",
-                    "po",
-                    "xml",
-                    "css",
-                    "scss",
-                    "diff",
-                    "git_rebase",
-                    "git_config",
-                    "bash",
-                    "yaml",
-                },
-
-                -- Install parsers synchronously (only applied to `ensure_installed`)
-                sync_install = false,
-
-                -- Automatically install missing parsers when entering buffer
-                -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
-                auto_install = true,
-
-                -- List of parsers to ignore installing (or "all")
-                -- ignore_install = { "javascript" },
-
-                ---- If you need to change the installation directory of the parsers (see -> Advanced Setup)
-                -- parser_install_dir = "/some/path/to/store/parsers", -- Remember to run vim.opt.runtimepath:append("/some/path/to/store/parsers")!
-
-                highlight = {
-                    enable = true,
-
-                    -- NOTE: these are the names of the parsers and not the filetype. (for example if you want to
-                    -- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
-                    -- the name of the parser)
-                    -- list of language that will be disabled
-                    -- disable = { "c", "rust" },
-
-                    -- Or use a function for more flexibility, e.g. to disable slow treesitter highlight for large files
-                    disable = function(lang, buf)
-                        local max_filesize = 100 * 1024 -- 100 KB
-                        local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
-                        if ok and stats and stats.size > max_filesize then
-                            return true
-                        end
-                    end,
-
-                    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
-                    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-                    -- Using this option may slow down your editor, and you may see some duplicate highlights.
-                    -- Instead of true it can also be a list of languages
-                    additional_vim_regex_highlighting = false,
-                },
-            }
-        },
-        {
-            -- extension for treesitter : keep class and function definition within the window
-            "nvim-treesitter/nvim-treesitter-context",
-            -- enabled = false,
-            opts = {
-                enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
-                max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
-                min_window_height = 0, -- Minimum editor window height to enable context. Values <= 0 mean no limit.
-                line_numbers = true,
-                multiline_threshold = 20, -- Maximum number of lines to show for a single context
-                trim_scope = 'outer', -- Which context lines to discard if `max_lines` is exceeded. Choices: 'inner', 'outer'
-                mode = 'cursor',  -- Line used to calculate context. Choices: 'cursor', 'topline'
-                -- Separator between context and content. Should be a single character string, like '-'.
-                -- When separator is set, the context will only show up when there are at least 2 lines above cursorline.
-                separator = nil,
-                zindex = 20, -- The Z-index of the context window
-                on_attach = nil, -- (fun(buf: integer): boolean) return false to disable attaching
-            }
-        },
-        {
-            -- git commands integration
-            "tpope/vim-fugitive",
-            -- enabled = false,
-            event = "VeryLazy",
-        },
-        {
-            -- fugitiv extension : enables :Gbrowse
-            "tpope/vim-rhubarb",
-            -- enabled = false,
-            event = "VeryLazy",
-        },
-        {
-            -- put git diff indication next to the line numbers
-            "lewis6991/gitsigns.nvim",
-            -- enabled = false,
-            opts = {},
-        },
-        {
-            -- highlights in red trailling spaces
-            "ntpeters/vim-better-whitespace",
-            -- enabled = false,
-        },
-        {
-            -- add indentation markers
-            "lukas-reineke/indent-blankline.nvim",
-            -- enabled = false,
-        },
-        {
-            -- a theme
-            "rebelot/kanagawa.nvim",
-            -- enabled = false,
-            init = function()
-                vim.opt.termguicolors = true
-                vim.cmd.colorscheme "kanagawa"
-            end,
-        },
-        {
-            -- easy f t horizontal movement
-            "unblevable/quick-scope",
-            -- enabled = false,
-        },
-        {
-            -- cool looking command prompt
-            "folke/noice.nvim",
-            -- enabled = false,
-            event = "VeryLazy",
-            -- enabled = function()
-            --     return false
-            -- end,
-            opts = {
-                lsp = {
-                    -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
-                    override = {
-                        ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-                        ["vim.lsp.util.stylize_markdown"] = true,
-                        ["cmp.entry.get_documentation"] = true, -- requires hrsh7th/nvim-cmp
-                    },
-                },
-                -- you can enable a preset for easier configuration
-                presets = {
-                    -- bottom_search = true, -- use a classic bottom cmdline for search
-                    command_palette = true, -- position the cmdline and popupmenu together
-                },
-                messages = {
-                    enabled = false,
-                },
+        pickers = {
+            find_files = {
+                -- follow symlink in file search
+                find_command = { "rg", "--files", "-L" },
             },
-            dependencies = {
-                "MunifTanjim/nui.nvim", -- required
-                "rcarriga/nvim-notify", -- optional
-            },
-            init = function()
-                -- make spell check play nice with noice
-                vim.keymap.set('n', 'z=', 'ea<C-X>s')  -- z=  opens a dropdown rather than a full window, this breaks the counter feature of z=
-            end,
         },
-        {
-            -- General lsp config
-            'neovim/nvim-lspconfig',
-            -- enabled = false,
-            config = function()
-                vim.lsp.config('lua_ls', {})
-                vim.lsp.enable("lua_ls")
-                if vim.fn.filereadable('odools.toml') == 1 then
-                    -- odoo workspace, try to use just odoo-ls
-                    -- see next section
-                else
-                    -- not odoo, enable regular python LSPs
-                    vim.lsp.enable('ruff')
-                    vim.lsp.enable('ty')
-                end
+    })
 
-                -- some lsp bindings I like
-                vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {})
-                vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, {})
-                vim.keymap.set('n', 'gs', vim.lsp.buf.signature_help, {})
-                vim.keymap.set('n', 'gl', vim.diagnostic.open_float, {})
-                -- reminder of some defaults:
-                -- "grn" is mapped in Normal mode to vim.lsp.buf.rename()
-                -- "gra" is mapped in Normal and Visual mode to vim.lsp.buf.code_action()
-                -- "grr" is mapped in Normal mode to vim.lsp.buf.references()
-                -- "gri" is mapped in Normal mode to vim.lsp.buf.implementation()
-                -- "gO" is mapped in Normal mode to vim.lsp.buf.document_symbol()
-                -- CTRL-S is mapped in Insert mode to vim.lsp.buf.signature_help()
+    telescope.load_extension("live_grep_args")
+    telescope.load_extension("fzf")
+end
 
-            end,
-        },
-        {  -- odooLS specific config
-            'odoo/odoo-neovim',
-            -- enabled = false,
-            config = function()
-                -- still doesn't work for now, but at least it does not actively crash anymore
-                if vim.fn.filereadable('odools.toml') == 1 then
-                    -- odoo workspace, try to use just odoo-ls
-                    vim.lsp.config("odoo_ls", {
-                        -- custom config if needed
-                        cmd = {
-                            -- Path to the odoo_ls_server binary
-                            vim.fn.expand('$HOME/src/odoo-ls/server/target/release/odoo_ls_server'),
-                            -- '--config-path',
-                            -- 'Path_to_toml/odools.toml',
-                            '--stdlib',
-                            vim.fn.expand('$HOME/src/misc_gists/typeshed/stdlib'),
-                        }
-                    })
-                    vim.lsp.enable({"odoo_ls"})
-                else
-                    -- not odoo, enable regular python LSPs
-                    -- see previous section
-                end
+-- supercharged highlighting
+require('nvim-treesitter').setup({
+    ensure_installed = {
+        -- required
+        "c",
+        "lua",
+        "vim",
+        "vimdoc",
+        "query",
+        -- required by noice
+        "regex",
+        "markdown",
+        "markdown_inline",
+        -- mine
+        "python",
+        "javascript",
+        "sql",
+        "po",
+        "xml",
+        "css",
+        "scss",
+        "diff",
+        "git_rebase",
+        "git_config",
+        "bash",
+        "yaml",
+    },
+
+    -- Install parsers synchronously (only applied to `ensure_installed`)
+    sync_install = false,
+
+    -- Automatically install missing parsers when entering buffer
+    -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
+    auto_install = true,
+
+    -- List of parsers to ignore installing (or "all")
+    -- ignore_install = { "javascript" },
+
+    ---- If you need to change the installation directory of the parsers (see -> Advanced Setup)
+    -- parser_install_dir = "/some/path/to/store/parsers", -- Remember to run vim.opt.runtimepath:append("/some/path/to/store/parsers")!
+
+    highlight = {
+        enable = true,
+
+        -- NOTE: these are the names of the parsers and not the filetype. (for example if you want to
+        -- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
+        -- the name of the parser)
+        -- list of language that will be disabled
+        -- disable = { "c", "rust" },
+
+        -- Or use a function for more flexibility, e.g. to disable slow treesitter highlight for large files
+        disable = function(lang, buf)
+            local max_filesize = 100 * 1024 -- 100 KB
+            local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+            if ok and stats and stats.size > max_filesize then
+                return true
             end
-        },
-        {
-            -- code completion menu
-            "hrsh7th/cmp-buffer",
-            -- enabled = false,
-            dependencies = {
-                { 'hrsh7th/nvim-cmp' },
-            },
-            lazy = true,
-            event = { "BufReadPost", "BufNewFile" },
-            config = function()
-                local cmp = require('cmp')
-                -- local cmp_format = require('lsp-zero').cmp_format({details = true})
-                cmp.setup({
-                    sources = {
-                        {name = 'nvim_lsp'},
-                        {name = 'nvim_lua'},
-                        {name = 'buffer'},
-                    },
-                    mapping = {
-                        ['<C-y>'] = cmp.mapping.confirm({select = false}),
-                        ['<C-e>'] = cmp.mapping.abort(),
-                        ['<Up>'] = cmp.mapping.select_prev_item({behavior = 'select'}),
-                        ['<Down>'] = cmp.mapping.select_next_item({behavior = 'select'}),
-                        ['<C-p>'] = cmp.mapping(function()
-                            if cmp.visible() then
-                                cmp.select_prev_item({behavior = 'insert'})
-                            else
-                                cmp.complete()
-                            end
-                        end),
-                        ['<C-n>'] = cmp.mapping(function()
-                            if cmp.visible() then
-                                cmp.select_next_item({behavior = 'insert'})
-                            else
-                                cmp.complete()
-                            end
-                        end),
-                    },
-                    snippet = {
-                        expand = function(args)
-                            require('luasnip').lsp_expand(args.body)
-                        end,
-                    },
-                    -- show completion source
-                    -- formatting = cmp_format,   --TODO do this without lsp-zero
-                    -- preselect the first completion result
-                    preselect = 'item',
-                    completion = {
-                        completeopt = 'menu,menuone,noinsert'
-                    },
-                    -- make it pretty
-                    window = {
-                        completion = cmp.config.window.bordered(),
-                        documentation = cmp.config.window.bordered(),
-                    },
-                })
-            end,
-        },
-        {
-            -- add completion for nvim specific lua
-            "hrsh7th/cmp-nvim-lua",
-            -- enabled = false,
-        },
-        {
-            -- github copilot intergration
-            "github/copilot.vim",
-            -- enabled = false,
-        },
-        {
-            "CopilotC-Nvim/CopilotChat.nvim",
-            -- enabled = false,
-            dependencies = {
-                "github/copilot.vim",
-                { "nvim-lua/plenary.nvim", branch = "master" },
-            },
-            build = "make tiktoken",
+        end,
+
+        -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+        -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+        -- Using this option may slow down your editor, and you may see some duplicate highlights.
+        -- Instead of true it can also be a list of languages
+        additional_vim_regex_highlighting = false,
+    },
+})
+
+-- extension for treesitter : keep class and function definition within the window
+require("treesitter-context").setup({
+    enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
+    max_lines = 0, -- How many lines the window should span. Values <= 0 mean no limit.
+    min_window_height = 0, -- Minimum editor window height to enable context. Values <= 0 mean no limit.
+    line_numbers = true,
+    multiline_threshold = 20, -- Maximum number of lines to show for a single context
+    trim_scope = 'outer', -- Which context lines to discard if `max_lines` is exceeded. Choices: 'inner', 'outer'
+    mode = 'cursor',  -- Line used to calculate context. Choices: 'cursor', 'topline'
+    -- Separator between context and content. Should be a single character string, like '-'.
+    -- When separator is set, the context will only show up when there are at least 2 lines above cursorline.
+    separator = nil,
+    zindex = 20, -- The Z-index of the context window
+    on_attach = nil, -- (fun(buf: integer): boolean) return false to disable attaching
+})
+
+-- put git diff indication next to the line numbers
+require("gitsigns").setup({})
+
+-- a theme
+vim.opt.termguicolors = true
+vim.cmd.colorscheme "kanagawa"
+
+-- cool looking command prompt
+require("noice").setup({
+    lsp = {
+        -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
+        override = {
+            ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+            ["vim.lsp.util.stylize_markdown"] = true,
+            ["cmp.entry.get_documentation"] = true, -- requires hrsh7th/nvim-cmp
         },
     },
-    -- colorscheme that will be used when installing plugins.
-    install = { colorscheme = { "habamax" } },
-    -- automatically check for plugin updates
-    checker = { enabled = true },
+    -- you can enable a preset for easier configuration
+    presets = {
+        -- bottom_search = true, -- use a classic bottom cmdline for search
+        command_palette = true, -- position the cmdline and popupmenu together
+    },
+    messages = {
+        enabled = false,
+    },
 })
+-- make spell check play nice with noice
+vim.keymap.set('n', 'z=', 'ea<C-X>s')  -- z=  opens a dropdown rather than a full window, this breaks the counter feature of z=
+
+-- General lsp config
+do
+    vim.lsp.config('lua_ls', {})
+    vim.lsp.enable("lua_ls")
+    if vim.fn.filereadable('odools.toml') == 1 then
+        -- odoo workspace, try to use just odoo-ls
+        -- see next section
+    else
+        -- not odoo, enable regular python LSPs
+        vim.lsp.enable('ruff')
+        vim.lsp.enable('ty')
+    end
+
+    -- some lsp bindings I like
+    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {})
+    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, {})
+    vim.keymap.set('n', 'gs', vim.lsp.buf.signature_help, {})
+    vim.keymap.set('n', 'gl', vim.diagnostic.open_float, {})
+    -- reminder of some defaults:
+    -- "grn" is mapped in Normal mode to vim.lsp.buf.rename()
+    -- "gra" is mapped in Normal and Visual mode to vim.lsp.buf.code_action()
+    -- "grr" is mapped in Normal mode to vim.lsp.buf.references()
+    -- "gri" is mapped in Normal mode to vim.lsp.buf.implementation()
+    -- "gO" is mapped in Normal mode to vim.lsp.buf.document_symbol()
+    -- CTRL-S is mapped in Insert mode to vim.lsp.buf.signature_help()
+end
+
+-- odooLS specific config
+do
+    -- still doesn't work for now, but at least it does not actively crash anymore
+    if vim.fn.filereadable('odools.toml') == 1 then
+        -- odoo workspace, try to use just odoo-ls
+        vim.lsp.config("odoo_ls", {
+            -- custom config if needed
+            cmd = {
+                -- Path to the odoo_ls_server binary
+                vim.fn.expand('$HOME/src/odoo-ls/server/target/release/odoo_ls_server'),
+                -- '--config-path',
+                -- 'Path_to_toml/odools.toml',
+                '--stdlib',
+                vim.fn.expand('$HOME/src/misc_gists/typeshed/stdlib'),
+            }
+        })
+        vim.lsp.enable({"odoo_ls"})
+    else
+        -- not odoo, enable regular python LSPs
+        -- see previous section
+    end
+end
+
+-- code completion menu
+do
+    local cmp = require('cmp')
+    -- local cmp_format = require('lsp-zero').cmp_format({details = true})
+    cmp.setup({
+        sources = {
+            {name = 'nvim_lsp'},
+            {name = 'nvim_lua'},
+            {name = 'buffer'},
+        },
+        mapping = {
+            ['<C-y>'] = cmp.mapping.confirm({select = false}),
+            ['<C-e>'] = cmp.mapping.abort(),
+            ['<Up>'] = cmp.mapping.select_prev_item({behavior = 'select'}),
+            ['<Down>'] = cmp.mapping.select_next_item({behavior = 'select'}),
+            ['<C-p>'] = cmp.mapping(function()
+                if cmp.visible() then
+                    cmp.select_prev_item({behavior = 'insert'})
+                else
+                    cmp.complete()
+                end
+            end),
+            ['<C-n>'] = cmp.mapping(function()
+                if cmp.visible() then
+                    cmp.select_next_item({behavior = 'insert'})
+                else
+                    cmp.complete()
+                end
+            end),
+        },
+        snippet = {
+            expand = function(args)
+                require('luasnip').lsp_expand(args.body)
+            end,
+        },
+        -- show completion source
+        -- formatting = cmp_format,   --TODO do this without lsp-zero
+        -- preselect the first completion result
+        preselect = 'item',
+        completion = {
+            completeopt = 'menu,menuone,noinsert'
+        },
+        -- make it pretty
+        window = {
+            completion = cmp.config.window.bordered(),
+            documentation = cmp.config.window.bordered(),
+        },
+    })
+end
