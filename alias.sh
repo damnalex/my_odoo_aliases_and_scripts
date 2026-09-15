@@ -790,6 +790,8 @@ use_default_keychain() {
     security default-keychain -s login.keychain-db
 }
 
+alias safe_copilot='safehouse copilot'
+
 go_update_and_hunter() {
     # git stuff
     go_update_and_clean_all_branches
