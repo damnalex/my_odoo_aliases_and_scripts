@@ -1,10 +1,5 @@
 {
   "plugins": {
-    "CopilotChat.nvim": {
-      "rev": "004ced055d8db59561cfcddc5f141ccd8d5a033b",
-      "src": "https://github.com/CopilotC-Nvim/CopilotChat.nvim",
-      "version": "'main'"
-    },
     "cmp-buffer": {
       "rev": "b74fab3656eea9de20a9b8116afa3cfc4ec09657",
       "src": "https://github.com/hrsh7th/cmp-buffer",

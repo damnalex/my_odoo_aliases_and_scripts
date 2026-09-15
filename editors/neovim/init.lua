@@ -100,8 +100,6 @@ vim.api.nvim_create_autocmd("PackChanged", {
             vim.system({ "make" }, { cwd = ev.data.path }):wait()
         elseif name == "nvim-treesitter" then
             vim.cmd("TSUpdate")
-        elseif name == "CopilotChat.nvim" then
-            vim.system({ "make", "tiktoken" }, { cwd = ev.data.path }):wait()
         end
     end,
 })
@@ -158,7 +156,6 @@ vim.pack.add({
 
     -- github copilot intergration
     { src = "https://github.com/github/copilot.vim", version = "release" },
-    { src = "https://github.com/CopilotC-Nvim/CopilotChat.nvim", version = "main" },
 })
 
 --  an IDE like search interface
