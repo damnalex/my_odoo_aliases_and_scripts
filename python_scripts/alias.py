@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import asyncio
 import os
 import subprocess
 import sys
@@ -880,11 +881,10 @@ async def o_size(db):
     async with asyncssh.connect(f"{server}.odoo.com", username="odoo", known_hosts=None) as ssh:
         sql_query = f"SELECT pg_size_pretty(pg_database_size('{db}'));"
         psql_cmd = f'psql -tAqX -d {db} -c "{sql_query}"'
-        ssh_res = await ssh.run(psql_cmd)
-        sql_size = ssh_res.stdout.rstrip()
         filestore_size_cmd = f"du -sh /home/odoo/filestore/{db}/"
-        ssh_res = await ssh.run(filestore_size_cmd)
-        filestore_size = ssh_res.stdout.split()[0]
+        sql_res, filestore_res = await asyncio.gather(ssh.run(psql_cmd), ssh.run(filestore_size_cmd))
+        sql_size = sql_res.stdout.rstrip()
+        filestore_size = filestore_res.stdout.split()[0]
         print("SQL Size:", sql_size)
         print("Filestore Size:", filestore_size)
     return True
@@ -930,17 +930,18 @@ async def o_stat(db):
     from xmlrpc.client import ProtocolError
 
     db, server = _clean_db_name_and_server(db)
+    tasks = []
     if db:
         try:
             o_ver(db)
         except ProtocolError:
             # probably a timeout (redirections are already handled by o_ver)
             print("failed to get database version")
-        await o_size(db)
-        await o_meta(db)
-    o_loc(server)
-    print()
-    await o_freespace(server)
+        tasks += [o_size(db), o_meta(db)]
+    # o_loc is a blocking call, run it in a thread so it doesn't block the other tasks
+    tasks.append(asyncio.to_thread(o_loc, server))
+    tasks.append(o_freespace(server))
+    await asyncio.gather(*tasks)
 
 
 @shell_end_hook
@@ -1132,8 +1133,6 @@ if __name__ == "__main__":
 
     try:
         if iscoroutinefunction(CALLABLE_FROM_SHELL[method_name]):
-            import asyncio
-
             res = asyncio.run(CALLABLE_FROM_SHELL[method_name](*method_params))
         else:
             res = CALLABLE_FROM_SHELL[method_name](*method_params)
