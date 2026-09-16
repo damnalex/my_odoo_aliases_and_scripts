@@ -111,37 +111,48 @@ vim.api.nvim_create_user_command("PackUpdate", function()
     vim.pack.update()
 end, {})
 
+--------------------------
+--------------------------
+---- LOADING PLUGINS -----
+--------------------------
+--------------------------
+
 vim.pack.add({
-    --  an IDE like search interface
+    -- Telescope:  an IDE like search interface
     { src = "https://github.com/nvim-lua/plenary.nvim", version = "master" }, -- default requirement
     { src = "https://github.com/nvim-telescope/telescope.nvim", version = "master" },
     { src = "https://github.com/nvim-telescope/telescope-live-grep-args.nvim", version = "master" }, -- adds ripgrep arguments support to <leader>fg
     { src = "https://github.com/nvim-telescope/telescope-fzf-native.nvim", version = "main" }, -- faster fuzzy finder
 
-    -- supercharged highlighting
+    -- Treesitter: supercharged highlighting
     { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main" },
     -- extension for treesitter : keep class and function definition within the window
     { src = "https://github.com/nvim-treesitter/nvim-treesitter-context", version = "master" },
 
-    -- git commands integration
+    -- Fugitive: git commands integration
     { src = "https://github.com/tpope/vim-fugitive", version = "master" },
     -- fugitive extension : enables :Gbrowse
     { src = "https://github.com/tpope/vim-rhubarb", version = "master" },
-    -- put git diff indication next to the line numbers
+
+    -- Gitsigns: put git diff indication next to the line numbers
     { src = "https://github.com/lewis6991/gitsigns.nvim", version = "main" },
-    -- highlights in red trailling spaces
+
+    -- Vim-better-white-space:  highlights in red trailling spaces
     { src = "https://github.com/ntpeters/vim-better-whitespace", version = "master" },
-    -- add indentation markers
+
+    -- Indent-blankline: add indentation markers
     { src = "https://github.com/lukas-reineke/indent-blankline.nvim", version = "master" },
-    -- a theme
+
+    -- kanagawa : a theme
     { src = "https://github.com/rebelot/kanagawa.nvim", version = "master" },
-    -- easy f t horizontal movement
+
+    -- quick-scope: easy f t horizontal movement
     { src = "https://github.com/unblevable/quick-scope", version = "master" },
 
-    -- cool looking command prompt
+    -- Noice: cool looking command prompt
     { src = "https://github.com/folke/noice.nvim", version = "main" },
-    { src = "https://github.com/MunifTanjim/nui.nvim", version = "main" }, -- required
-    { src = "https://github.com/rcarriga/nvim-notify", version = "master" }, -- optional
+    { src = "https://github.com/MunifTanjim/nui.nvim", version = "main" }, -- required dependency for noice
+    { src = "https://github.com/rcarriga/nvim-notify", version = "master" }, -- optional dependency for noice
 
     -- General lsp config
     { src = "https://github.com/neovim/nvim-lspconfig", version = "master" },
@@ -154,11 +165,17 @@ vim.pack.add({
     -- add completion for nvim specific lua
     { src = "https://github.com/hrsh7th/cmp-nvim-lua", version = "main" },
 
-    -- github copilot intergration
+    -- github copilot intergration (autocompletion)
     { src = "https://github.com/github/copilot.vim", version = "release" },
 })
 
---  an IDE like search interface
+---------------------------
+---------------------------
+--- CONFIGURING PLUGINS ---
+---------------------------
+---------------------------
+
+--  Telescope: an IDE like search interface
 do
     local tb = require('telescope.builtin')
     vim.keymap.set('n', '<leader>ff', tb.find_files, {})
@@ -209,7 +226,7 @@ do
     telescope.load_extension("fzf")
 end
 
--- supercharged highlighting
+-- Treesitter: supercharged highlighting
 require('nvim-treesitter').setup({
     ensure_installed = {
         -- required
@@ -292,14 +309,14 @@ require("treesitter-context").setup({
     on_attach = nil, -- (fun(buf: integer): boolean) return false to disable attaching
 })
 
--- put git diff indication next to the line numbers
+-- GITSIgns : put git diff indication next to the line numbers
 require("gitsigns").setup({})
 
 -- a theme
 vim.opt.termguicolors = true
 vim.cmd.colorscheme "kanagawa"
 
--- cool looking command prompt
+-- Noice: cool looking command prompt
 require("noice").setup({
     lsp = {
         -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
