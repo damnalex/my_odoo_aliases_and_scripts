@@ -620,9 +620,9 @@ def o_emp(*trigrams):
         raise Invalid_params("`trigrams` parameter is mandatory. check --help")
     r_exec = _xmlrpc_odoo_com()
     f_trigrams = (f"{trigram.lower()}@odoo.com" for trigram in trigrams)
-    mail_domain = ["|"] * (len(trigrams) - 1)
+    mail_domain: list[str | list[str]] = ["|"] * (len(trigrams) - 1)
     mail_domain += [["work_email", "=", tri] for tri in f_trigrams]
-    github_domain = ["|"] * (len(trigrams) - 1)
+    github_domain: list[str | list[str]] = ["|"] * (len(trigrams) - 1)
     github_domain += [["github_login", "=ilike", tri] for tri in trigrams]  # make it case insensitive
     domain = ["|"] + mail_domain + github_domain
     employees_data = r_exec(
@@ -716,6 +716,42 @@ def o_emp(*trigrams):
         results: {employees_data}
         """
     raise Invalid_params(msg + debug_info)
+
+
+@call_from_shell
+def o_emp_photo(*trigrams):
+    """open the employee avatar phot page for the given trigram"""
+    import time
+    import webbrowser
+
+    r_exec = _xmlrpc_odoo_com()
+    f_trigrams = (f"{trigram.lower()}@odoo.com" for trigram in trigrams)
+    mail_domain: list[str | list[str]] = ["|"] * (len(trigrams) - 1)
+    mail_domain += [["work_email", "=", tri] for tri in f_trigrams]
+    employee_data = r_exec(
+        "hr.employee.public",
+        "search_read",
+        [mail_domain],
+        {
+            "fields": [
+                "id",
+                "work_email",
+            ]
+        },
+    )
+
+    def ordered_by_trigrams(employees, trigrams):
+        for trigram in trigrams:
+            for emp in employees:
+                if emp["work_email"] == f"{trigram.lower()}@odoo.com":
+                    yield emp
+                    break
+
+    for i, emp in enumerate(ordered_by_trigrams(employee_data, trigrams)):
+        if i:
+            time.sleep(0.5)  # to ensure tab ordering in the browser
+        url = f"https://www.odoo.com/web/image/hr.employee.public/{emp['id']}/avatar_1024"
+        webbrowser.open(url)
 
 
 @call_from_shell
