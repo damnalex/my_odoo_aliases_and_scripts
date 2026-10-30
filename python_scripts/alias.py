@@ -3,8 +3,10 @@ import asyncio
 import os
 import subprocess
 import sys
+import time
 from collections import namedtuple
 from configparser import ConfigParser
+from datetime import datetime
 from functools import cache
 from inspect import iscoroutinefunction, signature
 from itertools import groupby
@@ -1009,6 +1011,31 @@ def digfresh(domain, *records):
             res_raw2 = sh_run(f"dig {domain} {record} +short")
             print(f"Non authoritatitve result for {record}:")
             print(res_raw2)
+
+
+@call_from_shell
+def countdown(target_time):
+    """Countdown to a given time in the format HH:MM:SS or HH:MM"""
+    h, m, *s = target_time.split(":")
+    t = {"hour": int(h), "minute": int(m), "second": int(s[0]) if s else 0, "microsecond": 0}
+    color_time_delay = [
+        ("\033[31m", 20, 0.05),
+        ("\033[32m", 120, 5),
+        ("", sys.maxsize, 30),
+    ]
+    target_dt = datetime.now().replace(**t)
+    target_str = target_dt.strftime("%H:%M:%S")
+    now = datetime.now()
+    try:
+        while (diff := (target_dt - now).total_seconds()) > 0:
+            color, sleep_time = next((c, st) for c, s, st in color_time_delay if diff <= s)
+            now_str = now.strftime("%H:%M:%S.%f")[:-3]
+            print(f"\r{color}{now_str}\033[0m -> {target_str}", flush=True)
+            time.sleep(sleep_time)
+            now = datetime.now()
+        print("Pull !")
+    except KeyboardInterrupt:
+        pass
 
 
 # -----  simple tests -----
