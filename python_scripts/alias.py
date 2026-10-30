@@ -742,14 +742,11 @@ def o_emp_photo(*trigrams):
         },
     )
 
-    def ordered_by_trigrams(employees, trigrams):
-        for trigram in trigrams:
-            for emp in employees:
-                if emp["work_email"] == f"{trigram.lower()}@odoo.com":
-                    yield emp
-                    break
+    def ordered_by_input(employees):
+        sorting_key = lambda emp: trigrams.index(emp["work_email"].removesuffix("@odoo.com"))
+        return sorted(employees, key=sorting_key)
 
-    for i, emp in enumerate(ordered_by_trigrams(employee_data, trigrams)):
+    for i, emp in enumerate(ordered_by_input(employee_data)):
         if i:
             time.sleep(0.5)  # to ensure tab ordering in the browser
         url = f"https://www.odoo.com/web/image/hr.employee.public/{emp['id']}/avatar_1024"
