@@ -16,7 +16,7 @@
       "version": "'release'"
     },
     "gitsigns.nvim": {
-      "rev": "e583e226776859490757718a22f43f1aac1a3c14",
+      "rev": "1e9d0fbfe7ff848bc402d2c2e2854fb4eff2dce7",
       "src": "https://github.com/lewis6991/gitsigns.nvim",
       "version": "'main'"
     },
@@ -46,7 +46,7 @@
       "version": "'main'"
     },
     "nvim-lspconfig": {
-      "rev": "ac9d2f7c4757db6320cab6697fe73e5e8adb2457",
+      "rev": "7d120778543b876b5a1e216e4ae9f1cb0b88a01b",
       "src": "https://github.com/neovim/nvim-lspconfig",
       "version": "'master'"
     },
@@ -56,12 +56,12 @@
       "version": "'master'"
     },
     "nvim-treesitter": {
-      "rev": "9a168f6357ed21c3a636e1727bc7d382abc451b8",
+      "rev": "a2f694478be07f89c2d03cc17858a8745a400c4b",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter",
       "version": "'main'"
     },
     "nvim-treesitter-context": {
-      "rev": "f3061339b8eaf9fda873600bc425b8d2d8502533",
+      "rev": "8decd73460d26ef0a0befb745d022dd1fc2c38b8",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter-context",
       "version": "'master'"
     },
