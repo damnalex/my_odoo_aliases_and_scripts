@@ -1,0 +1,155 @@
+
+# Oh My Zsh - Extract
+extract () {
+	setopt localoptions noautopushd
+	if (( $# == 0 ))
+	then
+		cat >&2 <<'EOF'
+Usage: extract [-option] [file ...]
+
+Options:
+    -r, --remove    Remove archive after unpacking.
+    -t, --to-directory <dir>  Extract to a specific directory instead of the current one.
+EOF
+	fi
+	local remove_archive=1
+	local target_directory=""
+	while (( $# > 0 ))
+	do
+		case "$1" in
+			(-r | --remove) remove_archive=0
+				shift ;;
+			(-t | --to-directory) shift
+				if (( $# == 0 ))
+				then
+					echo "extract: -t/--to-directory requires a directory argument" >&2
+					return 1
+				fi
+				target_directory="$1"
+				shift
+				if [[ ! -d "$target_directory" ]]
+				then
+					echo "extract: '$target_directory' is not a valid directory" >&2
+					return 1
+				fi
+				target_directory="${target_directory%/}"  ;;
+			(*) break ;;
+		esac
+	done
+	local pwd="$PWD"
+	while (( $# > 0 ))
+	do
+		if [[ ! -f "$1" ]]
+		then
+			echo "extract: '$1' is not a valid file" >&2
+			shift
+			continue
+		fi
+		local success=0
+		local file="$1" full_path="${1:A}"
+		local extract_dir="${1:t:r}"
+		if [[ $extract_dir =~ '\.tar$' ]]
+		then
+			extract_dir="${extract_dir:r}"
+		fi
+		if [[ -n "$target_directory" ]]
+		then
+			extract_dir="$target_directory/${extract_dir:t}"
+		fi
+		if [[ -e "$extract_dir" ]]
+		then
+			local rnd="${(L)"${$(( [##36]$RANDOM*$RANDOM ))}":1:5}"
+			extract_dir="${extract_dir}-${rnd}"
+		fi
+		command mkdir -p "$extract_dir"
+		builtin cd -q "$extract_dir"
+		echo "extract: extracting to $extract_dir" >&2
+		case "${file:l}" in
+			(*.tar.gz|*.tgz) (( $+commands[pigz] )) && {
+					tar -I pigz -xvf "$full_path"
+				} || tar zxvf "$full_path" ;;
+			(*.tar.bz2|*.tbz|*.tbz2) (( $+commands[pbzip2] )) && {
+					tar -I pbzip2 -xvf "$full_path"
+				} || tar xvjf "$full_path" ;;
+			(*.tar.xz|*.txz) (( $+commands[pixz] )) && {
+					tar -I pixz -xvf "$full_path"
+				} || {
+					tar --xz --help &> /dev/null && tar --xz -xvf "$full_path" || xzcat "$full_path" | tar xvf -
+				} ;;
+			(*.tar.zma|*.tlz) tar --lzma --help &> /dev/null && tar --lzma -xvf "$full_path" || lzcat "$full_path" | tar xvf - ;;
+			(*.tar.zst|*.tzst) tar --zstd --help &> /dev/null && tar --zstd -xvf "$full_path" || zstdcat "$full_path" | tar xvf - ;;
+			(*.tar) tar xvf "$full_path" ;;
+			(*.tar.lz) (( $+commands[lzip] )) && tar xvf "$full_path" ;;
+			(*.tar.lz4) lz4 -c -d "$full_path" | tar xvf - ;;
+			(*.tar.lrz) (( $+commands[lrzuntar] )) && lrzuntar "$full_path" ;;
+			(*.gz) (( $+commands[pigz] )) && pigz -cdk "$full_path" > "${file:t:r}" || gunzip -ck "$full_path" > "${file:t:r}" ;;
+			(*.bz2) (( $+commands[pbzip2] )) && pbzip2 -cd "$full_path" > "${file:t:r}" || bunzip2 -c "$full_path" > "${file:t:r}" ;;
+			(*.xz) xzcat "$full_path" > "${file:t:r}" ;;
+			(*.lrz) (( $+commands[lrunzip] )) && lrunzip "$full_path" ;;
+			(*.lz4) lz4 -d "$full_path" ;;
+			(*.lzma) unlzma -c "$full_path" > "${file:t:r}" ;;
+			(*.z) uncompress -c "$full_path" > "${file:t:r}" ;;
+			(*.zip|*.war|*.jar|*.ear|*.sublime-package|*.ipa|*.ipsw|*.xpi|*.apk|*.aar|*.whl|*.vsix|*.crx|*.pk3|*.pk4) unzip "$full_path" ;;
+			(*.rar) if (( $+commands[unrar] ))
+				then
+					unrar x -ad "$full_path"
+				elif (( $+commands[unar] ))
+				then
+					unar -o . "$full_path"
+				else
+					echo "extract: cannot extract RAR files: install unrar or unar" >&2
+					success=1
+				fi ;;
+			(*.rpm) rpm2cpio "$full_path" | cpio --quiet -id ;;
+			(*.7z|*.7z.[0-9]*|*.pk7) if (( $+commands[7zz] ))
+				then
+					7zz x "$full_path"
+				elif (( $+commands[7z] ))
+				then
+					7z x "$full_path"
+				elif (( $+commands[7za] ))
+				then
+					7za x "$full_path"
+				else
+					echo "extract: cannot extract 7z files: install 7zz, 7z or 7za" >&2
+					success=1
+				fi ;;
+			(*.deb) command mkdir -p "control" "data"
+				ar vx "$full_path" > /dev/null
+				builtin cd -q control
+				extract ../control.tar.*
+				builtin cd -q ../data
+				extract ../data.tar.*
+				builtin cd -q ..
+				command rm *.tar.* debian-binary ;;
+			(*.zst) unzstd --stdout "$full_path" > "${file:t:r}" ;;
+			(*.cab|*.exe) cabextract "$full_path" ;;
+			(*.cpio|*.obscpio) cpio -idmvF "$full_path" ;;
+			(*.zpaq) zpaq x "$full_path" ;;
+			(*.zlib) zlib-flate -uncompress < "$full_path" > "${file:r}" ;;
+			(*) echo "extract: '$file' cannot be extracted" >&2
+				success=1  ;;
+		esac
+		(( success = success > 0 ? success : $? ))
+		(( success == 0 && remove_archive == 0 )) && command rm "$full_path"
+		shift
+		builtin cd -q "$pwd"
+		local -a content
+		content=("${extract_dir}"/*(DNY2))
+		if [[ ${#content} -eq 1 && -e "${content[1]}" ]]
+		then
+			if [[ "${content[1]:t}" == "${extract_dir:t}" ]]
+			then
+				local [118;1:3utmp_name==(:)
+				tmp_name="${tmp_name:t}"
+				command mv "${content[1]}" "$tmp_name" && command rmdir "$extract_dir" && command mv "$tmp_name" "$extract_dir"
+			elif [[ ! -e "${target_directory:-.}/${content[1]:t}" ]]
+			then
+				command mv -- "${content[1]}" "${target_directory:-.}/" && command rmdir -- "$extract_dir"
+			fi
+		elif [[ ${#content} -eq 0 ]]
+		then
+			command rmdir "$extract_dir"
+		fi
+	done
+}
