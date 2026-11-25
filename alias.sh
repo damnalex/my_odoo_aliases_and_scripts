@@ -445,13 +445,21 @@ oes() {
     if [[ $1 == "raw" ]]; then
         shift
     else
-        if [[ $1 == "fetch" ]]; then
-            go_venv $(o_ver $2 --short | tail -1)
-        fi
-        if [[ $1 == "start" ]] || [[ $1 == "restore" ]]; then
-            local version=$(_db_version $(list_db_like "%$2")) 2>/dev/null
-            if [[ $version != "" ]]; then
-                go_venv $version
+        if [[ " $* " == *" --help "* ]]; then
+            # no venv shenanigans
+        else
+            if [[ $1 == "fetch" ]]; then
+                local version=$(o_ver $2 --short | tail -1)
+                if [[ -n $version ]]; then
+                    echo '---------------------'
+                    go_venv $version
+                fi
+            fi
+            if [[ $1 == "start" ]] || [[ $1 == "restore" ]]; then
+                local version=$(_db_version $(list_db_like "%$2")) 2>/dev/null
+                if [[ $version != "" ]]; then
+                    go_venv $version
+                fi
             fi
         fi
     fi
