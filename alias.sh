@@ -125,6 +125,11 @@ eza() {
 alias l="ls -lAh"
 alias tree="tree -C -a -I '.git'"
 
+mkcd() {
+    mkdir $1
+    cd $1
+}
+
 history_count() {
     #history analytics
     history -n | cut -d' ' -f1 | sort | uniq -c | trim | sort -gr | less
@@ -789,8 +794,6 @@ use_odoo_keychain() {
 use_default_keychain() {
     security default-keychain -s login.keychain-db
 }
-
-alias safe_copilot='safehouse copilot'
 
 go_update_and_hunter() {
     # git stuff

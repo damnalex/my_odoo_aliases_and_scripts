@@ -55,6 +55,7 @@ bashcompinit
 
 # hyphen insensitive completion
 zstyle ':completion:*' matcher-list 'm:{-_}={_-}'
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 
 # ZSH BASICS (History, Completions, Keybindings)
 HISTFILE="$HOME/.zsh_history"
